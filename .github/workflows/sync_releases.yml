@@ -40,6 +40,7 @@ jobs:
           from github import Github, Auth
 
           token = os.getenv('GITHUB_TOKEN')
+          # 使用 GitHub 最新推荐 Auth 认证，消除警告
           auth = Auth.Token(token)
           g = Github(auth=auth)
           current_repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
@@ -97,7 +98,7 @@ jobs:
               
               return sorted_results
 
-          # 执行一次测速获取排序后的镜像
+          # 全局仅测速一次获取最佳镜像列表
           active_mirrors = get_sorted_mirrors()
 
           for item in targets:
@@ -139,6 +140,9 @@ jobs:
                   # 构造本仓库中该文件的 GitHub 官方原始下载直链
                   raw_download_url = f"https://github.com/{current_repo.full_name}/releases/download/{release_tag}/{file_name}"
                   
+                  # 构造上游官方 Release 页面直链
+                  upstream_release_url = f"https://github.com/{target_repo_name}/releases/tag/{upstream_tag_name}"
+
                   # 动态生成基于测速结果的 Markdown 格式描述
                   mirror_text = "### 🚀 国内网络镜像加速下载\n"
                   mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
@@ -149,7 +153,7 @@ jobs:
                       mirror_text += f"- **[{m['name']}{tag}]({m['prefix']}{raw_download_url})** *(延迟: {latency_ms})*\n"
                   
                   release_body = (
-                      f"自动同步自上游官方最新 Release (`{upstream_tag_name}`)\n\n"
+                      f"🔗 **上游源头**：[{target_repo_name} ({upstream_tag_name})]({upstream_release_url})\n\n"
                       f"{mirror_text}"
                   )
 
@@ -157,13 +161,13 @@ jobs:
                   if target_release:
                       existing_assets = [a.name for a in target_release.get_assets()]
                       
-                      # 命中缓存：文件存在，仅更新 Description 中的测速与直链
+                      # 命中缓存：当前已是最新文件，仅更新说明文字与最快镜像列表
                       if file_name in existing_assets:
                           target_release.update_release(name=software_name, message=release_body)
                           print(f"✅ 当前已是最新版本 ({file_name})，已更新最新测速与加速直链。")
                           continue
                       
-                      # 存在 Release 但不是最新包：清理旧包，准备上传新包
+                      # 存在 Release 但不是最新包：清理旧包，更新消息准备上传新包
                       print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
                       for old_asset in target_release.get_assets():
                           old_asset.delete_asset()

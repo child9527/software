@@ -35,10 +35,12 @@ jobs:
           import json
           import re
           import requests
-          from github import Github
+          from github import Github, Auth
 
           token = os.getenv('GITHUB_TOKEN')
-          g = Github(token)
+          # 使用 GitHub 最新推荐的 Auth.Token 认证，消除 DeprecationWarning 警告
+          auth = Auth.Token(token)
+          g = Github(auth=auth)
           current_repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
 
           # 读取配置文件
@@ -56,7 +58,7 @@ jobs:
               try:
                   target_repo = g.get_repo(target_repo_name)
                   latest_release = target_repo.get_latest_release()
-                  tag_name = latest_release.tag_name
+                  upstream_tag_name = latest_release.tag_name
 
                   # 匹配对应的安装包文件
                   download_url = None
@@ -71,46 +73,53 @@ jobs:
                       print(f"⚠️ 在上游仓库中未找到符合规则 '{pattern}' 的文件，跳过。")
                       continue
 
-                  # 格式化 Release 标签名称 (如: flclash-latest)
+                  # 统一 Release 标签规范
                   release_tag = f"{software_name.lower().replace(' ', '-')}-latest"
                   
-                  # 检查本地 Release 状态
-                  try:
-                      rel = current_repo.get_release_by_tag(release_tag)
-                      existing_assets = [a.name for a in rel.get_assets()]
+                  # 改进的 Release 检索机制：优先遍历已有的全部 Releases 匹配 tag_name
+                  target_release = None
+                  for rel in current_repo.get_releases():
+                      if rel.tag_name == release_tag:
+                          target_release = rel
+                          break
+
+                  # 如果已存在该 Release
+                  if target_release:
+                      existing_assets = [a.name for a in target_release.get_assets()]
                       
-                      # 判断当前安装包是否已是最新
+                      # 命中缓存：当前已是最新文件，不重复处理
                       if file_name in existing_assets:
                           print(f"✅ 当前已是最新版本 ({file_name})，无需重复更新。")
                           continue
                       else:
-                          print(f"🗑️ 检测到新版本 ({file_name})，正在清理旧版本资源...")
-                          for old_asset in rel.get_assets():
+                          print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
+                          for old_asset in target_release.get_assets():
                               old_asset.delete_asset()
-                  except Exception:
-                      print(f"📦 未检测到现有 Release，正在创建新标签: {release_tag}")
-                      rel = current_repo.create_git_release(
+                  else:
+                      # 确实不存在，才新建 Release
+                      print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
+                      target_release = current_repo.create_git_release(
                           tag=release_tag,
                           name=f"{software_name} 最新版",
-                          message=f"自动同步自上游官方最新 Release ({tag_name})",
+                          message=f"自动同步自上游官方最新 Release ({upstream_tag_name})\n注意：请直接下载下方编译好的成品文件 (APK/ZIP/EXE)。",
                           draft=False,
                           prerelease=False
                       )
 
-                  # 下载最新版安装包
-                  print(f"⬇️ 正在下载最新包: {file_name} ...")
+                  # 下载最新版二进制成品安装包
+                  print(f"⬇️ 正在下载最新成品包: {file_name} ...")
                   res = requests.get(download_url, stream=True)
                   res.raise_for_status()
                   with open(file_name, 'wb') as out_file:
                       for chunk in res.iter_content(chunk_size=8192):
                           out_file.write(chunk)
 
-                  # 上传到本仓库的 Release 页面
-                  print(f"⬆️ 正在上传到本仓库 Releases...")
-                  rel.upload_asset(path=file_name, label=file_name)
+                  # 仅仅上传我们需要的二进制成品 (APK / ZIP / EXE)
+                  print(f"⬆️ 正在上传成品至本仓库 Release...")
+                  target_release.upload_asset(path=file_name, label=file_name)
                   print(f"🎉 {software_name} 成功更新至最新版！")
 
-                  # 移除下载的临时文件，节省 runner 空间
+                  # 清理临时文件
                   if os.path.exists(file_name):
                       os.remove(file_name)
 

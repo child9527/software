@@ -21,12 +21,12 @@
   },
   {
     "name": "Bilibili TV",
-    "repo": "msojocs/bilibili-tvos",
-    "asset_pattern": ".*-repair-v.*\\.apk$"
+    "repo": "zack24q/Bilibili-TV",
+    "asset_pattern": ".*\\.apk$"
   },
   {
-    "name": "BiliDown",
-    "repo": "msojocs/bilibili-down",
-    "asset_pattern": ".*-windows-x64\\.exe$"
+    "name": "BBDown",
+    "repo": "iawia0803/BBDown",
+    "asset_pattern": ".*_windows_x64\\.zip$"
   }
 ]

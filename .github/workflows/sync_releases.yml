@@ -34,11 +34,12 @@ jobs:
           import os
           import json
           import re
+          import time
           import requests
+          from concurrent.futures import ThreadPoolExecutor, as_completed
           from github import Github, Auth
 
           token = os.getenv('GITHUB_TOKEN')
-          # 使用 GitHub 最新推荐的 Auth.Token 认证，消除 DeprecationWarning 警告
           auth = Auth.Token(token)
           g = Github(auth=auth)
           current_repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
@@ -46,6 +47,52 @@ jobs:
           # 读取配置文件
           with open('targets.json', 'r', encoding='utf-8') as f:
               targets = json.load(f)
+
+          # 预设候选镜像节点
+          CANDIDATE_MIRRORS = [
+              ("GHProxy 主站", "https://ghproxy.net/"),
+              ("GHProxy 镜像", "https://mirror.ghproxy.com/"),
+              ("DDLC 镜像", "https://gh.ddlc.top/"),
+              ("FastGit 代理", "https://hub.fgit.cf/"),
+          ]
+
+          def test_mirror_speed(mirror_info):
+              """测试单个镜像站点的响应延迟 (秒)"""
+              name, prefix = mirror_info
+              test_url = f"{prefix}https://raw.githubusercontent.com/github/docs/main/README.md"
+              try:
+                  start_time = time.time()
+                  # 发送 HEAD 请求探测连通性，超时设为 3 秒
+                  res = requests.head(test_url, timeout=3, allow_redirects=True)
+                  latency = time.time() - start_time
+                  if res.status_code < 400:
+                      return {"name": name, "prefix": prefix, "latency": latency, "ok": True}
+              except Exception:
+                  pass
+              return {"name": name, "prefix": prefix, "latency": 999, "ok": False}
+
+          def get_sorted_mirrors():
+              """多线程并发测速，返回按延迟从低到高排序的可用镜像列表"""
+              print("🔍 正在对 GH-Proxy 镜像节点进行并发测速...")
+              sorted_results = []
+              with ThreadPoolExecutor(max_workers=len(CANDIDATE_MIRRORS)) as executor:
+                  futures = [executor.submit(test_mirror_speed, m) for m in CANDIDATE_MIRRORS]
+                  for future in as_completed(futures):
+                      res = future.result()
+                      if res["ok"]:
+                          sorted_results.append(res)
+
+              # 按响应延迟升序排列
+              sorted_results.sort(key=lambda x: x["latency"])
+              
+              print("⏱️ 镜像测速结果 (由快到慢):")
+              for r in sorted_results:
+                  print(f"  - {r['name']}: {r['latency']*1000:.0f} ms")
+              
+              return sorted_results
+
+          # 执行一次测速获取排序后的镜像
+          active_mirrors = get_sorted_mirrors()
 
           for item in targets:
               software_name = item['name']
@@ -76,26 +123,45 @@ jobs:
                   # 统一 Release 标签规范
                   release_tag = f"{software_name.lower().replace(' ', '-')}-latest"
                   
-                  # 改进的 Release 检索机制：优先遍历已有的全部 Releases 匹配 tag_name
+                  # 检索现有的 Release
                   target_release = None
                   for rel in current_repo.get_releases():
                       if rel.tag_name == release_tag:
                           target_release = rel
                           break
 
+                  # 构造本仓库中该文件的 GitHub 官方原始下载直链
+                  raw_download_url = f"https://github.com/{current_repo.full_name}/releases/download/{release_tag}/{file_name}"
+                  
+                  # 动态生成基于测速结果的 Markdown 格式描述
+                  mirror_text = "### 🚀 国内网络镜像加速下载\n"
+                  mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
+                  
+                  for idx, m in enumerate(active_mirrors):
+                      tag = " ⚡ [最快推荐]" if idx == 0 else ""
+                      latency_ms = f"{m['latency']*1000:.0f}ms"
+                      mirror_text += f"- **[{m['name']}{tag}]({m['prefix']}{raw_download_url})** *(延迟: {latency_ms})*\n"
+                  
+                  release_body = (
+                      f"自动同步自上游官方最新 Release (`{upstream_tag_name}`)\n\n"
+                      f"{mirror_text}"
+                  )
+
                   # 逻辑判断 1：如果本地已经存在这个软件的 Release
                   if target_release:
                       existing_assets = [a.name for a in target_release.get_assets()]
                       
-                      # 命中缓存：当前已是最新文件，不重复处理
+                      # 命中缓存：文件存在，仅更新 Description 中的测速与直链
                       if file_name in existing_assets:
-                          print(f"✅ 当前已是最新版本 ({file_name})，无需重复更新。")
+                          target_release.update_release(name=software_name, message=release_body)
+                          print(f"✅ 当前已是最新版本 ({file_name})，已更新最新测速与加速直链。")
                           continue
                       
                       # 存在 Release 但不是最新包：清理旧包，准备上传新包
                       print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
                       for old_asset in target_release.get_assets():
                           old_asset.delete_asset()
+                      target_release.update_release(name=software_name, message=release_body)
 
                   # 逻辑判断 2：如果本地完全不存在这个 Release，则新建
                   else:
@@ -103,7 +169,7 @@ jobs:
                       target_release = current_repo.create_git_release(
                           tag=release_tag,
                           name=software_name,
-                          message=f"自动同步自上游官方最新 Release ({upstream_tag_name})\n注意：请直接下载下方编译好的成品文件 (APK/ZIP/EXE)。",
+                          message=release_body,
                           draft=False,
                           prerelease=False
                       )
@@ -116,7 +182,7 @@ jobs:
                       for chunk in res.iter_content(chunk_size=8192):
                           out_file.write(chunk)
 
-                  # 仅仅上传我们需要的二进制成品 (APK / ZIP / EXE)
+                  # 上传成品至 Release
                   print(f"⬆️ 正在上传成品至本仓库 Release...")
                   target_release.upload_asset(path=file_name, label=file_name)
                   print(f"🎉 {software_name} 成功更新至最新版！")

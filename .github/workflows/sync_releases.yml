@@ -48,12 +48,18 @@ jobs:
           with open('targets.json', 'r', encoding='utf-8') as f:
               targets = json.load(f)
 
-          # 预设候选镜像节点
+          # 扩充后的 GH-Proxy 候选镜像大池子（全部并发测速，谁快谁上）
           CANDIDATE_MIRRORS = [
-              ("GHProxy 主站", "https://ghproxy.net/"),
-              ("GHProxy 镜像", "https://mirror.ghproxy.com/"),
+              ("GH-Proxy Org", "https://gh-proxy.org/"),
+              ("GHProxy Net", "https://ghproxy.net/"),
+              ("Mirror GHProxy", "https://mirror.ghproxy.com/"),
               ("DDLC 镜像", "https://gh.ddlc.top/"),
-              ("FastGit 代理", "https://hub.fgit.cf/"),
+              ("GH-Proxy Com", "https://gh-proxy.com/"),
+              ("GH API 镜像", "https://gh.api.99988866.xyz/"),
+              ("GH Cache ICU", "https://gh.cache.icu/"),
+              ("GH CON", "https://gh.con.sh/"),
+              ("GH LLKK", "https://gh.llkk.cc/"),
+              ("GH VIP 代理", "https://ghproxy.vip/"),
           ]
 
           def test_mirror_speed(mirror_info):

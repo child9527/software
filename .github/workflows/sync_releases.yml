@@ -83,7 +83,7 @@ jobs:
                           target_release = rel
                           break
 
-                  # 如果已存在该 Release
+                  # 逻辑判断 1：如果本地已经存在这个软件的 Release
                   if target_release:
                       existing_assets = [a.name for a in target_release.get_assets()]
                       
@@ -91,16 +91,18 @@ jobs:
                       if file_name in existing_assets:
                           print(f"✅ 当前已是最新版本 ({file_name})，无需重复更新。")
                           continue
-                      else:
-                          print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
-                          for old_asset in target_release.get_assets():
-                              old_asset.delete_asset()
+                      
+                      # 存在 Release 但不是最新包：清理旧包，准备上传新包
+                      print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
+                      for old_asset in target_release.get_assets():
+                          old_asset.delete_asset()
+
+                  # 逻辑判断 2：如果本地完全不存在这个 Release，则新建
                   else:
-                      # 确实不存在，才新建 Release
                       print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
                       target_release = current_repo.create_git_release(
                           tag=release_tag,
-                          name=f"{software_name}",
+                          name=software_name,
                           message=f"自动同步自上游官方最新 Release ({upstream_tag_name})\n注意：请直接下载下方编译好的成品文件 (APK/ZIP/EXE)。",
                           draft=False,
                           prerelease=False

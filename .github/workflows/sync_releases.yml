@@ -1,0 +1,120 @@
+name: 自动同步指定软件最新 Releases
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 每天北京时间 11:00 自动检查同步
+  workflow_dispatch:      # 支持在 Actions 页面手动触发执行
+
+permissions:
+  contents: write
+
+jobs:
+  sync-assets:
+    name: 检查并更新最新软件安装包
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出当前仓库
+        uses: actions/checkout@v4
+
+      - name: 配置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖库
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests pygithub
+
+      - name: 执行同步与 Release 更新
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - << 'EOF'
+          import os
+          import json
+          import re
+          import requests
+          from github import Github
+
+          token = os.getenv('GITHUB_TOKEN')
+          g = Github(token)
+          current_repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
+
+          # 读取配置文件
+          with open('targets.json', 'r', encoding='utf-8') as f:
+              targets = json.load(f)
+
+          for item in targets:
+              software_name = item['name']
+              target_repo_name = item['repo']
+              pattern = item['asset_pattern']
+
+              print(f"\n==========================================")
+              print(f"正在检查软件: {software_name} ({target_repo_name})")
+
+              try:
+                  target_repo = g.get_repo(target_repo_name)
+                  latest_release = target_repo.get_latest_release()
+                  tag_name = latest_release.tag_name
+
+                  # 匹配对应的安装包文件
+                  download_url = None
+                  file_name = None
+                  for asset in latest_release.get_assets():
+                      if re.search(pattern, asset.name, re.IGNORECASE):
+                          download_url = asset.browser_download_url
+                          file_name = asset.name
+                          break
+
+                  if not download_url:
+                      print(f"⚠️ 在上游仓库中未找到符合规则 '{pattern}' 的文件，跳过。")
+                      continue
+
+                  # 格式化 Release 标签名称 (如: flclash-latest)
+                  release_tag = f"{software_name.lower().replace(' ', '-')}-latest"
+                  
+                  # 检查本地 Release 状态
+                  try:
+                      rel = current_repo.get_release_by_tag(release_tag)
+                      existing_assets = [a.name for a in rel.get_assets()]
+                      
+                      # 判断当前安装包是否已是最新
+                      if file_name in existing_assets:
+                          print(f"✅ 当前已是最新版本 ({file_name})，无需重复更新。")
+                          continue
+                      else:
+                          print(f"🗑️ 检测到新版本 ({file_name})，正在清理旧版本资源...")
+                          for old_asset in rel.get_assets():
+                              old_asset.delete_asset()
+                  except Exception:
+                      print(f"📦 未检测到现有 Release，正在创建新标签: {release_tag}")
+                      rel = current_repo.create_git_release(
+                          tag=release_tag,
+                          name=f"{software_name} 最新版",
+                          message=f"自动同步自上游官方最新 Release ({tag_name})",
+                          draft=False,
+                          prerelease=False
+                      )
+
+                  # 下载最新版安装包
+                  print(f"⬇️ 正在下载最新包: {file_name} ...")
+                  res = requests.get(download_url, stream=True)
+                  res.raise_for_status()
+                  with open(file_name, 'wb') as out_file:
+                      for chunk in res.iter_content(chunk_size=8192):
+                          out_file.write(chunk)
+
+                  # 上传到本仓库的 Release 页面
+                  print(f"⬆️ 正在上传到本仓库 Releases...")
+                  rel.upload_asset(path=file_name, label=file_name)
+                  print(f"🎉 {software_name} 成功更新至最新版！")
+
+                  # 移除下载的临时文件，节省 runner 空间
+                  if os.path.exists(file_name):
+                      os.remove(file_name)
+
+              except Exception as e:
+                  print(f"❌ 处理 {software_name} 时发生异常: {str(e)}")
+
+          EOF

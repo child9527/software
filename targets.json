@@ -17,16 +17,16 @@
   {
     "name": "Clash Verge",
     "repo": "clash-verge-rev/clash-verge-rev",
-    "asset_pattern": ".*x64_fixed-setup\\.exe$"
+    "asset_pattern": ".*_x64-setup\\.exe$"
   },
   {
     "name": "Bilibili TV",
-    "repo": "msojocs/Bilibili-TV",
-    "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
+    "repo": "msojocs/bilibili-tvos",
+    "asset_pattern": ".*-repair-v.*\\.apk$"
   },
   {
     "name": "BiliDown",
     "repo": "msojocs/bilibili-down",
-    "asset_pattern": "^BiliDown-.*-windows-x64\\.exe$"
+    "asset_pattern": ".*-windows-x64\\.exe$"
   }
 ]

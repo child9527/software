@@ -100,7 +100,7 @@ jobs:
                       print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
                       target_release = current_repo.create_git_release(
                           tag=release_tag,
-                          name=f"{software_name} 最新版",
+                          name=f"{software_name}",
                           message=f"自动同步自上游官方最新 Release ({upstream_tag_name})\n注意：请直接下载下方编译好的成品文件 (APK/ZIP/EXE)。",
                           draft=False,
                           prerelease=False

@@ -17,7 +17,7 @@
     {
     "name": "v2rayNg",
     "repo": "2dust/v2rayNg",
-    "asset_pattern": "^v2rayNg_*_arm64-v8a\\.apk$"
+    "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$"
   },
   {
     "name": "Clash Verge",

@@ -14,6 +14,11 @@
     "repo": "2dust/v2rayN",
     "asset_pattern": "^v2rayN-windows-64\\.zip$"
   },
+    {
+    "name": "v2rayNg",
+    "repo": "2dust/v2rayNg",
+    "asset_pattern": "^v2rayNg_*_arm64-v8a\\.apk$"
+  },
   {
     "name": "Clash Verge",
     "repo": "clash-verge-rev/clash-verge-rev",

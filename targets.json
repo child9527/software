@@ -32,6 +32,6 @@
   {
     "name": "Bilibili Downloader GUI",
     "repo": "j4rviscmd/bilibili-downloader-gui",
-    "asset_pattern": ".*_Windows_x64-setup\\.exe$"
+    "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$"
   }
 ]

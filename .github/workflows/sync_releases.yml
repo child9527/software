@@ -81,7 +81,6 @@ jobs:
                   res = requests.head(test_url, timeout=3, allow_redirects=True)
                   latency = time.time() - start_time
                   if res.status_code < 400:
-                      # 综合得分 = 实际网络延迟 + 权重基数 (值越小越快/越优先)
                       total_score = latency + weight
                       return {
                           "name": name, 
@@ -106,7 +105,6 @@ jobs:
                       if res["ok"]:
                           sorted_results.append(res)
 
-              # 按综合得分 (total_score) 升序排列，值越小越靠前
               sorted_results.sort(key=lambda x: x["total_score"])
               
               print("⏱️ 镜像综合优选结果 (按权重+延迟由优到劣):")
@@ -115,7 +113,6 @@ jobs:
               
               return sorted_results
 
-          # 全局仅测速与计分一次
           active_mirrors = get_sorted_mirrors()
 
           for item in targets:
@@ -129,7 +126,6 @@ jobs:
               try:
                   target_repo = g.get_repo(target_repo_name)
                   
-                  # 🟢 关键修正：获取全部 Release 列表，取第一个（包含 Pre-release 预发行版，如 2.3.6）
                   all_releases = list(target_repo.get_releases())
                   if not all_releases:
                       print(f"⚠️ 在上游仓库 {target_repo_name} 中未找到任何 Release，跳过。")
@@ -141,36 +137,45 @@ jobs:
                   if latest_release.prerelease:
                       print(f"ℹ️ 检测到最新版本为预发行版 (Pre-release): {upstream_tag_name}")
 
-                  # 匹配对应的安装包文件
+                  # 🟢 优化后的 Asset 匹配与版本号精确校验逻辑
                   download_url = None
                   file_name = None
+                  clean_version = upstream_tag_name.lstrip('vV')
+
+                  matching_assets = []
                   for asset in latest_release.get_assets():
                       if re.search(pattern, asset.name, re.IGNORECASE):
-                          download_url = asset.browser_download_url
-                          file_name = asset.name
-                          break
+                          matching_assets.append(asset)
+
+                  if matching_assets:
+                      exact_match = None
+                      for asset in matching_assets:
+                          if clean_version in asset.name:
+                              exact_match = asset
+                              break
+                      
+                      chosen_asset = exact_match if exact_match else matching_assets[0]
+                      download_url = chosen_asset.browser_download_url
+                      file_name = chosen_asset.name
 
                   if not download_url:
                       print(f"⚠️ 在上游仓库中未找到符合规则 '{pattern}' 的文件，跳过。")
                       continue
 
+                  print(f"🎯 锁定目标下载文件: {file_name}")
+
                   # 统一 Release 标签规范
                   release_tag = f"{software_name.lower().replace(' ', '-')}-latest"
                   
-                  # 检索现有的 Release
                   target_release = None
                   for rel in current_repo.get_releases():
                       if rel.tag_name == release_tag:
                           target_release = rel
                           break
 
-                  # 构造本仓库中该文件的 GitHub 官方原始下载直链
                   raw_download_url = f"https://github.com/{current_repo.full_name}/releases/download/{release_tag}/{file_name}"
-                  
-                  # 构造上游官方 Release 页面直链
                   upstream_release_url = f"https://github.com/{target_repo_name}/releases/tag/{upstream_tag_name}"
 
-                  # 动态生成基于综合评估优选的 Markdown 格式描述
                   mirror_text = "### 🚀 国内网络镜像加速下载\n"
                   mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
                   
@@ -184,23 +189,19 @@ jobs:
                       f"{mirror_text}"
                   )
 
-                  # 逻辑判断 1：如果本地已经存在这个软件的 Release
                   if target_release:
                       existing_assets = [a.name for a in target_release.get_assets()]
                       
-                      # 命中缓存：当前已是最新文件，仅更新说明文字与最快镜像列表
                       if file_name in existing_assets:
                           target_release.update_release(name=software_name, message=release_body)
                           print(f"✅ 当前已是最新版本 ({file_name})，已更新最新测速与加速直链。")
                           continue
                       
-                      # 存在 Release 但不是最新包：清理旧包，更新消息准备上传新包
                       print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
                       for old_asset in target_release.get_assets():
                           old_asset.delete_asset()
                       target_release.update_release(name=software_name, message=release_body)
 
-                  # 逻辑判断 2：如果本地完全不存在这个 Release，则新建
                   else:
                       print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
                       target_release = current_repo.create_git_release(
@@ -211,7 +212,6 @@ jobs:
                           prerelease=False
                       )
 
-                  # 下载最新版二进制成品安装包
                   print(f"⬇️ 正在下载最新成品包: {file_name} ...")
                   res = requests.get(download_url, stream=True)
                   res.raise_for_status()
@@ -219,12 +219,10 @@ jobs:
                       for chunk in res.iter_content(chunk_size=8192):
                           out_file.write(chunk)
 
-                  # 上传成品至 Release
                   print(f"⬆️ 正在上传成品至本仓库 Release...")
                   target_release.upload_asset(path=file_name, label=file_name)
                   print(f"🎉 {software_name} 成功更新至最新版！")
 
-                  # 清理临时文件
                   if os.path.exists(file_name):
                       os.remove(file_name)
 

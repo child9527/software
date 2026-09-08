@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人数字资产导航 - child9527</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --accent-color: #ff4757;
+            --link-color: #3498db;
+            --success-color: #2ecc71;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        h2 { 
+            color: var(--accent-color); 
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 8px;
+            margin-top: 30px;
+            font-size: 1.5rem;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        /* 链接网格 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        a.btn {
+            display: block;
+            background: #3d3d3d;
+            color: var(--link-color);
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid #444;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        a.btn:hover { background: #4d4d4d; color: #5dade2; }
+
+        /* 紧凑数据卡片网格布局 */
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 10px;
+        }
+
+        /* 独立数据单元卡片 */
+        .data-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #363636;
+            border-radius: 6px;
+            border: 1px solid #404040;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .data-card:hover {
+            background: #404040;
+            border-color: #555;
+        }
+
+        .data-label { 
+            color: #ddd; 
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-right: 12px;
+        }
+
+        /* 复制胶囊按钮 */
+        .copy-pill { 
+            font-family: -apple-system, sans-serif;
+            font-size: 0.8rem;
+            color: #bbb; 
+            cursor: pointer;
+            background: #2b2b2b;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #484848;
+            transition: all 0.2s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        .copy-pill:hover { 
+            background: #4a4a4a; 
+            color: #fff;
+            border-color: #666;
+        }
+
+        .copy-pill.copied {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .hint { font-size: 0.8rem; color: #888; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Chrome 扩展类</h2>
+    <div class="section grid">
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_gcalenpjmijncebpfijmoaglllgpjagf.zip">红猴插件</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_oficfgdfeoknbjfhommlpiekdapmnebh.zip">live on</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_mpkodccbngfoacfalldjimigbofkhgjn.zip">aria2 for chrome</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_jlgkpaicikihijadgifklkbpdajbkhjo.zip">crxMouse手势</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_lkjkfecdnfjopaeaibboihfkmhdjmanm.zip">腾讯翻译</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_hdokiejnpimakedhajhdlcegeplioahd.zip">lastpass</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_agepkkdokhlaoiaenedmjbfnblfdiboc.zip">一键读图(OCR)</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_ieehkmoiljghfkejgahoheemdjpdinml.zip">Undo Closed</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_chpphekfimlabghbdankokcohcmnbmab.zip">Textarea Cache</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_onepmapfbjohnegdmfhndpefjkppbjkm.zip">SuperCopy</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_jpbjcnkcffbooppibceonlgknpkniiff.zip">Global Speed</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_bgnkhhnnamicmpeenaelnjfhikgbkllg.zip">AdGuard</a>
+        <a class="btn" href="https://laomo.lanzoui.com/ibaKXvxynri">uBlock Origin</a>
+        <a class="btn" href="https://img.chajianxw.com/chajian/www.chajianxw.com_indecfegkejajpaipjipfkkbedgaodbp.zip">Listen 1</a>
+    </div>
+
+    <h2>TVbox源</h2>
+    <div class="section">
+        <div class="compact-grid">
+            <div class="data-card">
+                <span class="data-label">X</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/x.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">鹏九</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/pj.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">One</span>
+                <span class="copy-pill" data-value="https://9877.kstore.space/one.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">API</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/api.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">JSM</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/jsm.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">影视仓</span>
+                <span class="copy-pill" data-value="http://www.影视仓.com" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">饭太硬</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/fty.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">MTV6</span>
+                <span class="copy-pill" data-value="https://d.kstore.dev/download/2843/mtv6.txt" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Leevi</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/leevi0709/raw/main/config.json" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Mybox</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/mybox/raw/master/mybox.txt" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">Yoursmile66</span>
+                <span class="copy-pill" data-value="https://gitee.com/child9527/yoursmile66/raw/main/XC.json" onclick="copy(this)">点击复制</span>
+            </div>
+        </div>
+    </div>
+
+    <h2>坚果云 WebDAV</h2>
+    <div class="section">
+        <div class="compact-grid">
+            <div class="data-card">
+                <span class="data-label">服务器地址</span>
+                <span class="copy-pill" data-value="https://dav.jianguoyun.com/dav/" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">账户</span>
+                <span class="copy-pill" data-value="child9527@qq.com" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">影视仓密码</span>
+                <span class="copy-pill" data-value="akf34qjf2pkrmrri" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">FlClash密码</span>
+                <span class="copy-pill" data-value="asdavrtqbct9rgzs" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">v2rayN 密码</span>
+                <span class="copy-pill" data-value="am85vizvh8cmnmjv" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">ClashVerge 密码</span>
+                <span class="copy-pill" data-value="asbdru3gf2pgd3uq" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">ZeroOmega密码</span>
+                <span class="copy-pill" data-value="arxr89en8djrp62k" onclick="copy(this)">点击复制</span>
+            </div>
+            <div class="data-card">
+                <span class="data-label">TamperMonkey密码</span>
+                <span class="copy-pill" data-value="aue3vupc9kx77s7i" onclick="copy(this)">点击复制</span>
+            </div>
+        </div>
+    </div>
+
+    <h2>感知境界专业押题</h2>
+    <div class="section">
+        <p style="margin-top: 0;">
+            主盘：<a style="color:var(--link-color)" href="http://www.ganzhiyati.com" target="_blank">www.ganzhiyati.com</a><br>
+            备用：<a style="color:var(--link-color)" href="http://2069910086.edudisk.cn" target="_blank">2069910086.edudisk.cn</a>
+        </p>
+        <div class="compact-grid">
+            <div class="data-card"><span class="data-label">统一用户名</span><span class="copy-pill" data-value="156477650" onclick="copy(this)">点击复制</span></div>
+            <div class="data-card"><span class="data-label">一级造价工程师</span><span class="copy-pill" data-value="zj666" onclick="copy(this)">点击复制</span></div>
+            <div class="data-card"><span class="data-label">一建密码</span><span class="copy-pill" data-value="js888" onclick="copy(this)">点击复制</span></div>
+            <div class="data-card"><span class="data-label">二建密码</span><span class="copy-pill" data-value="r888" onclick="copy(this)">点击复制</span></div>
+            <div class="data-card"><span class="data-label">监理工程师</span><span class="copy-pill" data-value="qjfg696" onclick="copy(this)">点击复制</span></div>
+            <div class="data-card"><span class="data-label">咨询工程师</span><span class="copy-pill" data-value="zx953" onclick="copy(this)">点击复制</span></div>
+        </div>
+        <p class="hint">提示：点击右侧按钮可直接复制内容到剪贴板</p>
+    </div>
+
+</div>
+
+<script>
+    function copy(el) {
+        const text = el.getAttribute('data-value');
+        
+        // 优先使用现代 Clipboard API
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(() => {
+                showSuccess(el);
+            }).catch(() => {
+                fallbackCopy(text, el);
+            });
+        } else {
+            // 兼容性兜底方案
+            fallbackCopy(text, el);
+        }
+    }
+
+    function fallbackCopy(text, el) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.top = "0";
+        textarea.style.left = "0";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showSuccess(el);
+            } else {
+                alert("复制失败，请重试");
+            }
+        } catch (err) {
+            alert("复制失败，请重试");
+        }
+        document.body.removeChild(textarea);
+    }
+
+    function showSuccess(el) {
+        const originalText = "点击复制";
+        el.innerText = "✓ 已复制";
+        el.classList.add("copied");
+        
+        setTimeout(() => {
+            el.innerText = originalText;
+            el.classList.remove("copied");
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

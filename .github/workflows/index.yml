@@ -20,6 +20,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+          
+      - name: 安装依赖库
+        run: |
+          python -m pip install --upgrade pip
+          pip install pygithub
 
       - name: Generate index.html
         run: python scripts/index.py

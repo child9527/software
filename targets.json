@@ -24,6 +24,11 @@
     "repo": "clash-verge-rev/clash-verge-rev",
     "asset_pattern": ".*_x64-setup\\.exe$"
   },
+    {
+    "name": "TVBoxOSC",
+    "repo": "j4Uq/TVBoxOSC",
+    "asset_pattern": "^TVBox_*_*-*-java64\\.apk$"
+  },
   {
     "name": "Bilibili TV",
     "repo": "qidian55/bilibilitv1.6.6-repair",

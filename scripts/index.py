@@ -166,10 +166,15 @@ def generate_html(items):
 <script>
 function copy(el) {{
     const text = el.innerText;
+
     navigator.clipboard.writeText(text).then(() => {{
-        el.style.color = "#2ecc71";
+        // 复制成功后的视觉反馈
+        el.style.color = "#2ecc71";  // 绿色
+        el.style.fontWeight = "bold";
+
         setTimeout(() => {{
-            el.style.color = "#5dade2";
+            el.style.color = "#5dade2";  // 恢复原色
+            el.style.fontWeight = "normal";
         }}, 1200);
     }});
 }}

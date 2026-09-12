@@ -27,7 +27,7 @@ def fetch_release_items():
     repo = g.get_repo(repo_name)
 
     # 读取 targets.json
-    with open("scripts/targets.json", "r", encoding="utf-8") as f:
+    with open("./targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
     releases = list(repo.get_releases())

@@ -68,7 +68,22 @@ def fetch_release_items():
 
         items.append({
             "name": release_name,
-            "version": tag.replace("-latest", ""),
+            # 从 Release body 中提取版本号
+            body = rel.body or ""
+            version = "未知版本"
+            if "上游版本：" in body:
+                version = body.split("上游版本：")[-1].strip()
+
+            items.append({
+                 "name": release_name,
+                "version": version,
+                "url": raw_url,
+                "file_size": asset.size,
+                "icon": icon_url,
+                "description": description,
+                "mirrors": [(m[0], f"{m[1]}{raw_url}") for m in MIRRORS]
+            })
+
             "url": raw_url,
             "file_size": asset.size,
             "icon": icon_url,

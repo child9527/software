@@ -113,7 +113,6 @@ def generate_html():
     # 自动生成软件列表
     for item in targets:
         name = item["name"]
-        repo = item["repo"]
 
         # Release 标签规则：软件名转小写并用 -latest
         release_tag = name.lower().replace(" ", "-") + "-latest"
@@ -121,7 +120,7 @@ def generate_html():
         # 明文地址（你希望中间显示这个）
         plain_url = f"https://github.com/child9527/software/releases/download/{release_tag}/"
 
-        # 下载按钮跳转地址（同样指向 Release）
+        # 下载按钮跳转地址
         download_url = plain_url
 
         html += f"""

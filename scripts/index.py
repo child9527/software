@@ -113,8 +113,8 @@ body {
     border-radius: 10px;
     display: flex;
     align-items: flex-start;
-    box-shadow: 0 0 10px rgba(0,0,0,0.4);
-    border: 1px solid #3a3a3a;
+    border: 1px solid #4aa3ff; /* 亮色边框 */
+    box-shadow: 0 0 12px rgba(74,163,255,0.4); /* 发光效果 */
 }
 .icon {
     width: 64px;

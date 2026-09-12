@@ -26,7 +26,7 @@ def fetch_release_items():
     repo_name = os.getenv("GITHUB_REPOSITORY")
     repo = g.get_repo(repo_name)
 
-    # 读取 targets.json
+    # 读取 targets.json（根目录）
     with open("./targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
@@ -45,21 +45,29 @@ def fetch_release_items():
         asset = assets[0]
         raw_url = asset.browser_download_url
 
-        # 找到对应软件的 icon 和上游 repo
+        # 使用 Release 的 name/title 来匹配 targets.json（最稳）
+        release_name = rel.title or rel.name or ""
+
         icon_url = None
         upstream_repo_name = None
+
         for t in targets:
-            if t["name"].lower() in tag.lower():
+            if t["name"].lower() == release_name.lower():
                 icon_url = t.get("icon")
                 upstream_repo_name = t["repo"]
                 break
+
+        # 如果匹配不到，跳过（避免 None 报错）
+        if upstream_repo_name is None:
+            print(f"⚠ 未找到匹配的 targets.json 项：{release_name}，已跳过")
+            continue
 
         # 获取上游仓库简介
         upstream_repo = g.get_repo(upstream_repo_name)
         description = upstream_repo.description or "暂无简介"
 
         items.append({
-            "name": rel.title or rel.name or tag.replace("-latest", ""),
+            "name": release_name,
             "version": tag.replace("-latest", ""),
             "url": raw_url,
             "file_size": asset.size,

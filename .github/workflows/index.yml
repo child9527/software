@@ -27,6 +27,8 @@ jobs:
           pip install pygithub
 
       - name: Generate index.html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/index.py
 
       - name: Commit index.html

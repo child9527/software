@@ -2,18 +2,50 @@
 # -*- coding: utf-8 -*-
 
 import os
-import json
 import datetime
+from github import Github, Auth
 
 OUTPUT = "index.html"
 
-def load_targets():
-    with open("targets.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+def fetch_release_items():
+    """从当前仓库的 Releases 获取所有真实下载链接"""
+    token = os.getenv("GITHUB_TOKEN")
+    auth = Auth.Token(token)
+    g = Github(auth=auth)
 
-def generate_html():
+    repo_name = os.getenv("GITHUB_REPOSITORY")
+    repo = g.get_repo(repo_name)
+
+    releases = list(repo.get_releases())
+    items = []
+
+    for rel in releases:
+        tag = rel.tag_name
+
+        # 只处理你自动同步生成的 *-latest
+        if not tag.endswith("-latest"):
+            continue
+
+        assets = list(rel.get_assets())
+        if not assets:
+            continue
+
+        asset = assets[0]  # 每个 release 只有一个文件
+        download_url = asset.browser_download_url
+
+        # Release 名作为软件名
+        name = rel.title or rel.name or tag.replace("-latest", "")
+
+        items.append({
+            "name": name,
+            "url": download_url,
+        })
+
+    return items
+
+
+def generate_html(items):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    targets = load_targets()
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -110,24 +142,15 @@ def generate_html():
 <div class="section">
 """
 
-    # 自动生成软件列表
-    for item in targets:
+    for item in items:
         name = item["name"]
-
-        # Release 标签规则：软件名转小写并用 -latest
-        release_tag = name.lower().replace(" ", "-") + "-latest"
-
-        # 明文地址（你希望中间显示这个）
-        plain_url = f"https://github.com/child9527/software/releases/download/{release_tag}/"
-
-        # 下载按钮跳转地址
-        download_url = plain_url
+        url = item["url"]
 
         html += f"""
     <div class="data-row">
         <span class="data-label">{name}</span>
-        <span class="data-value" onclick="copy(this)">{plain_url}</span>
-        <span class="download-btn" onclick="window.open('{download_url}', '_blank')">下载</span>
+        <span class="data-value" onclick="copy(this)">{url}</span>
+        <span class="download-btn" onclick="window.open('{url}', '_blank')">下载</span>
     </div>
 """
 
@@ -161,5 +184,7 @@ function copy(el) {{
 
     print(f"index.html 已生成 → {OUTPUT}")
 
+
 if __name__ == "__main__":
-    generate_html()
+    items = fetch_release_items()
+    generate_html(items)

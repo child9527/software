@@ -66,11 +66,8 @@ def fetch_release_items():
         description = upstream_repo.description or "暂无简介"
 
         # 从 Release body 中提取版本号
-        body = rel.body or ""
-        version = "未知版本"
-
-        if "(" in body and ")" in body:
-            version = body.split("(")[-1].split(")")[0].strip()
+        upstream_release = upstream_repo.get_latest_release()
+        version = upstream_release.tag_name
 
         # 添加到 items
         items.append({

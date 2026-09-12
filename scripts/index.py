@@ -90,21 +90,23 @@ def generate_html(items):
 <style>
 body {
     font-family: Arial, sans-serif;
-    background: #f4f6f7;
+    background: #1e1e1e;
     padding: 20px;
+    color: #e0e0e0;
 }
 .container {
     max-width: 900px;
     margin: auto;
 }
 .card {
-    background: white;
+    background: #2b2b2b;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 10px;
     display: flex;
     align-items: flex-start;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    border: 1px solid #3a3a3a;
 }
 .icon {
     width: 64px;
@@ -115,33 +117,34 @@ body {
 .name {
     font-size: 20px;
     font-weight: bold;
+    color: #ffffff;
 }
 .version {
-    color: #666;
+    color: #b0b0b0;
 }
 .size {
-    color: #999;
+    color: #999999;
 }
 .desc {
     margin: 8px 0;
-    color: #555;
+    color: #cccccc;
 }
 .btn {
     display: inline-block;
     margin: 5px 5px 0 0;
     padding: 8px 12px;
-    background: #3498db;
+    background: #3a7bd5;
     color: white;
     border-radius: 5px;
     text-decoration: none;
 }
 .btn:hover {
-    background: #2980b9;
+    background: #2f6bb8;
 }
 .footer {
     margin-top: 20px;
     text-align: center;
-    color: #888;
+    color: #888888;
 }
 </style>
 </head>

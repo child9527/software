@@ -1,8 +1,10 @@
 name: Generate index.html
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"
+  workflow_run:
+    workflows: ["自动同步指定软件最新 Releases"]
+    types:
+      - completed
   workflow_dispatch:
 
 permissions:

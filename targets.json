@@ -24,6 +24,11 @@
     "repo": "clash-verge-rev/clash-verge-rev",
     "asset_pattern": ".*_x64-setup\\.exe$"
   },
+  {
+    "name": "DeskBox",
+    "repo": "Tianyu199509/DeskBox",
+    "asset_pattern": "^DeskBox_Setup_.*_x64\\.exe$"
+  },
     {
     "name": "TVBoxOSC",
     "repo": "j4Uq/TVBoxOSC",

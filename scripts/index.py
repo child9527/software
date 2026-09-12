@@ -66,24 +66,17 @@ def fetch_release_items():
         upstream_repo = g.get_repo(upstream_repo_name)
         description = upstream_repo.description or "暂无简介"
 
+        # 从 Release body 中提取版本号
+        body = rel.body or ""
+        version = "未知版本"
+
+        if "上游版本：" in body:
+            version = body.split("上游版本：")[-1].strip()
+
+        # 添加到 items
         items.append({
             "name": release_name,
-            # 从 Release body 中提取版本号
-            body = rel.body or ""
-            version = "未知版本"
-            if "上游版本：" in body:
-                version = body.split("上游版本：")[-1].strip()
-
-            items.append({
-                 "name": release_name,
-                "version": version,
-                "url": raw_url,
-                "file_size": asset.size,
-                "icon": icon_url,
-                "description": description,
-                "mirrors": [(m[0], f"{m[1]}{raw_url}") for m in MIRRORS]
-            })
-
+            "version": version,
             "url": raw_url,
             "file_size": asset.size,
             "icon": icon_url,
@@ -92,6 +85,7 @@ def fetch_release_items():
         })
 
     return items
+
 
 def generate_html(items):
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

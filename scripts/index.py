@@ -32,11 +32,7 @@ def fetch_release_items():
         asset = assets[0]
         raw_url = asset.browser_download_url
 
-        # ⭐ 关键替换：把 github.com 换成 github.io
-        download_url = raw_url.replace(
-            f"https://github.com/{repo_name}",
-            f"https://{repo_name.split('/')[0]}.github.io/{repo_name.split('/')[1]}"
-        )
+        download_url = raw_url
 
         name = rel.title or rel.name or tag.replace("-latest", "")
 

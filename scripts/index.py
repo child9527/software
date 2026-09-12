@@ -5,7 +5,6 @@ from datetime import datetime
 
 # 镜像前缀
 MIRRORS = [
-    ("KSX 镜像", "https://web.ksx.qzz.io/"),
     ("GH-Proxy Com", "https://gh-proxy.com/"),
     ("Wget LA", "https://wget.la/"),
 ]
@@ -70,8 +69,8 @@ def fetch_release_items():
         body = rel.body or ""
         version = "未知版本"
 
-        if "上游版本：" in body:
-            version = body.split("上游版本：")[-1].strip()
+        if "(" in body and ")" in body:
+            version = body.split("(")[-1].split(")")[0].strip()
 
         # 添加到 items
         items.append({

@@ -27,7 +27,7 @@
     {
     "name": "TVBoxOSC",
     "repo": "j4Uq/TVBoxOSC",
-    "asset_pattern": "^TVBox_*_*-*-java64\\.apk$"
+    "asset_pattern": "^TVBox_.*_.*-.*-java64\\.apk$"
   },
   {
     "name": "Bilibili TV",

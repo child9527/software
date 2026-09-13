@@ -1,6 +1,9 @@
 name: Generate index.html
 
 on:
+  push:
+    paths:
+      - "scripts/index.py"
   workflow_run:
     workflows: ["自动同步指定软件最新 Releases"]
     types:

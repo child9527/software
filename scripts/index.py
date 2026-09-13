@@ -88,52 +88,89 @@ def generate_html(items):
 
     html = """
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>软件自动更新列表</title>
+<title>软件中心 · Child9527</title>
 <style>
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
     background: #1e1e1e;
-    padding: 20px;
     color: #e0e0e0;
 }
-.container {
-    max-width: 900px;
-    margin: auto;
+
+/* 顶部导航栏 */
+.navbar {
+    width: 100%;
+    background: #2b2b2b;
+    border-bottom: 2px solid #4aa3ff;
+    padding: 12px 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 0 12px rgba(74,163,255,0.3);
 }
+
+.navbar a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.navbar a:hover {
+    background: #4aa3ff;
+    color: #000;
+}
+
+/* 内容区块 */
+.section {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* 卡片 */
 .card {
     background: #2b2b2b;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 20px;
     border-radius: 10px;
+    border: 1px solid #4aa3ff;
+    box-shadow: 0 0 12px rgba(74,163,255,0.4);
+    margin-bottom: 20px;
     display: flex;
     align-items: flex-start;
-    border: 1px solid #4aa3ff; /* 亮色边框 */
-    box-shadow: 0 0 12px rgba(74,163,255,0.4); /* 发光效果 */
 }
+
 .icon {
     width: 64px;
     height: 64px;
     border-radius: 12px;
     margin-right: 15px;
 }
+
 .name {
     font-size: 20px;
     font-weight: bold;
     color: #ffffff;
 }
+
 .version {
     color: #b0b0b0;
 }
+
 .size {
     color: #999999;
 }
+
 .desc {
     margin: 8px 0;
     color: #cccccc;
 }
+
 .btn {
     display: inline-block;
     margin: 5px 5px 0 0;
@@ -143,18 +180,31 @@ body {
     border-radius: 5px;
     text-decoration: none;
 }
+
 .btn:hover {
     background: #2f6bb8;
 }
+
+/* 底部 */
 .footer {
-    margin-top: 20px;
     text-align: center;
+    padding: 20px;
     color: #888888;
+    margin-top: 40px;
 }
 </style>
 </head>
+
 <body>
-<div class="container">
+
+<!-- 导航栏 -->
+<div class="navbar">
+    <a href="https://child9527.github.io/" target="_blank">首页</a>
+    <a href="https://child9527.github.io/about/" target="_blank">关于本站</a>
+</div>
+
+<!-- 内容区块 -->
+<div class="section">
 <h2>软件自动更新列表</h2>
 """
 
@@ -183,11 +233,13 @@ body {
     自动生成时间：{now}
 </div>
 </div>
+
 </body>
 </html>
 """
 
     return html
+
 
 if __name__ == "__main__":
     items = fetch_release_items()

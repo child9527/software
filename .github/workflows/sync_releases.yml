@@ -3,7 +3,7 @@ name: 自动同步指定软件最新 Releases
 on:
   push:
     paths:
-      - "targets.json"    #只有 targets.json 被修改时才触发 workflow
+      - "task/targets.json"    #只有 targets.json 被修改时才触发 workflow
   schedule:
     - cron: '0 3 * * *'  # 每天北京时间 11:00 自动检查同步
   workflow_dispatch:      # 支持在 Actions 页面手动触发执行
@@ -48,7 +48,7 @@ jobs:
           current_repo = g.get_repo(os.getenv('GITHUB_REPOSITORY'))
 
           # 读取配置文件
-          with open('targets.json', 'r', encoding='utf-8') as f:
+          with open('task/targets.json', 'r', encoding='utf-8') as f:
               targets = json.load(f)
 
           # 镜像池及权重字典设置（权重值越小越优先）

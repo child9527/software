@@ -5,8 +5,8 @@ from datetime import datetime
 
 # 镜像前缀
 MIRRORS = [
-    ("GH-Proxy Com", "https://gh-proxy.com/"),
-    ("Wget LA", "https://wget.la/"),
+    ("GH-Proxy", "https://gh-proxy.com/"),
+    ("Wget.LA", "https://wget.la/"),
 ]
 
 def format_size(size):

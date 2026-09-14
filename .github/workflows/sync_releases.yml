@@ -53,7 +53,7 @@ jobs:
 
           # 镜像池及权重字典设置（权重值越小越优先）
           WEIGHT_MAP = {
-              "https://gh.ddlc.top/"：0.10,
+              "https://gh.ddlc.top/": 0.10,
               "https://gh-proxy.com/": 0.10,
               "https://wget.la/": 0.10,
           }

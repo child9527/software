@@ -25,8 +25,8 @@ def fetch_release_items():
     repo_name = os.getenv("GITHUB_REPOSITORY")
     repo = g.get_repo(repo_name)
 
-    # 读取 targets.json（根目录）
-    with open("./targets.json", "r", encoding="utf-8") as f:
+    # 读取 targets.json（task目录）
+    with open("task/targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
     releases = list(repo.get_releases())

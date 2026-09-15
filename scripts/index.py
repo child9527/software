@@ -1,7 +1,7 @@
 import os
 import json
 from github import Github, Auth
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 
 # 镜像前缀
 MIRRORS = [
@@ -84,7 +84,8 @@ def fetch_release_items():
 
 
 def generate_html(items):
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    bj_tz = timezone(timedelta(hours=8))
+    now = datetime.now(bj_tz).strftime("%Y-%m-%d %H:%M:%S")
 
     html = """
 <!DOCTYPE html>

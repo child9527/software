@@ -124,7 +124,8 @@ jobs:
             echo "[提示] 经比对无任何文件变更，跳过 Commit 和 Push 操作。"
           else
             echo "[提示] 检测到变更内容，开始提交并推送至 Gitee 远程仓库..."
-            git commit -m "auto: 更新Clash Verge规则成功 [skip ci]"
+            NOW_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
+            git commit -m "更新Clash Verge规则成功 ${NOW_TIME} [skip ci]"
             git push origin master
             echo "[成功] 文件更新已顺利推送至 Gitee clash_rules/ 目录！"
           fi

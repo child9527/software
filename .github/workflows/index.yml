@@ -1,4 +1,4 @@
-name: Generate index.html
+name: 生成软件仓库首页
 
 on:
   push:

@@ -40,6 +40,11 @@
     "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
   },
   {
+    "name": "gkd",
+    "repo": "gkd-kit/gkd",
+    "asset_pattern": "^gkd-v.*\\.apk$"
+  },
+  {
     "name": "Bilibili Downloader GUI",
     "repo": "j4rviscmd/bilibili-downloader-gui",
     "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$"

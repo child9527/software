@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 # 镜像前缀
 MIRRORS = [
     ("GH-Proxy", "https://gh-proxy.com/"),
-    ("Wget.LA", "https://wget.la/"),
+    ("Wget.LA", "https://ghfast.top/"),
 ]
 
 def format_size(size):
@@ -95,7 +95,7 @@ def fetch_lx_sources():
 
     for fname in os.listdir(target_dir):
         if fname.endswith(".js"):
-            raw_url = f"https://github.com/{repo_name}/raw/refs/heads/main/lxSources/guoyue2010/{fname}"
+            raw_url = f"https://raw.githubusercontent.com/{repo_name}/raw/refs/heads/main/lxSources/guoyue2010/{fname}"
             gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
             name = fname[:-3]  # 去掉末尾的 .js
 

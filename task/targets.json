@@ -14,7 +14,7 @@
     "repo": "2dust/v2rayN",
     "asset_pattern": "^v2rayN-windows-64\\.zip$"
   },
-    {
+  {
     "name": "v2rayNg",
     "repo": "2dust/v2rayNg",
     "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$"
@@ -29,7 +29,7 @@
     "repo": "Tianyu199509/DeskBox",
     "asset_pattern": "^DeskBox_Setup_.*_x64\\.exe$"
   },
-    {
+  {
     "name": "TVBoxOSC",
     "repo": "j4Uq/TVBoxOSC",
     "asset_pattern": "^TVBox_.*_.*-.*-java64\\.apk$"
@@ -38,6 +38,11 @@
     "name": "Bilibili TV",
     "repo": "qidian55/bilibilitv1.6.6-repair",
     "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
+  },
+  {
+    "name": "Mocreak",
+    "repo": "OdysseusYuan/Mocreak",
+    "asset_pattern": "^Mocreak_Portable_v.*\\.zip$"
   },
   {
     "name": "gkd",

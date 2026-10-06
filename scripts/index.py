@@ -6,7 +6,7 @@ from datetime import datetime, timezone, timedelta
 # 镜像前缀
 MIRRORS = [
     ("GH-Proxy", "https://gh-proxy.com/"),
-    ("Wget.LA", "https://ghfast.top/"),
+    ("GH-Fast", "https://ghfast.top/"),
 ]
 
 def format_size(size):

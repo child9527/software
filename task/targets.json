@@ -40,6 +40,16 @@
     "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
   },
   {
+    "name": "lx-music-mobile",
+    "repo": "lyswhut/lx-music-mobile",
+    "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$"
+  },
+  {
+    "name": "lx-music-desktop",
+    "repo": "lyswhut/lx-music-desktop",
+    "asset_pattern": "^lx-music-desktop-v.*-win_x64-green\\.7z$"
+  },
+  {
     "name": "Mocreak",
     "repo": "OdysseusYuan/Mocreak",
     "asset_pattern": "^Mocreak_Portable_v.*\\.zip$"

@@ -56,8 +56,8 @@ jobs:
         run: |
           RELEASE_JSON=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
           
-          # 提取扩展名为 .zip 的下载链接
-          ZIP_URL=$(echo "$RELEASE_JSON" | jq -r '.assets[] | select(.name | ends_with(".zip")) | .browser_download_url' | head -n 1)
+          # 修正 endswith 拼写问题
+          ZIP_URL=$(echo "$RELEASE_JSON" | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url' | head -n 1)
           
           if [ -z "$ZIP_URL" ] || [ "$ZIP_URL" = "null" ]; then
             echo "❌ 最新 Release 中未提取到 .zip 资产文件！"

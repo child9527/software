@@ -304,7 +304,7 @@ body {{
 <h2>软件中心</h2>
 
 <!-- 1. 软件列表 -->
-<div class="section-title">?? 软件自动更新列表</div>
+<div class="section-title">软件自动更新列表</div>
 """
 
     for item in items:
@@ -329,7 +329,7 @@ body {{
     # 2. 洛雪音乐音源区块
     html += """
 <!-- 2. 洛雪音乐音源 -->
-<div class="section-title">?? 洛雪音乐音源</div>
+<div class="section-title">洛雪音乐音源</div>
 <div class="compact-grid">
 """
 

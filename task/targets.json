@@ -40,6 +40,11 @@
     "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
   },
   {
+    "name": "any-listen",
+    "repo": "any-listen/any-listen-desktop",
+    "asset_pattern": "^any-listen-.*-win_x64-green\\.7z$"
+  },
+  {
     "name": "lx-music-mobile",
     "repo": "lyswhut/lx-music-mobile",
     "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$"

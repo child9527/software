@@ -1,5 +1,6 @@
 import os
 import json
+from urllib.parse import quote
 from github import Github, Auth
 from datetime import datetime, timezone, timedelta
 
@@ -84,7 +85,7 @@ def fetch_release_items():
 
 
 def fetch_lx_sources():
-    """扫描本地 lxSources/guoyue2010 目录下的所有 .js 音源文件，仅生成 gh-proxy 镜像链接"""
+    """扫描本地 lxSources/guoyue2010 目录下的所有 .js 音源文件，对文件名做 URL 编码"""
     target_dir = os.path.join("lxSources", "guoyue2010")
     if not os.path.exists(target_dir):
         print(f"?? 未找到音源目录: {target_dir}")
@@ -95,9 +96,12 @@ def fetch_lx_sources():
 
     for fname in os.listdir(target_dir):
         if fname.endswith(".js"):
-            raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/lxSources/guoyue2010/{fname}"
+            # 对中文字符和空格进行 URL 转码
+            encoded_fname = quote(fname)
+            
+            raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/lxSources/guoyue2010/{encoded_fname}"
             gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
-            name = fname[:-3]  # 去掉末尾的 .js
+            name = fname[:-3]  # 卡片展示界面依然使用可读的未转码名称
 
             sources.append({
                 "name": name,
@@ -304,7 +308,7 @@ body {{
 <h2>软件中心</h2>
 
 <!-- 1. 软件列表 -->
-<div class="section-title">软件自动更新列表</div>
+<div class="section-title">?? 软件自动更新列表</div>
 """
 
     for item in items:
@@ -329,7 +333,7 @@ body {{
     # 2. 洛雪音乐音源区块
     html += """
 <!-- 2. 洛雪音乐音源 -->
-<div class="section-title">洛雪音乐音源</div>
+<div class="section-title">?? 洛雪音乐音源</div>
 <div class="compact-grid">
 """
 

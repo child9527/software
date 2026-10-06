@@ -1,0 +1,106 @@
+name: 自动同步 LX Music 资源
+
+on:
+  # 支持在 GitHub Actions 页面手动一键触发
+  workflow_dispatch:
+  # 每天凌晨 0 点（UTC 零点，即北京时间早 8 点）自动检测上游 Release
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  check-and-sync:
+    name: 检测上游 Release 并同步
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 检查上游最新 Release 版本
+        id: check_tag
+        run: |
+          echo "正在查询 guoyue2010/lxmusic- 最新 Release..."
+          
+          # 1. 获取上游最新 Release JSON 并提取 tag_name
+          LATEST_RELEASE=$(curl -s https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
+          LATEST_TAG=$(echo "$LATEST_RELEASE" | jq -r '.tag_name')
+          
+          if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
+            echo "❌ 获取上游 Release 失败或未发现 Tag！"
+            exit 1
+          fi
+          
+          echo "上游最新 Tag: $LATEST_TAG"
+          
+          # 2. 读取本地已记录的版本号（存储在 lxSources/guoyue2010/version.txt）
+          LOCAL_TAG=""
+          if [ -f "lxSources/guoyue2010/version.txt" ]; then
+            LOCAL_TAG=$(cat lxSources/guoyue2010/version.txt)
+          fi
+          echo "本地已同步 Tag: $LOCAL_TAG"
+
+          # 3. 版本号对比（手动触发时不强行拦截，但也可打印提示）
+          if [ "$LATEST_TAG" = "$LOCAL_TAG" ] && [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "should_run=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ 上游未发布新版本 ($LATEST_TAG)，直接结束检测。"
+          else
+            echo "should_run=true" >> $GITHUB_OUTPUT
+            echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+            echo "⚡ 检测到需要同步（上游新版本: $LATEST_TAG），开始执行后续任务..."
+          fi
+
+      - name: 获取 zip 下载地址并下载
+        if: steps.check_tag.outputs.should_run == 'true'
+        run: |
+          RELEASE_JSON=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
+          
+          # 提取扩展名为 .zip 的下载链接
+          ZIP_URL=$(echo "$RELEASE_JSON" | jq -r '.assets[] | select(.name | ends_with(".zip")) | .browser_download_url' | head -n 1)
+          
+          if [ -z "$ZIP_URL" ] || [ "$ZIP_URL" = "null" ]; then
+            echo "❌ 最新 Release 中未提取到 .zip 资产文件！"
+            exit 1
+          fi
+          
+          echo "找到 zip 下载链接: $ZIP_URL"
+          curl -L -o latest.zip "$ZIP_URL"
+
+      - name: 清理旧文件并解压新资源
+        if: steps.check_tag.outputs.should_run == 'true'
+        run: |
+          # 1. 彻底清空原有 lxSources 目录
+          if [ -d "lxSources" ]; then
+            echo "🧹 正在彻底清空原有的 lxSources 目录..."
+            rm -rf lxSources/guoyue2010/*
+          else
+            echo "📁 创建新的 lxSources 目录..."
+            mkdir -p lxSources
+          fi
+
+          # 2. 解压新文件到 lxSources 目录
+          echo "📦 正在解压新文件..."
+          unzip -o latest.zip -d lxSources/guoyue2010/
+          
+          # 3. 清理下载临时文件
+          rm -f latest.zip
+
+          # 4. 记录当前同步的最新 Tag 版本号
+          echo "${{ steps.check_tag.outputs.latest_tag }}" > lxSources/guoyue2010/version.txt
+          echo "📝 版本记录更新为: ${{ steps.check_tag.outputs.latest_tag }}"
+
+      - name: 提交更新到仓库
+        if: steps.check_tag.outputs.should_run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add lxSources
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto Sync lxSources to upstream release ${{ steps.check_tag.outputs.latest_tag }}"
+            git push
+            echo "✅ 成功更新至上游最新版本 ${{ steps.check_tag.outputs.latest_tag }}！"
+          else
+            echo "ℹ️ 解压内容与本地一致，无需提交。"
+          fi

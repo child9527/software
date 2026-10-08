@@ -227,8 +227,7 @@ body {
 <div class="section-title">🚀 软件自动更新列表</div>
 
 <div class="filter-container">
-    <button class="filter-btn active" onclick="filterType('all', this)">全部</button>
-    <button class="filter-btn" onclick="filterType('Win64', this)">Win64</button>
+    <button class="filter-btn active" onclick="filterType('Win64', this)">Win64</button>
     <button class="filter-btn" onclick="filterType('Android', this)">Android</button>
 </div>
 
@@ -244,7 +243,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">洛雪音乐（Android）</div>
@@ -284,7 +283,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">gkd</div>
@@ -294,7 +293,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">TVBoxOSC</div>
@@ -314,7 +313,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">v2rayNg</div>
@@ -344,7 +343,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">FlClash Android</div>
@@ -354,7 +353,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">GH-Fast</a></div></div>
-<div class="card" data-type="Android">
+<div class="card hidden" data-type="Android">
     
     <div>
         <div class="name">Bilibili TV</div>
@@ -503,7 +502,7 @@ body {
 </div>
 
 <div class="footer">
-    自动生成时间：2026-10-08 10:33:24
+    自动生成时间：2026-10-08 10:55:49
 </div>
 </div>
 
@@ -520,7 +519,7 @@ function filterType(selectedType, btn) {
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
         const cardType = card.getAttribute('data-type');
-        if (selectedType === 'all' || cardType === selectedType) {
+        if (cardType === selectedType) {
             card.classList.remove('hidden');
         } else {
             card.classList.add('hidden');

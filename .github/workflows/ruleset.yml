@@ -1,4 +1,4 @@
-name: 转换Clash规则文件推送到Gitee
+name: 转换Clash规则文件推送到Gitee与GitHub
 
 on:
   push:
@@ -60,12 +60,9 @@ jobs:
               
               print(f'[成功] 转换完成: {txt_file} -> {yaml_file}，写入 {len(lines)} 条有效去重规则')
 
-          convert_txt_to_yaml('clash_rules/direct.txt', 'my-direct.yaml')
-          convert_txt_to_yaml('clash_rules/ai.txt', 'my-ai.yaml')
+          convert_txt_to_yaml('clash_rules/direct.txt', 'clash_rules/my-direct.yaml')
+          convert_txt_to_yaml('clash_rules/ai.txt', 'clash_rules/my-ai.yaml')
           "
-          
-          echo "[提示] 保存一份 YAML 文件到本地 clash_rules/ 目录..."
-          cp -v my-direct.yaml my-ai.yaml clash_rules/
           
           echo "=================== [步骤 1] 规则转换结束 ==================="
 
@@ -83,7 +80,6 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/gitee_id_ed25519
           chmod 600 ~/.ssh/gitee_id_ed25519
           
-          # 增加 ServerAliveInterval 与 ServerAliveCountMax 防长连接断开
           cat << 'EOF' > ~/.ssh/config
           Host gitee.com
               HostName gitee.com
@@ -101,16 +97,30 @@ jobs:
           ssh -T git@gitee.com || true
           echo "=================== [步骤 2] SSH 诊断结束 ==================="
 
-      - name: Clone Gitee and Push Files
+      - name: Push to GitHub Repository
         run: |
-          echo "=================== [步骤 3] 克隆 Gitee 仓库并同步提交 ==================="
+          echo "=================== [步骤 3] 提交生成的文件至 GitHub 仓库 ==================="
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add clash_rules/my-direct.yaml clash_rules/my-ai.yaml
+          
+          if git diff --staged --quiet; then
+            echo "[提示] GitHub 仓库无文件变更，跳过 Commit。"
+          else
+            NOW_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
+            git commit -m "更新 Clash 规则 YAML 文件 ${NOW_TIME} [skip ci]"
+            git push
+            echo "[成功] 已成功将 YAML 文件更新提交至当前 GitHub 仓库！"
+          fi
+
+      - name: Clone Gitee and Push Files
+        run: |
+          echo "=================== [步骤 4] 克隆 Gitee 仓库并同步提交 ==================="
           git config --global http.postBuffer 524288000
           
           echo "[提示] 开始执行 git clone..."
           
-          # 加入最多 3 次重试与浅克隆 --depth 1 逻辑
           retry=0
           until [ $retry -ge 3 ]
           do
@@ -129,27 +139,15 @@ jobs:
           echo "[提示] 创建 clash_rules 目录（如果不存在）..."
           mkdir -p gitee_temp/clash_rules
           
-          echo "[提示] 正在将生成的 YAML 复制到目标仓库目录 clash_rules/ ..."
-          cp -v my-direct.yaml gitee_temp/clash_rules/
-          cp -v my-ai.yaml gitee_temp/clash_rules/
+          echo "[提示] 正在将生成的 YAML 复制到 Gitee 目标仓库目录 clash_rules/ ..."
+          cp -v clash_rules/my-direct.yaml gitee_temp/clash_rules/
+          cp -v clash_rules/my-ai.yaml gitee_temp/clash_rules/
           
           cd gitee_temp
-          echo "[诊断] 进入 gitee_temp 目录，当前路径为:"
-          pwd
-          
-          echo "[诊断] 查看已复制文件的目录状态:"
-          ls -la clash_rules/my-*.yaml
-          
-          echo "[诊断] 查看本地 git status:"
-          git status
-          
           git add clash_rules/my-direct.yaml clash_rules/my-ai.yaml
           
-          echo "[诊断] 查看已暂存的修改差异 (git diff --staged):"
-          git diff --staged
-          
           if git diff --staged --quiet; then
-            echo "[提示] 经比对无任何文件变更，跳过 Commit 和 Push 操作。"
+            echo "[提示] Gitee 仓库经比对无任何文件变更，跳过 Commit 和 Push 操作。"
           else
             echo "[提示] 检测到变更内容，开始提交并推送至 Gitee 远程仓库..."
             NOW_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
@@ -157,4 +155,4 @@ jobs:
             git push origin master
             echo "[成功] 文件更新已顺利推送至 Gitee clash_rules/ 目录！"
           fi
-          echo "=================== [步骤 3] 全流程执行完毕 ==================="
+          echo "=================== [步骤 4] 全流程执行完毕 ==================="

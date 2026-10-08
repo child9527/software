@@ -120,7 +120,7 @@ def generate_html(items, lx_sources):
     bj_tz = timezone(timedelta(hours=8))
     now = datetime.now(bj_tz).strftime("%Y-%m-%d %H:%M:%S")
 
-    # 1. 动态提取 targets.json 里出现的所有 type 类型（去重）
+    # 动态提取 targets.json 里出现的所有 type 类型（去重）
     types = list(dict.fromkeys([item["type"] for item in items if item.get("type")]))
 
     html = f"""<!DOCTYPE html>
@@ -411,47 +411,47 @@ body {{
 <div id="toast" class="toast">链接已成功复制到剪贴板！</div>
 
 <script>
-function filterType(selectedType, btn) {
-    // 切换按钮的高亮状态
+function filterType(selectedType, btn) {{
+    /* 切换按钮的高亮状态 */
     const buttons = document.querySelectorAll('.filter-btn');
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // 筛选对应卡片
+    /* 筛选对应卡片 */
     const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
+    cards.forEach(card => {{
         const cardType = card.getAttribute('data-type');
-        if (selectedType === 'all' || cardType === selectedType) {
+        if (selectedType === 'all' || cardType === selectedType) {{
             card.classList.remove('hidden');
-        } else {
+        }} else {{
             card.classList.add('hidden');
-        }
-    });
-}
+        }}
+    }});
+}}
 
-function copyUrl(btn, url) {
-    navigator.clipboard.writeText(url).then(() => {
+function copyUrl(btn, url) {{
+    navigator.clipboard.writeText(url).then(() => {{
         showToast("已复制：" + url);
         const originalText = btn.innerText;
         btn.innerText = "已复制";
         btn.style.background = "#28a745";
-        setTimeout(() => {
+        setTimeout(() => {{
             btn.innerText = originalText;
             btn.style.background = "#3a7bd5";
-        }, 2000);
-    }).catch(err => {
+        }}, 2000);
+    }}).catch(err => {{
         console.error("复制失败:", err);
-    });
-}
+    }});
+}}
 
-function showToast(msg) {
+function showToast(msg) {{
     const toast = document.getElementById("toast");
     toast.innerText = msg;
     toast.style.display = "block";
-    setTimeout(() => {
+    setTimeout(() => {{
         toast.style.display = "none";
-    }, 2000);
-}
+    }}, 2000);
+}}
 </script>
 
 </body>

@@ -76,8 +76,8 @@ jobs:
         run: |
           TARGET_DIR="lxSources/guoyue2010"
 
-          # 1. 彻底清空原有目录（包括删除 git 追踪中的所有旧文件）
-          echo "🧹 彻底清空 $TARGET_DIR 目录下的旧文件..."
+          # 1. 彻底清空原有目录
+          echo "🧹 彻底清空 $TARGET_DIR 目录..."
           rm -rf "$TARGET_DIR"
           mkdir -p "$TARGET_DIR"
           mkdir -p temp_unzip
@@ -91,14 +91,24 @@ jobs:
             unzip -o archive.zip -d temp_unzip/
           fi
 
-          # 3. 把解压出来的所有 .js 文件（不论多深层级）直接提取平铺到 TARGET_DIR
-          echo "🚚 提取新文件到 $TARGET_DIR/ ..."
+          # 3. 递归查找 temp_unzip 内所有 .js 文件，平铺移动到 TARGET_DIR
+          echo "🚚 正在提取解压出的 .js 文件..."
           find temp_unzip -type f -name "*.js" -exec mv {} "$TARGET_DIR"/ \;
 
-          # 4. 清理临时解压目录与压缩包
+          # 4. 检查是否成功提取到了文件
+          JS_COUNT=$(find "$TARGET_DIR" -maxdepth 1 -name "*.js" | wc -l)
+          if [ "$JS_COUNT" -eq 0 ]; then
+            echo "❌ 警告：未在解压包中提取到任何 .js 文件！"
+            exit 1
+          fi
+
+          echo "✅ 成功提取到 $JS_COUNT 个 .js 音源文件，列表如下："
+          ls -la "$TARGET_DIR"
+
+          # 5. 清理临时解压目录与压缩包
           rm -rf temp_unzip archive.7z archive.zip
 
-          # 5. 更新版本号文件
+          # 6. 更新版本号文件
           echo "${{ steps.check_tag.outputs.latest_tag }}" > lxSources/version.txt
           echo "📝 版本记录更新为: ${{ steps.check_tag.outputs.latest_tag }}"
 
@@ -108,7 +118,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 使用 git add -A (或 git add --all) 显式记录删除和新增动作
           git add -A lxSources
           if ! git diff --staged --quiet; then
             git commit -m "Auto Sync lxSources/guoyue2010 to upstream release ${{ steps.check_tag.outputs.latest_tag }}"

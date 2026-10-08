@@ -28,3 +28,4 @@ cache.icu
 con.sh
 llkk.cc
 ghproxy.vip
+ghfast.top

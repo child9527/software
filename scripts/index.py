@@ -120,8 +120,11 @@ def generate_html(items, lx_sources):
     bj_tz = timezone(timedelta(hours=8))
     now = datetime.now(bj_tz).strftime("%Y-%m-%d %H:%M:%S")
 
-    # 动态提取 targets.json 里出现的所有 type 类型（去重）
+    # 按读取出现的顺序提取所有去重后的 type 类型
     types = list(dict.fromkeys([item["type"] for item in items if item.get("type")]))
+    
+    # 确定首个被读取到的 type 类型，若没有则默认为 None
+    first_type = types[0] if types else None
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -352,12 +355,12 @@ body {{
 <div class="section-title">🚀 软件自动更新列表</div>
 
 <div class="filter-container">
-    <button class="filter-btn active" onclick="filterType('all', this)">全部</button>
 """
 
-    # 动态渲染各个分类按钮
-    for t in types:
-        html += f'    <button class="filter-btn" onclick="filterType(\'{t}\', this)">{t}</button>\n'
+    # 动态渲染各个分类按钮，首个被读取到的 type 设为 active
+    for idx, t in enumerate(types):
+        active_class = " active" if idx == 0 else ""
+        html += f'    <button class="filter-btn{active_class}" onclick="filterType(\'{t}\', this)">{t}</button>\n'
 
     html += """</div>
 
@@ -366,9 +369,11 @@ body {{
 
     for item in items:
         icon_html = f'<img class="icon" src="{item["icon"]}">' if item["icon"] else ""
+        # 如果当前项的 type 不是首个读取到的 type，初始状态添加 hidden 类进行隐藏
+        hidden_class = "" if item['type'] == first_type else " hidden"
 
         html += f"""
-<div class="card" data-type="{item['type']}">
+<div class="card{hidden_class}" data-type="{item['type']}">
     {icon_html}
     <div>
         <div class="name">{item['name']}</div>
@@ -421,7 +426,7 @@ function filterType(selectedType, btn) {{
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {{
         const cardType = card.getAttribute('data-type');
-        if (selectedType === 'all' || cardType === selectedType) {{
+        if (cardType === selectedType) {{
             card.classList.remove('hidden');
         }} else {{
             card.classList.add('hidden');

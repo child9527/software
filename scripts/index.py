@@ -52,17 +52,24 @@ def fetch_release_items():
         display_name = None
         raw_name = None
         item_type = "其他"
+        description = "暂无简介"
 
-        # 核心改动：用 rawname 去跟 GitHub Release 的 Title/Tag 匹配
+        # 用 rawname 跟 GitHub Release 的 Title/Tag 匹配，并读取 overview
         for t in targets:
             target_rawname = t.get("rawname", t["name"])
             
             if target_rawname.lower() == release_title.lower():
                 icon_url = t.get("icon")
                 upstream_repo_name = t["repo"]
-                display_name = t["name"]        # 仅用于页面 UI 展示（如："代理软件"）
-                raw_name = target_rawname       # 唯一的 Release 匹配键与下载路径（如："clash-verge-rev"）
+                display_name = t["name"]        # 仅用于页面 UI 展示
+                raw_name = target_rawname       # 唯一的 Release 匹配键与下载路径
                 item_type = t.get("type", "其他")
+
+                # 读取 overview 字段，为空或未设置时显示“暂无”
+                overview = t.get("overview")
+                if overview and str(overview).strip():
+                    description = str(overview).strip()
+                
                 break
 
         # 如果匹配不到，跳过
@@ -70,14 +77,11 @@ def fetch_release_items():
             print(f"⚠️ 未找到匹配的 targets.json 项：{release_title}，已跳过")
             continue
 
-        # 使用 raw_name 准确拼接 URL：/download/{raw_name}-latest/{asset.name}
+        # 使用 raw_name 准确拼接 URL
         raw_url = f"https://github.com/{repo_name}/releases/download/{quote(raw_name)}-latest/{asset.name}"
 
-        # 获取上游仓库简介
+        # 从 Release body 中提取版本号（仍保留获取上游最新版本号的逻辑）
         upstream_repo = g.get_repo(upstream_repo_name)
-        description = upstream_repo.description or "暂无简介"
-
-        # 从 Release body 中提取版本号
         upstream_release = upstream_repo.get_latest_release()
         version = upstream_release.tag_name
 

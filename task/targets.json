@@ -20,7 +20,7 @@
     "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$"
   },
   {
-    "name": "Clash Verge",
+    "name": "Clash Verge Rev",
     "repo": "clash-verge-rev/clash-verge-rev",
     "asset_pattern": ".*_x64-setup\\.exe$"
   },

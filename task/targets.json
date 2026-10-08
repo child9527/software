@@ -2,85 +2,85 @@
   {
     "name": "FlClash Windows",
     "repo": "chen08209/FlClash",
-    "asset_pattern": "^FlClash-.*-windows-amd64\\.zip$"
+    "asset_pattern": "^FlClash-.*-windows-amd64\\.zip$",
     "type": "Win64"
   },
   {
     "name": "FlClash Android",
     "repo": "chen08209/FlClash",
-    "asset_pattern": "^FlClash-.*-android-arm64-v8a\\.apk$"
+    "asset_pattern": "^FlClash-.*-android-arm64-v8a\\.apk$",
     "type": "Android"
   },
   {
     "name": "v2rayN",
     "repo": "2dust/v2rayN",
-    "asset_pattern": "^v2rayN-windows-64\\.zip$"
+    "asset_pattern": "^v2rayN-windows-64\\.zip$",
     "type": "Win64"
   },
   {
     "name": "v2rayNg",
     "repo": "2dust/v2rayNg",
-    "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$"
+    "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$",
     "type": "Android"
   },
   {
     "name": "Clash Verge Rev",
     "repo": "clash-verge-rev/clash-verge-rev",
-    "asset_pattern": ".*_x64-setup\\.exe$"
+    "asset_pattern": ".*_x64-setup\\.exe$",
     "type": "Win64"
   },
   {
     "name": "DeskBox",
     "repo": "Tianyu199509/DeskBox",
-    "asset_pattern": "^DeskBox_Setup_.*_x64\\.exe$"
+    "asset_pattern": "^DeskBox_Setup_.*_x64\\.exe$",
     "type": "Win64"
   },
   {
     "name": "TVBoxOSC",
     "repo": "j4Uq/TVBoxOSC",
-    "asset_pattern": "^TVBox_.*_.*-.*-java64\\.apk$"
+    "asset_pattern": "^TVBox_.*_.*-.*-java64\\.apk$",
     "type": "Android"
   },
   {
     "name": "Bilibili TV",
     "repo": "qidian55/bilibilitv1.6.6-repair",
-    "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$"
+    "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$",
     "type": "Android"
   },
   {
     "name": "any-listen",
     "repo": "any-listen/any-listen-desktop",
-    "asset_pattern": "^any-listen-.*-win_x64-green\\.7z$"
+    "asset_pattern": "^any-listen-.*-win_x64-green\\.7z$",
     "type": "Win64"
   },
   {
     "name": "洛雪音乐（Android）",
     "repo": "lyswhut/lx-music-mobile",
-    "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$"
+    "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$",
     "type": "Android"
   },
   {
     "name": "洛雪音乐（Win64）",
     "repo": "lyswhut/lx-music-desktop",
-    "asset_pattern": "^lx-music-desktop-v.*-win_x64-green\\.7z$"
+    "asset_pattern": "^lx-music-desktop-v.*-win_x64-green\\.7z$",
     "type": "Win64"
   },
   {
     "name": "Mocreak",
     "repo": "OdysseusYuan/Mocreak",
-    "asset_pattern": "^Mocreak_Portable_v.*\\.zip$"
+    "asset_pattern": "^Mocreak_Portable_v.*\\.zip$",
     "type": "Win64"
   },
   {
     "name": "gkd",
     "repo": "gkd-kit/gkd",
-    "asset_pattern": "^gkd-v.*\\.apk$"
+    "asset_pattern": "^gkd-v.*\\.apk$",
     "type": "Android"
   },
   {
     "name": "Bilibili Downloader GUI",
     "repo": "j4rviscmd/bilibili-downloader-gui",
-    "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$"
+    "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$",
     "type": "Win64"
   }
 ]

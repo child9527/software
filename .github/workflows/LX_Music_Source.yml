@@ -18,14 +18,19 @@ jobs:
 
       - name: 检查上游最新 Release 版本
         id: check_tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "正在查询 guoyue2010/lxmusic- 最新 Release..."
           
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
+          # 加上 GITHUB_TOKEN 与 User-Agent，避免 403 Rate Limit 限制
+          LATEST_RELEASE=$(curl -s -H "Authorization: token $GH_TOKEN" -H "User-Agent: GitHub-Actions" https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
           LATEST_TAG=$(echo "$LATEST_RELEASE" | jq -r '.tag_name')
           
           if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
             echo "❌ 获取上游 Release 失败或未发现 Tag！"
+            echo "API 返回响应如下："
+            echo "$LATEST_RELEASE"
             exit 1
           fi
           
@@ -48,8 +53,10 @@ jobs:
 
       - name: 获取 zip 下载地址并下载
         if: steps.check_tag.outputs.should_run == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_JSON=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
+          RELEASE_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "User-Agent: GitHub-Actions" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/guoyue2010/lxmusic-/releases/latest)
           
           ZIP_URL=$(echo "$RELEASE_JSON" | jq -r '.assets[] | select(.name | endswith(".zip")) | .browser_download_url' | head -n 1)
           
@@ -59,7 +66,7 @@ jobs:
           fi
           
           echo "找到 zip 下载链接: $ZIP_URL"
-          curl -L -o latest.zip "$ZIP_URL"
+          curl -L -H "Authorization: token $GH_TOKEN" -H "User-Agent: GitHub-Actions" -o latest.zip "$ZIP_URL"
 
       - name: 清理旧文件并解压新资源到平铺目录
         if: steps.check_tag.outputs.should_run == 'true'
@@ -77,7 +84,6 @@ jobs:
           unzip -o latest.zip -d temp_unzip/
 
           # 3. 寻找解压出来的子目录并把里面的文件提取到 lxSources/guoyue2010/
-          # 这样无论包里叫 V261003 还是其他名字，都能自动移动出来
           echo "🚚 提取文件到 $TARGET_DIR/ ..."
           SUB_DIR=$(find temp_unzip -mindepth 1 -maxdepth 2 -type d | head -n 1)
           if [ -n "$SUB_DIR" ]; then

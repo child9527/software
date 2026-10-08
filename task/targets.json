@@ -5,6 +5,7 @@
     "repo": "chen08209/FlClash",
     "asset_pattern": "^FlClash-.*-windows-amd64\\.zip$",
     "type": "Win64"
+    "overview": "Windows平台下的Clash类软件，但是不推荐使用。因为Clash Verge Rev比它更好用"
   },
   {
     "name": "FlClash Android",
@@ -12,6 +13,7 @@
     "repo": "chen08209/FlClash",
     "asset_pattern": "^FlClash-.*-android-arm64-v8a\\.apk$",
     "type": "Android"
+    "overview": "Android平台下的Clash类软件，推荐使用，比ClashMeta更方便，更适用"
   },
   {
     "name": "v2rayN",
@@ -19,6 +21,7 @@
     "repo": "2dust/v2rayN",
     "asset_pattern": "^v2rayN-windows-64\\.zip$",
     "type": "Win64"
+    "overview": "Windows平台下的V2ray类软件，推荐使用。搭配Clash Verge Rev和ZeroOmega插件可以提升工作效率"
   },
   {
     "name": "V2rayNg",
@@ -26,6 +29,7 @@
     "repo": "2dust/v2rayNg",
     "asset_pattern": "^v2rayNG_\\d+\\.\\d+\\.\\d+_arm64-v8a\\.apk$",
     "type": "Android"
+    "overview": "Android平台下的V2ray类软件，推荐和FlClash互补使用。"
   },
   {
     "name": "Clash Verge Rev",
@@ -33,6 +37,7 @@
     "repo": "clash-verge-rev/clash-verge-rev",
     "asset_pattern": ".*_x64-setup\\.exe$",
     "type": "Win64"
+    "overview": "Windows平台下的Clash类软件，推荐使用。搭配V2rayNG和ZeroOmega插件可以提升工作效率"
   },
   {
     "name": "DeskBox",
@@ -40,6 +45,7 @@
     "repo": "Tianyu199509/DeskBox",
     "asset_pattern": "^DeskBox_Setup_.*_x64\\.exe$",
     "type": "Win64"
+    "overview": "Windows平台下的桌面整理类软件，推荐使用。迅速整理好桌面，分类到各自类型的格子中"
   },
   {
     "name": "TVBoxOSC",
@@ -47,6 +53,7 @@
     "repo": "j4Uq/TVBoxOSC",
     "asset_pattern": "^TVBox_.*_.*-.*-java64\\.apk$",
     "type": "Android"
+    "overview": "影视仓的兄弟版本，不过没有影视仓好用。但是现在有很多针对它优化的接口（源）"
   },
   {
     "name": "Bilibili TV",
@@ -54,6 +61,7 @@
     "repo": "qidian55/bilibilitv1.6.6-repair",
     "asset_pattern": "^bilibilitv.*-repair-v.*\\.apk$",
     "type": "Android"
+    "overview": "哔哩哔哩的第三方Android客户端，界面清爽，无过多系统消耗"
   },
   {
     "name": "any-listen",
@@ -61,6 +69,7 @@
     "repo": "any-listen/any-listen-desktop",
     "asset_pattern": "^any-listen-.*-win_x64-green\\.7z$",
     "type": "Win64"
+    "overview": "洛雪音乐作者目前主推的音乐软件，洛雪音乐似乎已经停止更新"
   },
   {
     "name": "洛雪音乐（Android）",
@@ -68,6 +77,7 @@
     "repo": "lyswhut/lx-music-mobile",
     "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$",
     "type": "Android"
+    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接"
   },
   {
     "name": "洛雪音乐（Win64）",
@@ -75,6 +85,7 @@
     "repo": "lyswhut/lx-music-desktop",
     "asset_pattern": "^lx-music-desktop-v.*-win_x64-green\\.7z$",
     "type": "Win64"
+    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接"
   },
   {
     "name": "Mocreak",
@@ -82,6 +93,7 @@
     "repo": "OdysseusYuan/Mocreak",
     "asset_pattern": "^Mocreak_Portable_v.*\\.zip$",
     "type": "Win64"
+    "overview": "自动下载操作系统（Windows10、11）、Office，并自动激活，无需进入WINpe可以在Win64环境下进行"
   },
   {
     "name": "gkd",
@@ -89,6 +101,7 @@
     "repo": "gkd-kit/gkd",
     "asset_pattern": "^gkd-v.*\\.apk$",
     "type": "Android"
+    "overview": "类似李跳跳的Android去广告软件，很多人维护规则"
   },
   {
     "name": "Bilibili Downloader GUI",
@@ -96,5 +109,6 @@
     "repo": "j4rviscmd/bilibili-downloader-gui",
     "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$",
     "type": "Win64"
+    "overview": "日本人开发的哔哩哔哩下载器（支持中文菜单），因下载姬（DownKyi）作者因收到律师信连夜删库跑路，作为替代品使用。太君的东西，想来不会敢于发律师信吧"
   }
 ]

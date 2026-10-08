@@ -83,12 +83,15 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/gitee_id_ed25519
           chmod 600 ~/.ssh/gitee_id_ed25519
           
+          # 增加 ServerAliveInterval 与 ServerAliveCountMax 防长连接断开
           cat << 'EOF' > ~/.ssh/config
           Host gitee.com
               HostName gitee.com
               User git
               IdentityFile ~/.ssh/gitee_id_ed25519
               StrictHostKeyChecking no
+              ServerAliveInterval 15
+              ServerAliveCountMax 10
           EOF
           chmod 600 ~/.ssh/config
           
@@ -103,9 +106,25 @@ jobs:
           echo "=================== [步骤 3] 克隆 Gitee 仓库并同步提交 ==================="
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global http.postBuffer 524288000
           
           echo "[提示] 开始执行 git clone..."
-          git clone git@gitee.com:child9527/mybox.git gitee_temp
+          
+          # 加入最多 3 次重试与浅克隆 --depth 1 逻辑
+          retry=0
+          until [ $retry -ge 3 ]
+          do
+             git clone --depth 1 git@gitee.com:child9527/mybox.git gitee_temp && break
+             retry=$((retry+1))
+             echo "[警告] 克隆失败，5秒后尝试第 $retry 次重试..."
+             rm -rf gitee_temp
+             sleep 5
+          done
+
+          if [ $retry -eq 3 ]; then
+             echo "[错误] 无法克隆 Gitee 仓库，退出流程。"
+             exit 1
+          fi
           
           echo "[提示] 创建 clash_rules 目录（如果不存在）..."
           mkdir -p gitee_temp/clash_rules

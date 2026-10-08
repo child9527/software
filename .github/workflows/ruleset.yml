@@ -37,6 +37,7 @@ jobs:
                   return
               
               lines = []
+              seen = set()  # 用于内容去重
               with open(txt_file, 'r', encoding='utf-8') as f:
                   raw_lines = f.readlines()
                   print(f'[提示] {txt_file} 读取成功，共 {len(raw_lines)} 行原始文本')
@@ -47,17 +48,25 @@ jobs:
                           continue
                       if not line.startswith('+.') and not line.startswith('.'):
                           line = '+.' + line
-                      lines.append(f'  - \'{line}\'')
+                      
+                      # 去重逻辑
+                      if line not in seen:
+                          seen.add(line)
+                          lines.append(f'  - \'{line}\'')
               
               with open(yaml_file, 'w', encoding='utf-8') as f:
                   f.write('payload:\n')
                   f.write('\n'.join(lines) + '\n')
               
-              print(f'[成功] 转换完成: {txt_file} -> {yaml_file}，写入 {len(lines)} 条有效规则')
+              print(f'[成功] 转换完成: {txt_file} -> {yaml_file}，写入 {len(lines)} 条有效去重规则')
 
           convert_txt_to_yaml('clash_rules/direct.txt', 'my-direct.yaml')
           convert_txt_to_yaml('clash_rules/ai.txt', 'my-ai.yaml')
           "
+          
+          echo "[提示] 保存一份 YAML 文件到本地 clash_rules/ 目录..."
+          cp -v my-direct.yaml my-ai.yaml clash_rules/
+          
           echo "=================== [步骤 1] 规则转换结束 ==================="
 
       - name: Setup SSH Config and Diagnostics

@@ -52,6 +52,36 @@ body {
     padding-left: 10px;
 }
 
+/* 分类筛选按钮栏 */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-btn {
+    background: #2b2b2b;
+    color: #e0e0e0;
+    border: 1px solid #4aa3ff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(74, 163, 255, 0.2);
+}
+
+.filter-btn.active {
+    background: #4aa3ff;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(74, 163, 255, 0.6);
+}
+
 /* 软件卡片 */
 .card {
     background: #2b2b2b;
@@ -62,6 +92,11 @@ body {
     margin-bottom: 20px;
     display: flex;
     align-items: flex-start;
+    transition: opacity 0.3s ease;
+}
+
+.card.hidden {
+    display: none !important;
 }
 
 .icon {
@@ -188,10 +223,38 @@ body {
 <div class="section">
 <h2>软件中心</h2>
 
-<!-- 1. 软件列表 -->
+<!-- 1. 软件列表与分类筛选 -->
 <div class="section-title">🚀 软件自动更新列表</div>
 
-<div class="card">
+<div class="filter-container">
+    <button class="filter-btn active" onclick="filterType('all', this)">全部</button>
+    <button class="filter-btn" onclick="filterType('Win64', this)">Win64</button>
+    <button class="filter-btn" onclick="filterType('Android', this)">Android</button>
+</div>
+
+<div id="software-list">
+
+<div class="card" data-type="Win64">
+    
+    <div>
+        <div class="name">洛雪音乐（Win64）</div>
+        <div class="version">版本号：v2.12.6</div>
+        <div class="size">文件大小：96.1 MB</div>
+        <div class="desc">一个基于 Electron 的音乐软件</div>
+
+        <a class="btn" href="https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">原始下载</a>
+<a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88win64%EF%BC%89-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Fast</a></div></div>
+<div class="card" data-type="Android">
+    
+    <div>
+        <div class="name">洛雪音乐（Android）</div>
+        <div class="version">版本号：v1.9.1</div>
+        <div class="size">文件大小：13.2 MB</div>
+        <div class="desc">一个基于 React native 开发的音乐软件</div>
+
+        <a class="btn" href="https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88android%EF%BC%89-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">原始下载</a>
+<a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88android%EF%BC%89-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/%E6%B4%9B%E9%9B%AA%E9%9F%B3%E4%B9%90%EF%BC%88android%EF%BC%89-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">GH-Fast</a></div></div>
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">Clash Verge Rev</div>
@@ -201,7 +264,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/clash-verge-rev-latest/Clash.Verge_2.5.7_x64-setup.exe">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/clash-verge-rev-latest/Clash.Verge_2.5.7_x64-setup.exe">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/clash-verge-rev-latest/Clash.Verge_2.5.7_x64-setup.exe">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">Mocreak</div>
@@ -211,27 +274,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/mocreak-latest/Mocreak_Portable_v3.1.1.zip">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/mocreak-latest/Mocreak_Portable_v3.1.1.zip">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/mocreak-latest/Mocreak_Portable_v3.1.1.zip">GH-Fast</a></div></div>
-<div class="card">
-    
-    <div>
-        <div class="name">lx-music-mobile</div>
-        <div class="version">版本号：v1.9.1</div>
-        <div class="size">文件大小：13.2 MB</div>
-        <div class="desc">一个基于 React native 开发的音乐软件</div>
-
-        <a class="btn" href="https://github.com/child9527/software/releases/download/lx-music-mobile-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">原始下载</a>
-<a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/lx-music-mobile-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/lx-music-mobile-latest/lx-music-mobile-v1.9.1-arm64-v8a.apk">GH-Fast</a></div></div>
-<div class="card">
-    
-    <div>
-        <div class="name">lx-music-desktop</div>
-        <div class="version">版本号：v2.12.6</div>
-        <div class="size">文件大小：96.1 MB</div>
-        <div class="desc">一个基于 Electron 的音乐软件</div>
-
-        <a class="btn" href="https://github.com/child9527/software/releases/download/lx-music-desktop-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">原始下载</a>
-<a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/lx-music-desktop-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/lx-music-desktop-latest/lx-music-desktop-v2.12.6-win_x64-green.7z">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">any-listen</div>
@@ -241,7 +284,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/any-listen-latest/any-listen-0.10.0-beta.1-win_x64-green.7z">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Android">
     
     <div>
         <div class="name">gkd</div>
@@ -251,7 +294,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/gkd-latest/gkd-v1.12.1.apk">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Android">
     
     <div>
         <div class="name">TVBoxOSC</div>
@@ -261,7 +304,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/tvboxosc-latest/TVBox_q215613905_20260914-1520-java64.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/tvboxosc-latest/TVBox_q215613905_20260914-1520-java64.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/tvboxosc-latest/TVBox_q215613905_20260914-1520-java64.apk">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">DeskBox</div>
@@ -271,7 +314,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/deskbox-latest/DeskBox_Setup_1.5.5_x64.exe">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Android">
     
     <div>
         <div class="name">v2rayNg</div>
@@ -281,7 +324,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/v2rayng-latest/v2rayNG_2.3.10_arm64-v8a.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/v2rayng-latest/v2rayNG_2.3.10_arm64-v8a.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/v2rayng-latest/v2rayNG_2.3.10_arm64-v8a.apk">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">v2rayN</div>
@@ -291,7 +334,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/v2rayn-latest/v2rayN-windows-64.zip">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/v2rayn-latest/v2rayN-windows-64.zip">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/v2rayn-latest/v2rayN-windows-64.zip">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">FlClash Windows</div>
@@ -301,7 +344,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flclash-windows-latest/FlClash-0.8.99-windows-amd64.zip">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Android">
     
     <div>
         <div class="name">FlClash Android</div>
@@ -311,7 +354,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flclash-android-latest/FlClash-0.8.99-android-arm64-v8a.apk">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Android">
     
     <div>
         <div class="name">Bilibili TV</div>
@@ -321,7 +364,7 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/bilibili-tv-latest/bilibilitv1.6.6-repair-v10.0.apk">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/bilibili-tv-latest/bilibilitv1.6.6-repair-v10.0.apk">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/bilibili-tv-latest/bilibilitv1.6.6-repair-v10.0.apk">GH-Fast</a></div></div>
-<div class="card">
+<div class="card" data-type="Win64">
     
     <div>
         <div class="name">Bilibili Downloader GUI</div>
@@ -331,6 +374,8 @@ body {
 
         <a class="btn" href="https://github.com/child9527/software/releases/download/bilibili-downloader-gui-latest/bilibili-downloader-gui_1.67.0_x64-setup.exe">原始下载</a>
 <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/bilibili-downloader-gui-latest/bilibili-downloader-gui_1.67.0_x64-setup.exe">GH-Proxy</a><a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/bilibili-downloader-gui-latest/bilibili-downloader-gui_1.67.0_x64-setup.exe">GH-Fast</a></div></div>
+</div>
+
 <!-- 2. 洛雪音乐音源 -->
 <div class="section-title">🎵 洛雪音乐音源</div>
 <div class="compact-grid">
@@ -458,13 +503,31 @@ body {
 </div>
 
 <div class="footer">
-    自动生成时间：2026-10-08 09:31:40
+    自动生成时间：2026-10-08 10:33:24
 </div>
 </div>
 
 <div id="toast" class="toast">链接已成功复制到剪贴板！</div>
 
 <script>
+function filterType(selectedType, btn) {
+    /* 切换按钮的高亮状态 */
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    /* 筛选对应卡片 */
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        if (selectedType === 'all' || cardType === selectedType) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+}
+
 function copyUrl(btn, url) {
     navigator.clipboard.writeText(url).then(() => {
         showToast("已复制：" + url);

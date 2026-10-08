@@ -23,7 +23,7 @@ def fetch_release_items():
     auth = Auth.Token(token)
     g = Github(auth=auth)
 
-    repo_name = os.getenv("GITHUB_REPOSITORY")
+    repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     repo = g.get_repo(repo_name)
 
     # 读取 targets.json（task目录）
@@ -43,26 +43,35 @@ def fetch_release_items():
             continue
 
         asset = assets[0]
-        raw_url = asset.browser_download_url
-
-        # 使用 Release 的 name/title 来匹配 targets.json
-        release_name = rel.title or rel.name or ""
+        
+        # GitHub Release 的 Title/Name（例如: "clash-verge-rev"）
+        release_title = rel.title or rel.name or ""
 
         icon_url = None
         upstream_repo_name = None
+        display_name = None
+        raw_name = None
         item_type = "其他"
 
+        # 核心改动：用 rawname 去跟 GitHub Release 的 Title/Tag 匹配
         for t in targets:
-            if t["name"].lower() == release_name.lower():
+            target_rawname = t.get("rawname", t["name"])
+            
+            if target_rawname.lower() == release_title.lower():
                 icon_url = t.get("icon")
                 upstream_repo_name = t["repo"]
-                item_type = t.get("type", "其他")  # 读取 type 字段，默认其他
+                display_name = t["name"]        # 仅用于页面 UI 展示（如："代理软件"）
+                raw_name = target_rawname       # 唯一的 Release 匹配键与下载路径（如："clash-verge-rev"）
+                item_type = t.get("type", "其他")
                 break
 
         # 如果匹配不到，跳过
         if upstream_repo_name is None:
-            print(f"⚠️ 未找到匹配的 targets.json 项：{release_name}，已跳过")
+            print(f"⚠️ 未找到匹配的 targets.json 项：{release_title}，已跳过")
             continue
+
+        # 使用 raw_name 准确拼接 URL：/download/{raw_name}-latest/{asset.name}
+        raw_url = f"https://github.com/{repo_name}/releases/download/{quote(raw_name)}-latest/{asset.name}"
 
         # 获取上游仓库简介
         upstream_repo = g.get_repo(upstream_repo_name)
@@ -74,7 +83,7 @@ def fetch_release_items():
 
         # 添加到 items
         items.append({
-            "name": release_name,
+            "name": display_name,
             "version": version,
             "url": raw_url,
             "file_size": asset.size,
@@ -369,7 +378,6 @@ body {{
 
     for item in items:
         icon_html = f'<img class="icon" src="{item["icon"]}">' if item["icon"] else ""
-        # 如果当前项的 type 不是首个读取到的 type，初始状态添加 hidden 类进行隐藏
         hidden_class = "" if item['type'] == first_type else " hidden"
 
         html += f"""

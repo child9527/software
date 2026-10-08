@@ -45,21 +45,23 @@ def fetch_release_items():
         asset = assets[0]
         raw_url = asset.browser_download_url
 
-        # 使用 Release 的 name/title 来匹配 targets.json（最稳）
+        # 使用 Release 的 name/title 来匹配 targets.json
         release_name = rel.title or rel.name or ""
 
         icon_url = None
         upstream_repo_name = None
+        item_type = "其他"
 
         for t in targets:
             if t["name"].lower() == release_name.lower():
                 icon_url = t.get("icon")
                 upstream_repo_name = t["repo"]
+                item_type = t.get("type", "其他")  # 读取 type 字段，默认其他
                 break
 
-        # 如果匹配不到，跳过（避免 None 报错）
+        # 如果匹配不到，跳过
         if upstream_repo_name is None:
-            print(f"?? 未找到匹配的 targets.json 项：{release_name}，已跳过")
+            print(f"⚠️ 未找到匹配的 targets.json 项：{release_name}，已跳过")
             continue
 
         # 获取上游仓库简介
@@ -77,6 +79,7 @@ def fetch_release_items():
             "url": raw_url,
             "file_size": asset.size,
             "icon": icon_url,
+            "type": item_type,
             "description": description,
             "mirrors": [(m[0], f"{m[1]}{raw_url}") for m in MIRRORS]
         })
@@ -116,6 +119,9 @@ def fetch_lx_sources():
 def generate_html(items, lx_sources):
     bj_tz = timezone(timedelta(hours=8))
     now = datetime.now(bj_tz).strftime("%Y-%m-%d %H:%M:%S")
+
+    # 1. 动态提取 targets.json 里出现的所有 type 类型（去重）
+    types = list(dict.fromkeys([item["type"] for item in items if item.get("type")]))
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -171,6 +177,36 @@ body {{
     padding-left: 10px;
 }}
 
+/* 分类筛选按钮栏 */
+.filter-container {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}}
+
+.filter-btn {{
+    background: #2b2b2b;
+    color: #e0e0e0;
+    border: 1px solid #4aa3ff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}}
+
+.filter-btn:hover {{
+    background: rgba(74, 163, 255, 0.2);
+}}
+
+.filter-btn.active {{
+    background: #4aa3ff;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(74, 163, 255, 0.6);
+}}
+
 /* 软件卡片 */
 .card {{
     background: #2b2b2b;
@@ -181,6 +217,11 @@ body {{
     margin-bottom: 20px;
     display: flex;
     align-items: flex-start;
+    transition: opacity 0.3s ease;
+}}
+
+.card.hidden {{
+    display: none !important;
 }}
 
 .icon {{
@@ -307,15 +348,27 @@ body {{
 <div class="section">
 <h2>软件中心</h2>
 
-<!-- 1. 软件列表 -->
+<!-- 1. 软件列表与分类筛选 -->
 <div class="section-title">🚀 软件自动更新列表</div>
+
+<div class="filter-container">
+    <button class="filter-btn active" onclick="filterType('all', this)">全部</button>
+"""
+
+    # 动态渲染各个分类按钮
+    for t in types:
+        html += f'    <button class="filter-btn" onclick="filterType(\'{t}\', this)">{t}</button>\n'
+
+    html += """</div>
+
+<div id="software-list">
 """
 
     for item in items:
         icon_html = f'<img class="icon" src="{item["icon"]}">' if item["icon"] else ""
 
         html += f"""
-<div class="card">
+<div class="card" data-type="{item['type']}">
     {icon_html}
     <div>
         <div class="name">{item['name']}</div>
@@ -332,6 +385,8 @@ body {{
 
     # 2. 洛雪音乐音源区块
     html += """
+</div>
+
 <!-- 2. 洛雪音乐音源 -->
 <div class="section-title">🎵 洛雪音乐音源</div>
 <div class="compact-grid">
@@ -356,29 +411,47 @@ body {{
 <div id="toast" class="toast">链接已成功复制到剪贴板！</div>
 
 <script>
-function copyUrl(btn, url) {{
-    navigator.clipboard.writeText(url).then(() => {{
+function filterType(selectedType, btn) {
+    // 切换按钮的高亮状态
+    const buttons = document.querySelectorAll('.filter-btn');
+    buttons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // 筛选对应卡片
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const cardType = card.getAttribute('data-type');
+        if (selectedType === 'all' || cardType === selectedType) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+}
+
+function copyUrl(btn, url) {
+    navigator.clipboard.writeText(url).then(() => {
         showToast("已复制：" + url);
         const originalText = btn.innerText;
         btn.innerText = "已复制";
         btn.style.background = "#28a745";
-        setTimeout(() => {{
+        setTimeout(() => {
             btn.innerText = originalText;
             btn.style.background = "#3a7bd5";
-        }}, 2000);
-    }}).catch(err => {{
+        }, 2000);
+    }).catch(err => {
         console.error("复制失败:", err);
-    }});
-}}
+    });
+}
 
-function showToast(msg) {{
+function showToast(msg) {
     const toast = document.getElementById("toast");
     toast.innerText = msg;
     toast.style.display = "block";
-    setTimeout(() => {{
+    setTimeout(() => {
         toast.style.display = "none";
-    }}, 2000);
-}}
+    }, 2000);
+}
 </script>
 
 </body>

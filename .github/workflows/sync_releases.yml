@@ -37,9 +37,7 @@ jobs:
           import os
           import json
           import re
-          import time
           import requests
-          from concurrent.futures import ThreadPoolExecutor, as_completed
           from github import Github, Auth
 
           token = os.getenv('GITHUB_TOKEN')
@@ -51,70 +49,16 @@ jobs:
           with open('task/targets.json', 'r', encoding='utf-8') as f:
               targets = json.load(f)
 
-          # 镜像池及权重字典设置（权重值越小越优先）
-          WEIGHT_MAP = {
-              "https://gh.ddlc.top/": 0.10,
-              "https://gh-proxy.com/": 0.10,
-              "https://wget.la/": 0.10,
-          }
-          DEFAULT_WEIGHT = 0.11
-
-          CANDIDATE_MIRRORS = [
+          # 固定镜像列表（顺序即展示顺序，第一个带闪电推荐图标）
+          MIRRORS = [
               ("GH-Proxy Com", "https://gh-proxy.com/"),
-              ("Wget LA", "https://wget.la/"),
-              ("GHProxy Net", "https://ghproxy.net/"),
               ("GHfast", "https://ghfast.top"),
               ("DDLC 镜像", "https://gh.ddlc.top/"),
-              ("GH VIP 代理", "https://ghproxy.vip/"),
           ]
 
-          def test_mirror_speed(mirror_info):
-              """测试单个镜像站点的响应延迟 (秒) 并加上指定权重进行综合计分"""
-              name, prefix = mirror_info
-              weight = WEIGHT_MAP.get(prefix, DEFAULT_WEIGHT)
-              test_url = f"{prefix}https://raw.githubusercontent.com/github/docs/main/README.md"
-              try:
-                  start_time = time.time()
-                  res = requests.head(test_url, timeout=3, allow_redirects=True)
-                  latency = time.time() - start_time
-                  if res.status_code < 400:
-                      total_score = latency + weight
-                      return {
-                          "name": name,
-                          "prefix": prefix,
-                          "latency": latency,
-                          "weight": weight,
-                          "total_score": total_score,
-                          "ok": True
-                      }
-              except Exception:
-                  pass
-              return {"name": name, "prefix": prefix, "latency": 999, "weight": weight, "total_score": 999, "ok": False}
-
-          def get_sorted_mirrors():
-              """多线程并发测速，返回按综合评分（延迟+权重）升序排列的可用镜像列表"""
-              print("🔍 正在对 GH-Proxy 镜像节点进行并发测速与权重评分...")
-              sorted_results = []
-              with ThreadPoolExecutor(max_workers=len(CANDIDATE_MIRRORS)) as executor:
-                  futures = [executor.submit(test_mirror_speed, m) for m in CANDIDATE_MIRRORS]
-                  for future in as_completed(futures):
-                      res = future.result()
-                      if res["ok"]:
-                          sorted_results.append(res)
-
-              sorted_results.sort(key=lambda x: x["total_score"])
-
-              print("⏱️ 镜像综合优选结果 (按权重+延迟由优到劣):")
-              for r in sorted_results:
-                  print(f"  - {r['name']} ({r['prefix']}): 延迟 {r['latency']*1000:.0f}ms | 权重 {r['weight']:.2f} | 综合得分: {r['total_score']:.3f}")
-
-              return sorted_results
-
-          active_mirrors = get_sorted_mirrors()
-
           for item in targets:
-              display_name = item['name']                                   # 仅用于展示
-              raw_name = item.get('rawname', display_name)                  # 唯一键，用于 tag / title / 下载路径
+              display_name = item['name']                                   # 用于 Release 标题展示
+              raw_name = item.get('rawname', display_name)                  # 唯一键，用于 tag / 下载路径
               target_repo_name = item['repo']
               pattern = item['asset_pattern']
 
@@ -162,7 +106,7 @@ jobs:
 
                   print(f"🎯 锁定目标下载文件: {file_name}")
 
-                  # 统一 Release 标签规范（必须与 index.py 中的 rawname 完全一致）
+                  # tag 由 rawname 派生，永远英文，进 URL
                   release_tag = f"{raw_name}-latest"
 
                   target_release = None
@@ -177,10 +121,9 @@ jobs:
                   mirror_text = "### 🚀 国内网络镜像加速下载\n"
                   mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
 
-                  for idx, m in enumerate(active_mirrors):
-                      tag = " ⚡ [综合最快/最优推荐]" if idx == 0 else ""
-                      latency_ms = f"{m['latency']*1000:.0f}ms"
-                      mirror_text += f"- **[{m['name']}{tag}]({m['prefix']}{raw_download_url})** *(延迟: {latency_ms} | 综合得分: {m['total_score']:.3f})*\n"
+                  for idx, (m_name, m_prefix) in enumerate(MIRRORS):
+                      tag = " ⚡ [推荐]" if idx == 0 else ""
+                      mirror_text += f"- **[{m_name}{tag}]({m_prefix}{raw_download_url})**\n"
 
                   release_body = (
                       f"🔗 **上游源头**：[{target_repo_name} ({upstream_tag_name})]({upstream_release_url})\n\n"
@@ -191,21 +134,21 @@ jobs:
                       existing_assets = [a.name for a in target_release.get_assets()]
 
                       if file_name in existing_assets:
-                          # title 用 raw_name，保证 index.py 能匹配到
-                          target_release.update_release(name=raw_name, message=release_body)
-                          print(f"✅ 当前已是最新版本 ({file_name})，已更新最新测速与加速直链。")
+                          # 标题用中文 name，链接键仍是 rawname
+                          target_release.update_release(name=display_name, message=release_body)
+                          print(f"✅ 当前已是最新版本 ({file_name})，已更新加速直链。")
                           continue
 
                       print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
                       for old_asset in target_release.get_assets():
                           old_asset.delete_asset()
-                      target_release.update_release(name=raw_name, message=release_body)
+                      target_release.update_release(name=display_name, message=release_body)
 
                   else:
                       print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
                       target_release = current_repo.create_git_release(
                           tag=release_tag,
-                          name=raw_name,          # title 必须是 raw_name，供 index.py 匹配
+                          name=display_name,      # 标题用中文 name
                           message=release_body,
                           draft=False,
                           prerelease=False

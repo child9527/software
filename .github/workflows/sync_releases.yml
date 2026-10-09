@@ -3,10 +3,10 @@ name: 自动同步指定软件最新 Releases
 on:
   push:
     paths:
-      - "task/targets.json"    #只有 targets.json 被修改时才触发 workflow
+      - "task/targets.json"    # 只有 targets.json 被修改时才触发 workflow
   schedule:
-    - cron: '0 3 * * *'  # 每天北京时间 11:00 自动检查同步
-  workflow_dispatch:      # 支持在 Actions 页面手动触发执行
+    - cron: '0 3 * * *'        # 每天北京时间 11:00 自动检查同步
+  workflow_dispatch:            # 支持在 Actions 页面手动触发执行
 
 permissions:
   contents: write
@@ -80,11 +80,11 @@ jobs:
                   if res.status_code < 400:
                       total_score = latency + weight
                       return {
-                          "name": name, 
-                          "prefix": prefix, 
-                          "latency": latency, 
-                          "weight": weight, 
-                          "total_score": total_score, 
+                          "name": name,
+                          "prefix": prefix,
+                          "latency": latency,
+                          "weight": weight,
+                          "total_score": total_score,
                           "ok": True
                       }
               except Exception:
@@ -103,26 +103,27 @@ jobs:
                           sorted_results.append(res)
 
               sorted_results.sort(key=lambda x: x["total_score"])
-              
+
               print("⏱️ 镜像综合优选结果 (按权重+延迟由优到劣):")
               for r in sorted_results:
                   print(f"  - {r['name']} ({r['prefix']}): 延迟 {r['latency']*1000:.0f}ms | 权重 {r['weight']:.2f} | 综合得分: {r['total_score']:.3f}")
-              
+
               return sorted_results
 
           active_mirrors = get_sorted_mirrors()
 
           for item in targets:
-              software_name = item['name']
+              display_name = item['name']                                   # 仅用于展示
+              raw_name = item.get('rawname', display_name)                  # 唯一键，用于 tag / title / 下载路径
               target_repo_name = item['repo']
               pattern = item['asset_pattern']
 
               print(f"\n==========================================")
-              print(f"正在检查软件: {software_name} ({target_repo_name})")
+              print(f"正在检查软件: {display_name} ({target_repo_name}) | 唯一键: {raw_name}")
 
               try:
                   target_repo = g.get_repo(target_repo_name)
-                  
+
                   all_releases = list(target_repo.get_releases())
                   if not all_releases:
                       print(f"⚠️ 在上游仓库 {target_repo_name} 中未找到任何 Release，跳过。")
@@ -134,7 +135,7 @@ jobs:
                   if latest_release.prerelease:
                       print(f"ℹ️ 检测到最新版本为预发行版 (Pre-release): {upstream_tag_name}")
 
-                  # 🟢 优化后的 Asset 匹配与版本号精确校验逻辑
+                  # 匹配 Asset，并优先选出版本号与上游 tag 一致的那个
                   download_url = None
                   file_name = None
                   clean_version = upstream_tag_name.lstrip('vV')
@@ -150,7 +151,7 @@ jobs:
                           if clean_version in asset.name:
                               exact_match = asset
                               break
-                      
+
                       chosen_asset = exact_match if exact_match else matching_assets[0]
                       download_url = chosen_asset.browser_download_url
                       file_name = chosen_asset.name
@@ -161,9 +162,9 @@ jobs:
 
                   print(f"🎯 锁定目标下载文件: {file_name}")
 
-                  # 统一 Release 标签规范
-                  release_tag = f"{software_name.lower().replace(' ', '-')}-latest"
-                  
+                  # 统一 Release 标签规范（必须与 index.py 中的 rawname 完全一致）
+                  release_tag = f"{raw_name}-latest"
+
                   target_release = None
                   for rel in current_repo.get_releases():
                       if rel.tag_name == release_tag:
@@ -175,12 +176,12 @@ jobs:
 
                   mirror_text = "### 🚀 国内网络镜像加速下载\n"
                   mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
-                  
+
                   for idx, m in enumerate(active_mirrors):
                       tag = " ⚡ [综合最快/最优推荐]" if idx == 0 else ""
                       latency_ms = f"{m['latency']*1000:.0f}ms"
                       mirror_text += f"- **[{m['name']}{tag}]({m['prefix']}{raw_download_url})** *(延迟: {latency_ms} | 综合得分: {m['total_score']:.3f})*\n"
-                  
+
                   release_body = (
                       f"🔗 **上游源头**：[{target_repo_name} ({upstream_tag_name})]({upstream_release_url})\n\n"
                       f"{mirror_text}"
@@ -188,22 +189,23 @@ jobs:
 
                   if target_release:
                       existing_assets = [a.name for a in target_release.get_assets()]
-                      
+
                       if file_name in existing_assets:
-                          target_release.update_release(name=software_name, message=release_body)
+                          # title 用 raw_name，保证 index.py 能匹配到
+                          target_release.update_release(name=raw_name, message=release_body)
                           print(f"✅ 当前已是最新版本 ({file_name})，已更新最新测速与加速直链。")
                           continue
-                      
+
                       print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
                       for old_asset in target_release.get_assets():
                           old_asset.delete_asset()
-                      target_release.update_release(name=software_name, message=release_body)
+                      target_release.update_release(name=raw_name, message=release_body)
 
                   else:
                       print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
                       target_release = current_repo.create_git_release(
                           tag=release_tag,
-                          name=software_name,
+                          name=raw_name,          # title 必须是 raw_name，供 index.py 匹配
                           message=release_body,
                           draft=False,
                           prerelease=False
@@ -218,12 +220,12 @@ jobs:
 
                   print(f"⬆️ 正在上传成品至本仓库 Release...")
                   target_release.upload_asset(path=file_name, label=file_name)
-                  print(f"🎉 {software_name} 成功更新至最新版！")
+                  print(f"🎉 {display_name} 成功更新至最新版！")
 
                   if os.path.exists(file_name):
                       os.remove(file_name)
 
               except Exception as e:
-                  print(f"❌ 处理 {software_name} 时发生异常: {str(e)}")
+                  print(f"❌ 处理 {display_name} 时发生异常: {str(e)}")
 
           EOF

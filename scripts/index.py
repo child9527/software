@@ -30,6 +30,12 @@ def fetch_release_items():
     with open("task/targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
+    # 预先建立 rawname -> target 条目的映射，大小写不敏感
+    target_map = {}
+    for t in targets:
+        rn = t.get("rawname", t["name"])
+        target_map[rn.lower()] = t
+
     releases = list(repo.get_releases())
     items = []
 
@@ -43,49 +49,34 @@ def fetch_release_items():
             continue
 
         asset = assets[0]
-        
-        # GitHub Release 的 Title/Name（例如: "clash-verge-rev"）
-        release_title = rel.title or rel.name or ""
 
-        icon_url = None
-        upstream_repo_name = None
-        display_name = None
-        raw_name = None
-        item_type = "其他"
-        description = "暂无简介"
+        # 从 tag 反推 rawname：{rawname}-latest -> rawname
+        raw_name = tag[:-len("-latest")]
 
-        # 用 rawname 跟 GitHub Release 的 Title/Tag 匹配，并读取 overview
-        for t in targets:
-            target_rawname = t.get("rawname", t["name"])
-            
-            if target_rawname.lower() == release_title.lower():
-                icon_url = t.get("icon")
-                upstream_repo_name = t["repo"]
-                display_name = t["name"]        # 仅用于页面 UI 展示
-                raw_name = target_rawname       # 唯一的 Release 匹配键与下载路径
-                item_type = t.get("type", "其他")
-
-                # 读取 overview 字段，为空或未设置时显示“暂无”
-                overview = t.get("overview")
-                if overview and str(overview).strip():
-                    description = str(overview).strip()
-                
-                break
-
-        # 如果匹配不到，跳过
-        if upstream_repo_name is None:
-            print(f"⚠️ 未找到匹配的 targets.json 项：{release_title}，已跳过")
+        # 用 rawname 去匹配 targets.json
+        t = target_map.get(raw_name.lower())
+        if t is None:
+            print(f"⚠️ 未找到匹配的 targets.json 项：{tag}，已跳过")
             continue
 
-        # 使用 raw_name 准确拼接 URL
+        icon_url = t.get("icon")
+        upstream_repo_name = t["repo"]
+        display_name = t["name"]            # 中文展示名
+        item_type = t.get("type", "其他")
+        description = "暂无简介"
+
+        overview = t.get("overview")
+        if overview and str(overview).strip():
+            description = str(overview).strip()
+
+        # 使用 raw_name 拼接 URL
         raw_url = f"https://github.com/{repo_name}/releases/download/{quote(raw_name)}-latest/{asset.name}"
 
-        # 从 Release body 中提取版本号（仍保留获取上游最新版本号的逻辑）
+        # 从上游拿最新版本号
         upstream_repo = g.get_repo(upstream_repo_name)
         upstream_release = upstream_repo.get_latest_release()
         version = upstream_release.tag_name
 
-        # 添加到 items
         items.append({
             "name": display_name,
             "version": version,
@@ -114,7 +105,7 @@ def fetch_lx_sources():
         if fname.endswith(".js"):
             # 对中文字符和空格进行 URL 转码
             encoded_fname = quote(fname)
-            
+
             raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/lxSources/guoyue2010/{encoded_fname}"
             gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
             name = fname[:-3]  # 卡片展示界面依然使用可读的未转码名称
@@ -135,7 +126,7 @@ def generate_html(items, lx_sources):
 
     # 按读取出现的顺序提取所有去重后的 type 类型
     types = list(dict.fromkeys([item["type"] for item in items if item.get("type")]))
-    
+
     # 确定首个被读取到的 type 类型，若没有则默认为 None
     first_type = types[0] if types else None
 

@@ -1,0 +1,146 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import os
+import json
+import re
+import requests
+from github import Github, Auth
+
+
+# 固定镜像列表（顺序即展示顺序，第一个带闪电推荐图标）
+MIRRORS = [
+    ("GH-Proxy Com", "https://gh-proxy.com/"),
+    ("GHfast", "https://ghfast.top"),
+    ("DDLC 镜像", "https://gh.ddlc.top/"),
+]
+
+
+def main():
+    token = os.getenv("GITHUB_TOKEN")
+    auth = Auth.Token(token)
+    g = Github(auth=auth)
+    current_repo = g.get_repo(os.getenv("GITHUB_REPOSITORY"))
+
+    # 读取配置文件
+    with open("task/targets.json", "r", encoding="utf-8") as f:
+        targets = json.load(f)
+
+    for item in targets:
+        display_name = item["name"]                                   # 用于 Release 标题展示
+        raw_name = item.get("rawname", display_name)                  # 唯一键，用于 tag / 下载路径
+        target_repo_name = item["repo"]
+        pattern = item["asset_pattern"]
+
+        print(f"\n==========================================")
+        print(f"正在检查软件: {display_name} ({target_repo_name}) | 唯一键: {raw_name}")
+
+        try:
+            target_repo = g.get_repo(target_repo_name)
+
+            all_releases = list(target_repo.get_releases())
+            if not all_releases:
+                print(f"⚠️ 在上游仓库 {target_repo_name} 中未找到任何 Release，跳过。")
+                continue
+
+            latest_release = all_releases[0]
+            upstream_tag_name = latest_release.tag_name
+
+            if latest_release.prerelease:
+                print(f"ℹ️ 检测到最新版本为预发行版 (Pre-release): {upstream_tag_name}")
+
+            # 匹配 Asset，并优先选出版本号与上游 tag 一致的那个
+            download_url = None
+            file_name = None
+            clean_version = upstream_tag_name.lstrip('vV')
+
+            matching_assets = []
+            for asset in latest_release.get_assets():
+                if re.search(pattern, asset.name, re.IGNORECASE):
+                    matching_assets.append(asset)
+
+            if matching_assets:
+                exact_match = None
+                for asset in matching_assets:
+                    if clean_version in asset.name:
+                        exact_match = asset
+                        break
+
+                chosen_asset = exact_match if exact_match else matching_assets[0]
+                download_url = chosen_asset.browser_download_url
+                file_name = chosen_asset.name
+
+            if not download_url:
+                print(f"⚠️ 在上游仓库中未找到符合规则 '{pattern}' 的文件，跳过。")
+                continue
+
+            print(f"🎯 锁定目标下载文件: {file_name}")
+
+            # tag 由 rawname 派生，永远英文，进 URL
+            release_tag = f"{raw_name}-latest"
+
+            target_release = None
+            for rel in current_repo.get_releases():
+                if rel.tag_name == release_tag:
+                    target_release = rel
+                    break
+
+            raw_download_url = f"https://github.com/{current_repo.full_name}/releases/download/{release_tag}/{file_name}"
+            upstream_release_url = f"https://github.com/{target_repo_name}/releases/tag/{upstream_tag_name}"
+
+            mirror_text = "### 🚀 国内网络镜像加速下载\n"
+            mirror_text += f"如下方 Asset 下载缓慢，可点击以下直链加速下载 **`{file_name}`**：\n\n"
+
+            for idx, (m_name, m_prefix) in enumerate(MIRRORS):
+                tag = " ⚡ [推荐]" if idx == 0 else ""
+                mirror_text += f"- **[{m_name}{tag}]({m_prefix}{raw_download_url})**\n"
+
+            release_body = (
+                f"🔗 **上游源头**：[{target_repo_name} ({upstream_tag_name})]({upstream_release_url})\n\n"
+                f"{mirror_text}"
+            )
+
+            if target_release:
+                existing_assets = [a.name for a in target_release.get_assets()]
+
+                if file_name in existing_assets:
+                    # 标题用中文 name，链接键仍是 rawname
+                    target_release.update_release(name=display_name, message=release_body)
+                    print(f"✅ 当前已是最新版本 ({file_name})，已更新加速直链。")
+                    continue
+
+                print(f"🗑️ 检测到上游新版本 ({file_name})，正在清理本地旧包...")
+                for old_asset in target_release.get_assets():
+                    old_asset.delete_asset()
+                target_release.update_release(name=display_name, message=release_body)
+
+            else:
+                print(f"📦 首次同步，正在创建 Release 标签: {release_tag}")
+                target_release = current_repo.create_git_release(
+                    tag=release_tag,
+                    name=display_name,      # 标题用中文 name
+                    message=release_body,
+                    draft=False,
+                    prerelease=False
+                )
+
+            print(f"⬇️ 正在下载最新成品包: {file_name} ...")
+            res = requests.get(download_url, stream=True)
+            res.raise_for_status()
+            with open(file_name, 'wb') as out_file:
+                for chunk in res.iter_content(chunk_size=8192):
+                    out_file.write(chunk)
+
+            print(f"⬆️ 正在上传成品至本仓库 Release...")
+            target_release.upload_asset(path=file_name, label=file_name)
+            print(f"🎉 {display_name} 成功更新至最新版！")
+
+            if os.path.exists(file_name):
+                os.remove(file_name)
+
+        except Exception as e:
+            print(f"❌ 处理 {display_name} 时发生异常: {str(e)}")
+
+
+if __name__ == "__main__":
+    main()

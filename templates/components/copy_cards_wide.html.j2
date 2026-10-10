@@ -1,6 +1,6 @@
-{% if section.items %}
+{% if section["items"] %}
 <div class="section-title">{{ section.title }}</div>
-{% for item in section.items %}
+{% for item in section["items"] %}
     {% if item.content_literal %}
     <script>const {{ item.js_var }} = {{ item.content_literal | safe }};</script>
     {% endif %}

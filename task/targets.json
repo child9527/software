@@ -77,7 +77,7 @@
     "repo": "lyswhut/lx-music-mobile",
     "asset_pattern": "^lx-music-mobile-v.*-arm64-v8a\\.apk$",
     "type": "Android",
-    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接"
+    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接，推荐使用'lx-玉宁熙1.2.5'音源"
   },
   {
     "name": "洛雪音乐（Win64）",
@@ -85,7 +85,7 @@
     "repo": "lyswhut/lx-music-desktop",
     "asset_pattern": "^lx-music-desktop-v.*-win_x64-green\\.7z$",
     "type": "Win64",
-    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接"
+    "overview": "大名鼎鼎的免费音乐软件，最下面有音源链接，推荐使用'lx-玉宁熙1.2.5'音源"
   },
   {
     "name": "Mocreak",

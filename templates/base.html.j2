@@ -284,9 +284,9 @@ function copyUrl(btn, url) {
     });
 }
 
-function copyExtensionJs(btn) {
-    navigator.clipboard.writeText(EXTENSION_JS_TEXT).then(() => {
-        showToast("规则文本已复制到剪贴板！");
+function copyVar(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast("已复制到剪贴板！");
         const originalText = btn.innerText;
         btn.innerText = "已复制";
         btn.style.background = "#28a745";

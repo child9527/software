@@ -93,7 +93,7 @@
     "repo": "OdysseusYuan/Mocreak",
     "asset_pattern": "^Mocreak_Portable_v.*\\.zip$",
     "type": "Win64",
-    "overview": "自动下载操作系统（Windows10、11）、Office，并自动激活，无需进入WINpe可以在Win64环境下进行"
+    "overview": "自动下载操作系统（Windows10、11）、Office，并自动激活。无需进入Winpe，可以在Win64环境下进行"
   },
   {
     "name": "gkd",

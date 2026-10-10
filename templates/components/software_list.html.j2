@@ -7,7 +7,7 @@
 </div>
 
 <div id="software-list">
-{% for item in section.items %}
+{% for item in section["items"] %}
 <div class="card{% if item.type != section.first_type %} hidden{% endif %}" data-type="{{ item.type }}">
     {% if item.icon %}<img class="icon" src="{{ item.icon }}">{% endif %}
     <div>

@@ -217,9 +217,10 @@ def main():
     sections = build_sections()
 
     html = render(
-        "base.html.j2",
-        sections=sections,
-        now=now,
+    "base.html.j2",
+    sections=sections,
+    now=now,
+    page_title="软件中心",
     )
 
     with open(OUTPUT, "w", encoding="utf-8") as f:

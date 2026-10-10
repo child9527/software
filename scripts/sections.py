@@ -82,12 +82,28 @@ def section_copy_cards(title, items):
 
 def section_copy_cards_wide(title, items):
     """
-    复制型卡片（单行大卡片）板块。
+    复制型卡片（单行大卡片）板块，支持多张。
 
-    目前只渲染 items[0] 一个卡片，整行拉满。
-    以后如果要多张单行卡片，可以改模板为循环。
+    items 里每项结构：
+        {
+            "name":            展示名,
+            "js_var":          JS 变量名（英文，全局唯一，如 "EXTENSION_JS_TEXT"）,
+            "content_literal": 已经过 json.dumps 的 JS 字符串字面量,
+        }
 
-    参数、返回结构同 section_copy_cards。
+    示例：
+        section_copy_cards_wide("📋 规则及配置", [
+            {
+                "name": "Clash Verge Rev全局扩展覆写脚本",
+                "js_var": "EXTENSION_JS_TEXT",
+                "content_literal": json.dumps(js_text, ensure_ascii=False),
+            },
+            {
+                "name": "Clash 配置模板",
+                "js_var": "CLASH_CONFIG_TEXT",
+                "content_literal": json.dumps(config_text, ensure_ascii=False),
+            },
+        ])
     """
     return {
         "title": title,

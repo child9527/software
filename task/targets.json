@@ -69,7 +69,7 @@
     "repo": "any-listen/any-listen-desktop",
     "asset_pattern": "^any-listen-.*-win_x64-green\\.7z$",
     "type": "Win64",
-    "overview": "洛雪音乐作者目前主推的音乐软件，洛雪音乐似乎已经停止更新"
+    "overview": "洛雪音乐作者目前主推的音乐软件，但是操作复杂，使用门槛很高"
   },
   {
     "name": "洛雪音乐（Android）",
@@ -109,6 +109,6 @@
     "repo": "j4rviscmd/bilibili-downloader-gui",
     "asset_pattern": "^bilibili-downloader-gui_[0-9.]+_x64-setup\\.exe$",
     "type": "Win64",
-    "overview": "日本人开发的哔哩哔哩下载器（支持中文菜单），因下载姬（DownKyi）作者因收到律师信连夜删库跑路，作为替代品使用。太君的东西，想来不会敢于发律师信吧"
+    "overview": "日本人开发的哔哩哔哩下载器（支持中文菜单）。因下载姬（DownKyi）作者因收到律师信连夜删库跑路，作为替代品使用。太君的东西，想来不会发律师信吧。不过这个软件有个坑，安装包会自动为你首先下载并安装ffmpeg，坑点就在安装包默认的下载位置没有梯子访问不了。在ffmpeg安装超时的情况下，此软件的安装程序会中断"
   }
 ]

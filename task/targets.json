@@ -21,7 +21,7 @@
     "repo": "2dust/v2rayN",
     "asset_pattern": "^v2rayN-windows-64\\.zip$",
     "type": "Win64",
-    "overview": "Windows平台下的V2ray类软件，推荐使用。搭配Clash Verge Rev和ZeroOmega插件可以提升工作效率"
+    "overview": "Windows平台下的V2ray类软件，推荐使用。搭配Clash Verge Rev和ZeroOmega扩展插件可以提升工作效率"
   },
   {
     "name": "V2rayNg",

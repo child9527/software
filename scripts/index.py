@@ -1,5 +1,6 @@
 import os
 import json
+import html as html_lib
 from urllib.parse import quote
 from github import Github, Auth
 from datetime import datetime, timezone, timedelta
@@ -10,6 +11,7 @@ MIRRORS = [
     ("GH-Fast", "https://ghfast.top/"),
 ]
 
+
 def format_size(size):
     if size < 1024:
         return f"{size} B"
@@ -17,6 +19,7 @@ def format_size(size):
         return f"{size/1024:.1f} KB"
     else:
         return f"{size/1024/1024:.1f} MB"
+
 
 def fetch_release_items():
     token = os.getenv("GITHUB_TOKEN")
@@ -365,7 +368,8 @@ body {{
     # 动态渲染各个分类按钮，首个被读取到的 type 设为 active
     for idx, t in enumerate(types):
         active_class = " active" if idx == 0 else ""
-        html += f'    <button class="filter-btn{active_class}" onclick="filterType(\'{t}\', this)">{t}</button>\n'
+        safe_t = html_lib.escape(str(t))
+        html += f'    <button class="filter-btn{active_class}" onclick="filterType(this)">{safe_t}</button>\n'
 
     html += """</div>
 
@@ -373,22 +377,32 @@ body {{
 """
 
     for item in items:
-        icon_html = f'<img class="icon" src="{item["icon"]}">' if item["icon"] else ""
+        safe_name = html_lib.escape(str(item["name"]))
+        safe_version = html_lib.escape(str(item["version"]))
+        safe_desc = html_lib.escape(str(item["description"]))
+        safe_type = html_lib.escape(str(item["type"]))
+        safe_size = html_lib.escape(format_size(item["file_size"]))
+        safe_url = html_lib.escape(item["url"], quote=True)
+        safe_icon = html_lib.escape(item["icon"], quote=True) if item["icon"] else ""
+
+        icon_html = f'<img class="icon" src="{safe_icon}">' if safe_icon else ""
         hidden_class = "" if item['type'] == first_type else " hidden"
 
         html += f"""
-<div class="card{hidden_class}" data-type="{item['type']}">
+<div class="card{hidden_class}" data-type="{safe_type}">
     {icon_html}
     <div>
-        <div class="name">{item['name']}</div>
-        <div class="version">版本号：{item['version']}</div>
-        <div class="size">文件大小：{format_size(item['file_size'])}</div>
-        <div class="desc">{item['description']}</div>
+        <div class="name">{safe_name}</div>
+        <div class="version">版本号：{safe_version}</div>
+        <div class="size">文件大小：{safe_size}</div>
+        <div class="desc">{safe_desc}</div>
 
-        <a class="btn" href="{item['url']}">原始下载</a>
+        <a class="btn" href="{safe_url}">原始下载</a>
 """
         for mirror_name, mirror_url in item["mirrors"]:
-            html += f'<a class="btn" href="{mirror_url}">{mirror_name}</a>'
+            safe_mirror_name = html_lib.escape(str(mirror_name))
+            safe_mirror_url = html_lib.escape(mirror_url, quote=True)
+            html += f'<a class="btn" href="{safe_mirror_url}">{safe_mirror_name}</a>'
 
         html += "</div></div>"
 
@@ -402,10 +416,13 @@ body {{
 """
 
     for src in lx_sources:
+        safe_src_name = html_lib.escape(str(src['name']))
+        # 注意：这里 URL 要传给 JS，用 json.dumps 更安全
+        src_url_literal = json.dumps(src['gh_proxy_url'], ensure_ascii=False)
         html += f"""
     <div class="source-card">
-        <div class="source-name">{src['name']}</div>
-        <button class="copy-btn" onclick="copyUrl(this, '{src['gh_proxy_url']}')">复制链接</button>
+        <div class="source-name">{safe_src_name}</div>
+        <button class="copy-btn" onclick='copyUrl(this, {src_url_literal})'>复制链接</button>
     </div>
 """
 
@@ -420,13 +437,18 @@ body {{
 <div id="toast" class="toast">链接已成功复制到剪贴板！</div>
 
 <script>
-function filterType(selectedType, btn) {{
-    /* 切换按钮的高亮状态 */
+// 类型筛选时，读取卡片上的 data-type 属性，避免把中文拼进 onclick
+function filterType(btn) {{
     const buttons = document.querySelectorAll('.filter-btn');
+    const idx = Array.from(buttons).indexOf(btn);
+    if (idx < 0) return;
+
     buttons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    /* 筛选对应卡片 */
+    // 用按钮的 innerText 作为类型名
+    const selectedType = btn.innerText.trim();
+
     const cards = document.querySelectorAll('.card');
     cards.forEach(card => {{
         const cardType = card.getAttribute('data-type');

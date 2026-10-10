@@ -1,9 +1,24 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import os
 import json
-import html as html_lib
 from urllib.parse import quote
-from github import Github, Auth
 from datetime import datetime, timezone, timedelta
+
+from github import Github, Auth
+
+from renderer import render
+from sections import (
+    section_software_list,
+    section_copy_cards,
+    section_copy_cards_wide,
+)
+
+
+# ============================================================
+# 配置
+# ============================================================
 
 # 镜像前缀
 MIRRORS = [
@@ -11,8 +26,19 @@ MIRRORS = [
     ("GH-Fast", "https://ghfast.top/"),
 ]
 
+# 音源目录
+LX_SOURCES_DIR = os.path.join("lxSources", "guoyue2010")
+
+# 输出文件
+OUTPUT = "index.html"
+
+
+# ============================================================
+# 工具函数
+# ============================================================
 
 def format_size(size):
+    """把字节数格式化成人类可读的大小"""
     if size < 1024:
         return f"{size} B"
     elif size < 1024 * 1024:
@@ -21,7 +47,15 @@ def format_size(size):
         return f"{size/1024/1024:.1f} MB"
 
 
+# ============================================================
+# 数据获取
+# ============================================================
+
 def fetch_release_items():
+    """
+    从当前仓库的 Releases 拿软件列表。
+    每个 Release 的 tag 形如 {rawname}-latest。
+    """
     token = os.getenv("GITHUB_TOKEN")
     auth = Auth.Token(token)
     g = Github(auth=auth)
@@ -29,11 +63,11 @@ def fetch_release_items():
     repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     repo = g.get_repo(repo_name)
 
-    # 读取 targets.json（task目录）
+    # 读取 targets.json
     with open("task/targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
-    # 预先建立 rawname -> target 条目的映射，大小写不敏感
+    # 建立 rawname -> target 的映射，大小写不敏感
     target_map = {}
     for t in targets:
         rn = t.get("rawname", t["name"])
@@ -64,7 +98,7 @@ def fetch_release_items():
 
         icon_url = t.get("icon")
         upstream_repo_name = t["repo"]
-        display_name = t["name"]            # 中文展示名
+        display_name = t["name"]
         item_type = t.get("type", "其他")
         description = "暂无简介"
 
@@ -72,10 +106,13 @@ def fetch_release_items():
         if overview and str(overview).strip():
             description = str(overview).strip()
 
-        # 使用 raw_name 拼接 URL
-        raw_url = f"https://github.com/{repo_name}/releases/download/{quote(raw_name)}-latest/{asset.name}"
+        # 拼接原始下载链接
+        raw_url = (
+            f"https://github.com/{repo_name}/releases/download/"
+            f"{quote(raw_name)}-latest/{asset.name}"
+        )
 
-        # 从上游拿最新版本号
+        # 从上游仓库拿最新版本号
         upstream_repo = g.get_repo(upstream_repo_name)
         upstream_release = upstream_repo.get_latest_release()
         version = upstream_release.tag_name
@@ -85,418 +122,111 @@ def fetch_release_items():
             "version": version,
             "url": raw_url,
             "file_size": asset.size,
+            "file_size_text": format_size(asset.size),
             "icon": icon_url,
             "type": item_type,
             "description": description,
-            "mirrors": [(m[0], f"{m[1]}{raw_url}") for m in MIRRORS]
+            "mirrors": [(m[0], f"{m[1]}{raw_url}") for m in MIRRORS],
         })
 
     return items
 
 
 def fetch_lx_sources():
-    """扫描本地 lxSources/guoyue2010 目录下的所有 .js 音源文件，对文件名做 URL 编码"""
-    target_dir = os.path.join("lxSources", "guoyue2010")
-    if not os.path.exists(target_dir):
-        print(f"⚠️ 未找到音源目录: {target_dir}")
+    """
+    扫描 lxSources/guoyue2010 目录下的所有 .js 文件。
+    返回 [{name, url_literal}]，url_literal 已经过 json.dumps，可直接塞进 JS。
+    """
+    if not os.path.exists(LX_SOURCES_DIR):
+        print(f"⚠️ 未找到音源目录: {LX_SOURCES_DIR}")
         return []
 
     repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     sources = []
 
-    for fname in os.listdir(target_dir):
-        if fname.endswith(".js"):
-            # 对中文字符和空格进行 URL 转码
-            encoded_fname = quote(fname)
+    for fname in os.listdir(LX_SOURCES_DIR):
+        if not fname.endswith(".js"):
+            continue
 
-            raw_url = f"https://raw.githubusercontent.com/{repo_name}/main/lxSources/guoyue2010/{encoded_fname}"
-            gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
-            name = fname[:-3]  # 卡片展示界面依然使用可读的未转码名称
+        # 对文件名做 URL 编码（防中文/空格）
+        encoded_fname = quote(fname)
 
-            sources.append({
-                "name": name,
-                "gh_proxy_url": gh_proxy_url
-            })
+        raw_url = (
+            f"https://raw.githubusercontent.com/{repo_name}/main/"
+            f"lxSources/guoyue2010/{encoded_fname}"
+        )
+        gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
+
+        # 展示名去掉 .js 后缀
+        display_name = fname[:-3]
+
+        sources.append({
+            "name": display_name,
+            "url_literal": json.dumps(gh_proxy_url, ensure_ascii=False),
+        })
 
     # 按文件名长度排序
     sources.sort(key=lambda x: len(x["name"]))
     return sources
 
 
-def generate_html(items, lx_sources):
+# ============================================================
+# 组装 sections
+# ============================================================
+
+def build_sections():
+    """
+    组装所有板块。
+
+    以后新增板块，只改这里：
+        sections.append(section_xxx("板块标题", 数据))
+    """
+    sections = []
+
+    # 板块 1：软件自动更新列表
+    items = fetch_release_items()
+    sections.append(section_software_list("🚀 软件自动更新列表", items))
+
+    # 板块 2：洛雪音乐音源
+    lx_sources = fetch_lx_sources()
+    sections.append(section_copy_cards("🎵 洛雪音乐音源", lx_sources))
+
+    # 板块 3：复制规则（暂时注释，以后要加时打开）
+    # 示例：
+    # with open("scripts/extension_js.txt", "r", encoding="utf-8") as f:
+    #     js_text = f.read()
+    # sections.append(section_copy_cards_wide("📋 规则及配置", [
+    #     {
+    #         "name": "Clash Verge Rev全局扩展覆写脚本",
+    #         "js_var": "EXTENSION_JS_TEXT",
+    #         "content_literal": json.dumps(js_text, ensure_ascii=False),
+    #     },
+    # ]))
+
+    return sections
+
+
+# ============================================================
+# 主入口
+# ============================================================
+
+def main():
     bj_tz = timezone(timedelta(hours=8))
     now = datetime.now(bj_tz).strftime("%Y-%m-%d %H:%M:%S")
 
-    # 按读取出现的顺序提取所有去重后的 type 类型
-    types = list(dict.fromkeys([item["type"] for item in items if item.get("type")]))
+    sections = build_sections()
 
-    # 确定首个被读取到的 type 类型，若没有则默认为 None
-    first_type = types[0] if types else None
+    html = render(
+        "base.html.j2",
+        sections=sections,
+        now=now,
+    )
 
-    html = f"""<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<title>软件中心 · Child9527</title>
-<style>
-body {{
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #1e1e1e;
-    color: #e0e0e0;
-}}
+    with open(OUTPUT, "w", encoding="utf-8") as f:
+        f.write(html)
 
-/* 顶部导航栏 */
-.navbar {{
-    width: 100%;
-    background: #2b2b2b;
-    border-bottom: 2px solid #4aa3ff;
-    padding: 12px 20px;
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    box-shadow: 0 0 12px rgba(74,163,255,0.3);
-}}
-
-.navbar a {{
-    color: #e0e0e0;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    transition: 0.2s;
-}}
-
-.navbar a:hover {{
-    background: #4aa3ff;
-    color: #000;
-}}
-
-/* 内容区块 */
-.section {{
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px;
-}}
-
-.section-title {{
-    color: #4aa3ff;
-    font-size: 1.3rem;
-    margin: 30px 0 15px 0;
-    border-left: 4px solid #4aa3ff;
-    padding-left: 10px;
-}}
-
-/* 分类筛选按钮栏 */
-.filter-container {{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}}
-
-.filter-btn {{
-    background: #2b2b2b;
-    color: #e0e0e0;
-    border: 1px solid #4aa3ff;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-}}
-
-.filter-btn:hover {{
-    background: rgba(74, 163, 255, 0.2);
-}}
-
-.filter-btn.active {{
-    background: #4aa3ff;
-    color: #000;
-    font-weight: bold;
-    box-shadow: 0 0 8px rgba(74, 163, 255, 0.6);
-}}
-
-/* 软件卡片 */
-.card {{
-    background: #2b2b2b;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #4aa3ff;
-    box-shadow: 0 0 12px rgba(74,163,255,0.4);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: flex-start;
-    transition: opacity 0.3s ease;
-}}
-
-.card.hidden {{
-    display: none !important;
-}}
-
-.icon {{
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    margin-right: 15px;
-}}
-
-.name {{
-    font-size: 20px;
-    font-weight: bold;
-    color: #ffffff;
-}}
-
-.version {{
-    color: #b0b0b0;
-}}
-
-.size {{
-    color: #999999;
-}}
-
-.desc {{
-    margin: 8px 0;
-    color: #cccccc;
-}}
-
-.btn {{
-    display: inline-block;
-    margin: 5px 5px 0 0;
-    padding: 8px 12px;
-    background: #3a7bd5;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-}}
-
-.btn:hover {{
-    background: #2f6bb8;
-}}
-
-/* 洛雪音源紧凑卡片网格 */
-.compact-grid {{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 12px;
-    margin-bottom: 30px;
-}}
-
-.source-card {{
-    background: #2b2b2b;
-    border: 1px solid #4aa3ff;
-    box-shadow: 0 0 8px rgba(74,163,255,0.3);
-    border-radius: 10px;
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-}}
-
-.source-name {{
-    color: #ffffff;
-    font-size: 0.95rem;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}}
-
-.copy-btn {{
-    font-size: 0.85rem;
-    padding: 6px 12px;
-    background: #3a7bd5;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-    white-space: nowrap;
-}}
-
-.copy-btn:hover {{
-    background: #2f6bb8;
-}}
-
-/* Toast 提示浮窗 */
-.toast {{
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(74, 163, 255, 0.95);
-    color: #000;
-    font-weight: bold;
-    padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    display: none;
-    z-index: 1000;
-}}
-
-/* 底部 */
-.footer {{
-    text-align: center;
-    padding: 20px;
-    color: #888888;
-    margin-top: 40px;
-}}
-</style>
-</head>
-
-<body>
-
-<!-- 导航栏 -->
-<div class="navbar">
-    <a href="https://child9527.github.io/">首页</a>
-    <a href="https://child9527.github.io/tvbox/">TVbox订阅</a>
-    <a href="https://child9527.github.io/clash-latest/">科学订阅</a>
-    <a href="https://child9527.github.io/about/">关于本站</a>
-</div>
-
-<!-- 内容区块 -->
-<div class="section">
-<h2>软件中心</h2>
-
-<!-- 1. 软件列表与分类筛选 -->
-<div class="section-title">🚀 软件自动更新列表</div>
-
-<div class="filter-container">
-"""
-
-    # 动态渲染各个分类按钮，首个被读取到的 type 设为 active
-    for idx, t in enumerate(types):
-        active_class = " active" if idx == 0 else ""
-        safe_t = html_lib.escape(str(t))
-        html += f'    <button class="filter-btn{active_class}" onclick="filterType(this)">{safe_t}</button>\n'
-
-    html += """</div>
-
-<div id="software-list">
-"""
-
-    for item in items:
-        safe_name = html_lib.escape(str(item["name"]))
-        safe_version = html_lib.escape(str(item["version"]))
-        safe_desc = html_lib.escape(str(item["description"]))
-        safe_type = html_lib.escape(str(item["type"]))
-        safe_size = html_lib.escape(format_size(item["file_size"]))
-        safe_url = html_lib.escape(item["url"], quote=True)
-        safe_icon = html_lib.escape(item["icon"], quote=True) if item["icon"] else ""
-
-        icon_html = f'<img class="icon" src="{safe_icon}">' if safe_icon else ""
-        hidden_class = "" if item['type'] == first_type else " hidden"
-
-        html += f"""
-<div class="card{hidden_class}" data-type="{safe_type}">
-    {icon_html}
-    <div>
-        <div class="name">{safe_name}</div>
-        <div class="version">版本号：{safe_version}</div>
-        <div class="size">文件大小：{safe_size}</div>
-        <div class="desc">{safe_desc}</div>
-
-        <a class="btn" href="{safe_url}">原始下载</a>
-"""
-        for mirror_name, mirror_url in item["mirrors"]:
-            safe_mirror_name = html_lib.escape(str(mirror_name))
-            safe_mirror_url = html_lib.escape(mirror_url, quote=True)
-            html += f'<a class="btn" href="{safe_mirror_url}">{safe_mirror_name}</a>'
-
-        html += "</div></div>"
-
-    # 2. 洛雪音乐音源区块
-    html += """
-</div>
-
-<!-- 2. 洛雪音乐音源 -->
-<div class="section-title">🎵 洛雪音乐音源</div>
-<div class="compact-grid">
-"""
-
-    for src in lx_sources:
-        safe_src_name = html_lib.escape(str(src['name']))
-        # 注意：这里 URL 要传给 JS，用 json.dumps 更安全
-        src_url_literal = json.dumps(src['gh_proxy_url'], ensure_ascii=False)
-        html += f"""
-    <div class="source-card">
-        <div class="source-name">{safe_src_name}</div>
-        <button class="copy-btn" onclick='copyUrl(this, {src_url_literal})'>复制链接</button>
-    </div>
-"""
-
-    html += f"""
-</div>
-
-<div class="footer">
-    自动生成时间：{now}
-</div>
-</div>
-
-<div id="toast" class="toast">链接已成功复制到剪贴板！</div>
-
-<script>
-// 类型筛选时，读取卡片上的 data-type 属性，避免把中文拼进 onclick
-function filterType(btn) {{
-    const buttons = document.querySelectorAll('.filter-btn');
-    const idx = Array.from(buttons).indexOf(btn);
-    if (idx < 0) return;
-
-    buttons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    // 用按钮的 innerText 作为类型名
-    const selectedType = btn.innerText.trim();
-
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {{
-        const cardType = card.getAttribute('data-type');
-        if (cardType === selectedType) {{
-            card.classList.remove('hidden');
-        }} else {{
-            card.classList.add('hidden');
-        }}
-    }});
-}}
-
-function copyUrl(btn, url) {{
-    navigator.clipboard.writeText(url).then(() => {{
-        showToast("已复制：" + url);
-        const originalText = btn.innerText;
-        btn.innerText = "已复制";
-        btn.style.background = "#28a745";
-        setTimeout(() => {{
-            btn.innerText = originalText;
-            btn.style.background = "#3a7bd5";
-        }}, 2000);
-    }}).catch(err => {{
-        console.error("复制失败:", err);
-    }});
-}}
-
-function showToast(msg) {{
-    const toast = document.getElementById("toast");
-    toast.innerText = msg;
-    toast.style.display = "block";
-    setTimeout(() => {{
-        toast.style.display = "none";
-    }}, 2000);
-}}
-</script>
-
-</body>
-</html>
-"""
-
-    return html
+    print(f"index.html 生成成功！共 {len(sections)} 个板块。")
 
 
 if __name__ == "__main__":
-    items = fetch_release_items()
-    lx_sources = fetch_lx_sources()
-    html = generate_html(items, lx_sources)
-
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(html)
-    print("index.html 生成成功！")
+    main()

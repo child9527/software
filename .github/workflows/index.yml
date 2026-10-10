@@ -3,7 +3,7 @@ name: 生成软件仓库首页
 on:
   push:
     paths:
-      #- "scripts/index.py"
+      - "scripts/index.py"
   workflow_run:
     workflows: ["自动同步指定软件最新 Releases"]
     types:

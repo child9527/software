@@ -1,3 +1,4 @@
+{% if section.items %}
 <div class="section-title">{{ section.title }}</div>
 <div class="compact-grid">
 {% for item in section.items %}
@@ -7,3 +8,4 @@
     </div>
 {% endfor %}
 </div>
+{% endif %}

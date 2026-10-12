@@ -52,6 +52,7 @@ jobs:
 
           if ! git diff --staged --quiet; then
             git commit -m "Auto Update index.html"
+            git pull --rebase origin main
             git push
           else
             echo "index.html 无变化，跳过提交"

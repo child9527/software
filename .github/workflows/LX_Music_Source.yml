@@ -6,8 +6,8 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  check-and-sync:
-    name: 检测上游 Release 并同步
+  sync-guoyue2010:
+    name: 同步 guoyue2010 音源
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -76,13 +76,11 @@ jobs:
         run: |
           TARGET_DIR="lxSources/guoyue2010"
 
-          # 1. 彻底清空原有目录
           echo "🧹 彻底清空 $TARGET_DIR 目录..."
           rm -rf "$TARGET_DIR"
           mkdir -p "$TARGET_DIR"
           mkdir -p temp_unzip
 
-          # 2. 解压文件
           echo "📦 正在解压新文件..."
           if [ -f "archive.7z" ]; then
             sudo apt-get update && sudo apt-get install -y p7zip-full
@@ -91,11 +89,9 @@ jobs:
             unzip -o archive.zip -d temp_unzip/
           fi
 
-          # 3. 递归查找 temp_unzip 内所有 .js 文件，平铺移动到 TARGET_DIR
           echo "🚚 正在提取解压出的 .js 文件..."
           find temp_unzip -type f -name "*.js" -exec mv {} "$TARGET_DIR"/ \;
 
-          # 4. 检查是否成功提取到了文件
           JS_COUNT=$(find "$TARGET_DIR" -maxdepth 1 -name "*.js" | wc -l)
           if [ "$JS_COUNT" -eq 0 ]; then
             echo "❌ 警告：未在解压包中提取到任何 .js 文件！"
@@ -105,24 +101,62 @@ jobs:
           echo "✅ 成功提取到 $JS_COUNT 个 .js 音源文件，列表如下："
           ls -la "$TARGET_DIR"
 
-          # 5. 清理临时解压目录与压缩包
           rm -rf temp_unzip archive.7z archive.zip
 
-          # 6. 更新版本号文件
           echo "${{ steps.check_tag.outputs.latest_tag }}" > lxSources/version.txt
           echo "📝 版本记录更新为: ${{ steps.check_tag.outputs.latest_tag }}"
 
-      - name: 提交更新到仓库
+      - name: 提交 guoyue2010 更新
         if: steps.check_tag.outputs.should_run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add -A lxSources
+          git add -A lxSources/guoyue2010 lxSources/version.txt
           if ! git diff --staged --quiet; then
             git commit -m "Auto Sync lxSources/guoyue2010 to upstream release ${{ steps.check_tag.outputs.latest_tag }}"
             git push
             echo "✅ 成功更新至上游最新版本 ${{ steps.check_tag.outputs.latest_tag }}！"
           else
             echo "ℹ️ 解压内容与本地一致，无需提交。"
+          fi
+
+  sync-pdone:
+    name: 同步 pdone 音源
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: 同步 pdone/lx-music-source
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/sync_pdone.py
+
+      - name: 提交 pdone 更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add -A lxSources/pdone
+          if ! git diff --staged --quiet; then
+            NOW_TIME=$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')
+            git commit -m "Auto Sync lxSources/pdone from pdone/lx-music-source at ${NOW_TIME}"
+            git push
+            echo "✅ pdone 音源已更新"
+          else
+            echo "ℹ️ pdone 内容无变化，跳过提交"
           fi

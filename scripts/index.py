@@ -31,6 +31,7 @@ GH_PROXY = "https://gh-proxy.com/"
 # 音源目录
 GUOYUE_DIR = os.path.join("lxSources", "guoyue2010")
 PDONE_DIR = os.path.join("lxSources", "pdone")
+PDONE_UPSTREAM = "pdone/lx-music-source"
 
 OUTPUT = "index.html"
 
@@ -165,14 +166,13 @@ def fetch_guoyue2010_sources():
 
 def fetch_pdone_sources():
     """
-    扫描 lxSources/pdone/{dir}/latest.js
-    用文件内 @name 作为展示名，type=pdone
+    扫描 lxSources/pdone/{dir}/latest.js（本地缓存，用于读 @name）
+    链接指向上游 pdone/lx-music-source 原地址 + gh-proxy
     """
     if not os.path.isdir(PDONE_DIR):
         print(f"⚠️ 未找到音源目录: {PDONE_DIR}")
         return []
 
-    repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     sources = []
 
     for dir_name in sorted(os.listdir(PDONE_DIR)):
@@ -193,10 +193,11 @@ def fetch_pdone_sources():
 
         display_name = parse_js_name(content) or dir_name
 
+        # 使用上游原仓库链接，而不是本仓库镜像
         encoded_dir = quote(dir_name)
         raw_url = (
-            f"https://raw.githubusercontent.com/{repo_name}/main/"
-            f"lxSources/pdone/{encoded_dir}/latest.js"
+            f"https://raw.githubusercontent.com/{PDONE_UPSTREAM}/main/"
+            f"{encoded_dir}/latest.js"
         )
         proxy_url = f"{GH_PROXY}{raw_url}"
 

@@ -153,12 +153,16 @@ MIRRORS = [
 
 GH_PROXY = "https://gh-proxy.com/"
 
+# 访问密码（与 static/js/main.js 中 PASSWORD 保持一致）
+ACCESS_PASSWORD = "bugmenot"
+
 # 音源目录
 GUOYUE_DIR = os.path.join("lxSources", "guoyue2010")
 PDONE_DIR = os.path.join("lxSources", "pdone")
 PDONE_UPSTREAM = "pdone/lx-music-source"
 
 OUTPUT = "index.html"
+ABOUT_OUTPUT = "about.html"
 
 
 # ============================================================
@@ -375,6 +379,17 @@ def main():
         f.write(html)
 
     print(f"index.html 生成成功！共 {len(sections)} 个板块。")
+
+    # 关于页（注入访问密码）
+    about_html = render(
+        "about.html.j2",
+        now=now,
+        access_password=ACCESS_PASSWORD,
+    )
+    with open(ABOUT_OUTPUT, "w", encoding="utf-8") as f:
+        f.write(about_html)
+
+    print(f"about.html 生成成功！")
 
 
 if __name__ == "__main__":

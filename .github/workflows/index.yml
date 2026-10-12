@@ -3,10 +3,6 @@ name: 生成软件仓库首页
 on:
   push:
     paths:
-      - "scripts/index.py"
-      - "scripts/sections.py"
-      - "scripts/renderer.py"
-      - "templates/**"
       - "task/targets.json"
       - "lxSources/**"
       #- ".github/workflows/index.yml"

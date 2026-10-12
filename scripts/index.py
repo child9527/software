@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
 import json
+from typing import Optional
 from urllib.parse import quote
 from datetime import datetime, timezone, timedelta
 
@@ -11,8 +13,7 @@ from github import Github, Auth
 from renderer import render
 from sections import (
     section_software_list,
-    section_copy_cards,
-    section_copy_cards_wide,
+    section_copy_cards_grouped,
 )
 
 
@@ -20,16 +21,17 @@ from sections import (
 # 配置
 # ============================================================
 
-# 镜像前缀
 MIRRORS = [
     ("GH-Proxy", "https://gh-proxy.com/"),
     ("GH-Fast", "https://ghfast.top/"),
 ]
 
-# 音源目录
-LX_SOURCES_DIR = os.path.join("lxSources", "guoyue2010")
+GH_PROXY = "https://gh-proxy.com/"
 
-# 输出文件
+# 音源目录
+GUOYUE_DIR = os.path.join("lxSources", "guoyue2010")
+PDONE_DIR = os.path.join("lxSources", "pdone")
+
 OUTPUT = "index.html"
 
 
@@ -45,6 +47,12 @@ def format_size(size):
         return f"{size/1024:.1f} KB"
     else:
         return f"{size/1024/1024:.1f} MB"
+
+
+def parse_js_name(content: str) -> Optional[str]:
+    """从 JS 文件头解析 @name"""
+    m = re.search(r"@name\s+(.+)", content)
+    return m.group(1).strip() if m else None
 
 
 # ============================================================
@@ -63,11 +71,9 @@ def fetch_release_items():
     repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     repo = g.get_repo(repo_name)
 
-    # 读取 targets.json
     with open("task/targets.json", "r", encoding="utf-8") as f:
         targets = json.load(f)
 
-    # 建立 rawname -> target 的映射，大小写不敏感
     target_map = {}
     for t in targets:
         rn = t.get("rawname", t["name"])
@@ -86,11 +92,8 @@ def fetch_release_items():
             continue
 
         asset = assets[0]
-
-        # 从 tag 反推 rawname：{rawname}-latest -> rawname
         raw_name = tag[:-len("-latest")]
 
-        # 用 rawname 去匹配 targets.json
         t = target_map.get(raw_name.lower())
         if t is None:
             print(f"⚠️ 未找到匹配的 targets.json 项：{tag}，已跳过")
@@ -106,13 +109,11 @@ def fetch_release_items():
         if overview and str(overview).strip():
             description = str(overview).strip()
 
-        # 拼接原始下载链接
         raw_url = (
             f"https://github.com/{repo_name}/releases/download/"
             f"{quote(raw_name)}-latest/{asset.name}"
         )
 
-        # 从上游仓库拿最新版本号
         upstream_repo = g.get_repo(upstream_repo_name)
         upstream_release = upstream_repo.get_latest_release()
         version = upstream_release.tag_name
@@ -132,40 +133,79 @@ def fetch_release_items():
     return items
 
 
-def fetch_lx_sources():
-    """
-    扫描 lxSources/guoyue2010 目录下的所有 .js 文件。
-    返回 [{name, url_literal}]，url_literal 已经过 json.dumps，可直接塞进 JS。
-    """
-    if not os.path.exists(LX_SOURCES_DIR):
-        print(f"⚠️ 未找到音源目录: {LX_SOURCES_DIR}")
+def fetch_guoyue2010_sources():
+    """扫描 lxSources/guoyue2010 下所有 .js，type=guoyue2010"""
+    if not os.path.exists(GUOYUE_DIR):
+        print(f"⚠️ 未找到音源目录: {GUOYUE_DIR}")
         return []
 
     repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
     sources = []
 
-    for fname in os.listdir(LX_SOURCES_DIR):
+    for fname in os.listdir(GUOYUE_DIR):
         if not fname.endswith(".js"):
             continue
 
-        # 对文件名做 URL 编码（防中文/空格）
         encoded_fname = quote(fname)
-
         raw_url = (
             f"https://raw.githubusercontent.com/{repo_name}/main/"
             f"lxSources/guoyue2010/{encoded_fname}"
         )
-        gh_proxy_url = f"https://gh-proxy.com/{raw_url}"
+        proxy_url = f"{GH_PROXY}{raw_url}"
 
-        # 展示名去掉 .js 后缀
-        display_name = fname[:-3]
+        sources.append({
+            "name": fname[:-3],
+            "type": "guoyue2010",
+            "url_literal": json.dumps(proxy_url, ensure_ascii=False),
+        })
+
+    sources.sort(key=lambda x: len(x["name"]))
+    return sources
+
+
+def fetch_pdone_sources():
+    """
+    扫描 lxSources/pdone/{dir}/latest.js
+    用文件内 @name 作为展示名，type=pdone
+    """
+    if not os.path.isdir(PDONE_DIR):
+        print(f"⚠️ 未找到音源目录: {PDONE_DIR}")
+        return []
+
+    repo_name = os.getenv("GITHUB_REPOSITORY", "child9527/software")
+    sources = []
+
+    for dir_name in sorted(os.listdir(PDONE_DIR)):
+        dir_path = os.path.join(PDONE_DIR, dir_name)
+        if not os.path.isdir(dir_path):
+            continue
+
+        latest_path = os.path.join(dir_path, "latest.js")
+        if not os.path.isfile(latest_path):
+            continue
+
+        try:
+            with open(latest_path, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+        except Exception as e:
+            print(f"  读取失败 {dir_name}: {e}")
+            continue
+
+        display_name = parse_js_name(content) or dir_name
+
+        encoded_dir = quote(dir_name)
+        raw_url = (
+            f"https://raw.githubusercontent.com/{repo_name}/main/"
+            f"lxSources/pdone/{encoded_dir}/latest.js"
+        )
+        proxy_url = f"{GH_PROXY}{raw_url}"
 
         sources.append({
             "name": display_name,
-            "url_literal": json.dumps(gh_proxy_url, ensure_ascii=False),
+            "type": "pdone",
+            "url_literal": json.dumps(proxy_url, ensure_ascii=False),
         })
 
-    # 按文件名长度排序
     sources.sort(key=lambda x: len(x["name"]))
     return sources
 
@@ -175,33 +215,15 @@ def fetch_lx_sources():
 # ============================================================
 
 def build_sections():
-    """
-    组装所有板块。
-
-    以后新增板块，只改这里：
-        sections.append(section_xxx("板块标题", 数据))
-    """
     sections = []
 
     # 板块 1：软件自动更新列表
     items = fetch_release_items()
     sections.append(section_software_list("🚀 软件自动更新列表", items))
 
-    # 板块 2：洛雪音乐音源
-    lx_sources = fetch_lx_sources()
-    sections.append(section_copy_cards("🎵 洛雪音乐音源", lx_sources))
-
-    # 板块 3：复制规则（暂时注释，以后要加时打开）
-    # 示例：
-    # with open("scripts/extension_js.txt", "r", encoding="utf-8") as f:
-    #     js_text = f.read()
-    # sections.append(section_copy_cards_wide("📋 规则及配置", [
-    #     {
-    #         "name": "Clash Verge Rev全局扩展覆写脚本",
-    #         "js_var": "EXTENSION_JS_TEXT",
-    #         "content_literal": json.dumps(js_text, ensure_ascii=False),
-    #     },
-    # ]))
+    # 板块 2：洛雪音乐音源（带 guoyue2010 / pdone 分类）
+    lx_items = fetch_guoyue2010_sources() + fetch_pdone_sources()
+    sections.append(section_copy_cards_grouped("🎵 洛雪音乐音源", lx_items))
 
     return sections
 
@@ -217,10 +239,10 @@ def main():
     sections = build_sections()
 
     html = render(
-    "base.html.j2",
-    sections=sections,
-    now=now,
-    page_title="软件中心",
+        "base.html.j2",
+        sections=sections,
+        now=now,
+        page_title="软件中心",
     )
 
     with open(OUTPUT, "w", encoding="utf-8") as f:

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>一餐打不死 · 关于本站</title>
+<link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+<!-- 密码门 -->
+<div id="auth-gate" class="auth-gate">
+    <div class="auth-box">
+        <h2>请输入访问密码</h2>
+        <input type="password" id="auth-input" placeholder="密码" autocomplete="current-password">
+        <button type="button" id="auth-btn">确认</button>
+        <div id="auth-error" class="auth-error"></div>
+    </div>
+</div>
+
+<!-- 导航栏 -->
+<div class="navbar">
+    <a href="https://child9527.github.io/">首页</a>
+    <a href="https://child9527.github.io/software/">软件中心</a>
+    <a href="https://child9527.github.io/tvbox/">TVbox订阅</a>
+    <a href="https://child9527.github.io/clash-latest/">科学订阅</a>
+    <a href="https://child9527.github.io/software/about.html">关于本站</a>
+</div>
+
+<!-- 内容区块 -->
+<div class="section">
+    <h2>关于本站</h2>
+
+    <div class="card" style="display:block;">
+        <div class="name">简介</div>
+        <p class="desc">
+            本页面由 GitHub Pages 自动托管，所有页面均通过 GitHub Actions 自动构建与部署。
+            本站包含软件中心、TVBox 工具集以及其他自动化内容，旨在提供稳定、持续更新的工具与资源。
+        </p>
+        <div class="footer" style="margin-top:12px;text-align:right;">——by 一餐打不死</div>
+    </div>
+
+    <div class="card" style="display:block;">
+        <div class="name">自动化构建流程</div>
+        <p class="desc">
+            本站的所有内容均由自动化脚本生成。
+            GitHub Actions 会自动执行以下流程：
+        </p>
+        <p class="desc">
+            1. 检查上游仓库最新 Releases<br>
+            2. 自动同步版本信息<br>
+            3. 自动生成软件中心页面<br>
+            4. 自动生成 TVBox 页面<br>
+            5. 自动部署到 <strong>child9527.github.io</strong>
+        </p>
+    </div>
+
+    <div class="card" style="display:block;">
+        <div class="name">Software 页面</div>
+        <p class="desc">
+            包含了大量自用软件（Win64、Android 平台），页面底部收集了洛雪音乐大量音源接口。
+        </p>
+    </div>
+
+    <div class="card" style="display:block;">
+        <div class="name">TVBox 页面</div>
+        <p class="desc">
+            自动更新影视仓 App 目前流行的订阅，需要下载
+            <a class="btn" href="https://gh-proxy.com/https://github.com/child9527/software/releases/download/%E5%BD%B1%E8%A7%86%E4%BB%93/Ysc_6.2.0.apk" target="_blank" rel="noopener noreferrer">影视仓</a>
+            使用。
+        </p>
+    </div>
+
+    <div class="card" style="display:block;">
+        <div class="name">页面生成机制</div>
+        <p class="desc">
+            所有页面均由 Python 脚本自动生成，包括：
+        </p>
+        <p class="desc">
+            - Software 页面（图标、简介、版本号、下载链接）<br>
+            - TVBox 页面（接口、订阅源、配置文件）<br>
+            - 首页导航与布局<br>
+            - 本页面（About）<br>
+            - 访问密码是：<strong>bugmenot</strong>
+        </p>
+        <p class="desc">
+            无需手动编辑 HTML，所有内容均由脚本自动构建。
+        </p>
+    </div>
+
+    <div class="footer">
+        自动生成时间：2026-10-13 01:41:51
+    </div>
+</div>
+
+<script src="static/js/main.js"></script>
+
+</body>
+</html>

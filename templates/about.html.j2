@@ -9,16 +9,6 @@
 
 <body>
 
-<!-- 密码门 -->
-<div id="auth-gate" class="auth-gate">
-    <div class="auth-box">
-        <h2>请输入访问密码</h2>
-        <input type="password" id="auth-input" placeholder="密码" autocomplete="current-password">
-        <button type="button" id="auth-btn">确认</button>
-        <div id="auth-error" class="auth-error"></div>
-    </div>
-</div>
-
 <!-- 导航栏 -->
 <div class="navbar">
     <a href="https://child9527.github.io/">首页</a>
@@ -28,7 +18,7 @@
     <a href="https://child9527.github.io/software/about.html">关于本站</a>
 </div>
 
-<!-- 内容区块 -->
+<!-- 内容区块（无密码门，直接可读） -->
 <div class="section">
     <h2>关于本站</h2>
 
@@ -93,8 +83,6 @@
         自动生成时间：{{ now }}
     </div>
 </div>
-
-<script src="static/js/main.js"></script>
 
 </body>
 </html>

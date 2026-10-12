@@ -3,7 +3,6 @@ name: 生成软件仓库首页
 on:
   push:
     paths:
-      - "task/targets.json"
       - "lxSources/**"
       #- ".github/workflows/index.yml"
   workflow_run:

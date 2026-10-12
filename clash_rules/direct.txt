@@ -31,3 +31,4 @@ ghproxy.vip
 ghfast.top
 blfrp.cn
 github.io
+indevs.in

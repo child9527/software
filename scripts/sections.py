@@ -80,6 +80,21 @@ def section_copy_cards(title, items):
     }
 
 
+def section_copy_cards_grouped(title, items):
+    """
+    带分类筛选按钮的复制型卡片板块。
+    items 每项需有 type 字段（如 guoyue2010 / pdone）。
+    """
+    types = list(dict.fromkeys([it["type"] for it in items if it.get("type")]))
+    return {
+        "title": title,
+        "type": "copy_cards_grouped",
+        "items": items,
+        "types": types,
+        "first_type": types[0] if types else None,
+    }
+
+
 def section_copy_cards_wide(title, items):
     """
     复制型卡片（单行大卡片）板块，支持多张。
@@ -90,20 +105,6 @@ def section_copy_cards_wide(title, items):
             "js_var":          JS 变量名（英文，全局唯一，如 "EXTENSION_JS_TEXT"）,
             "content_literal": 已经过 json.dumps 的 JS 字符串字面量,
         }
-
-    示例：
-        section_copy_cards_wide("📋 规则及配置", [
-            {
-                "name": "Clash Verge Rev全局扩展覆写脚本",
-                "js_var": "EXTENSION_JS_TEXT",
-                "content_literal": json.dumps(js_text, ensure_ascii=False),
-            },
-            {
-                "name": "Clash 配置模板",
-                "js_var": "CLASH_CONFIG_TEXT",
-                "content_literal": json.dumps(config_text, ensure_ascii=False),
-            },
-        ])
     """
     return {
         "title": title,

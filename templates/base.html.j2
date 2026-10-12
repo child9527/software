@@ -37,6 +37,8 @@
         {% include "components/software_list.html.j2" %}
     {% elif section.type == "copy_cards" %}
         {% include "components/copy_cards.html.j2" %}
+    {% elif section.type == "copy_cards_grouped" %}
+        {% include "components/copy_cards_grouped.html.j2" %}
     {% elif section.type == "copy_cards_wide" %}
         {% include "components/copy_cards_wide.html.j2" %}
     {% endif %}

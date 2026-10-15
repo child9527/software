@@ -147,11 +147,11 @@ def section_copy_cards_wide(title, items):
 # ============================================================
 
 MIRRORS = [
-    ("GH-Proxy", "https://gh-proxy.com/"),
+    ("GH-Proxy", "https://v4.gh-proxy.org/"),
     ("GH-Fast", "https://ghfast.top/"),
 ]
 
-GH_PROXY = "https://gh-proxy.com/"
+GH_PROXY = "https://v4.gh-proxy.org/"
 
 # 访问密码（与 static/js/main.js 中 PASSWORD 保持一致）
 ACCESS_PASSWORD = "bugmenot"

@@ -10,7 +10,7 @@ from github import Github, Auth
 
 # 固定镜像列表（顺序即展示顺序，第一个带闪电推荐图标）
 MIRRORS = [
-    ("GH-Proxy Com", "https://gh-proxy.com/"),
+    ("GH-Proxy Com", "https://v4.gh-proxy.org/"),
     ("GHfast", "https://ghfast.top"),
     ("DDLC 镜像", "https://gh.ddlc.top/"),
 ]

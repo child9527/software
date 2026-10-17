@@ -153,7 +153,12 @@ MIRRORS = [
 
 GH_PROXY = "https://v4.gh-proxy.org/"
 
-# 访问密码（与 static/js/main.js 中 PASSWORD 保持一致）
+# 访问密码明文（用户在输入框里输入这个）
+# 与 static/js/main.js 中 PASSWORD 对应关系：
+#   main.js 存的是本字符串的 base64（当前为 YnVnbWVub3Q=）
+# 修改密码时请同步改：
+#   1) 本处 ACCESS_PASSWORD
+#   2) 三个仓库 static/js/main.js 里的 PASSWORD = btoa(新明文)
 ACCESS_PASSWORD = "bugmenot"
 
 # 音源目录

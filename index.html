@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>一餐打不死 · 软件中心</title>
+<script>
+(function () {
+    try {
+        var raw = localStorage.getItem('child9527_auth');
+        if (!raw) return;
+        var data = JSON.parse(raw);
+        if (!data || !data.time) return;
+        if (Date.now() - data.time < 90 * 24 * 60 * 60 * 1000) {
+            document.documentElement.classList.add('authed');
+        }
+    } catch (e) {}
+})();
+</script>
 <link rel="stylesheet" href="static/css/style.css">
 </head>
 
@@ -43,25 +56,25 @@
 <div class="card" data-type="Win64">
     <div>
         <div class="name">FlClash Windows</div>
-        <div class="version">版本号：v0.9.0</div>
-        <div class="size">文件大小：64.9 MB</div>
+        <div class="version">版本号：v0.9.1</div>
+        <div class="size">文件大小：65.5 MB</div>
         <div class="desc">Windows平台下的Clash类软件，但是不推荐使用。因为Clash Verge Rev比它更好用</div>
 
-        <a class="btn" href="https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.0-windows-amd64.zip">原始下载</a>
-        <a class="btn" href="https://v4.gh-proxy.org/https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.0-windows-amd64.zip">GH-Proxy</a>
-        <a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.0-windows-amd64.zip">GH-Fast</a>
+        <a class="btn" href="https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.1-windows-amd64.zip">原始下载</a>
+        <a class="btn" href="https://v4.gh-proxy.org/https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.1-windows-amd64.zip">GH-Proxy</a>
+        <a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flClash-windows-latest/FlClash-0.9.1-windows-amd64.zip">GH-Fast</a>
     </div>
 </div>
 <div class="card hidden" data-type="Android">
     <div>
         <div class="name">FlClash Android</div>
-        <div class="version">版本号：v0.9.0</div>
-        <div class="size">文件大小：58.6 MB</div>
+        <div class="version">版本号：v0.9.1</div>
+        <div class="size">文件大小：58.1 MB</div>
         <div class="desc">Android平台下的Clash类软件，推荐使用，比ClashMeta更方便，更适用</div>
 
-        <a class="btn" href="https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.0-android-arm64-v8a.apk">原始下载</a>
-        <a class="btn" href="https://v4.gh-proxy.org/https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.0-android-arm64-v8a.apk">GH-Proxy</a>
-        <a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.0-android-arm64-v8a.apk">GH-Fast</a>
+        <a class="btn" href="https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.1-android-arm64-v8a.apk">原始下载</a>
+        <a class="btn" href="https://v4.gh-proxy.org/https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.1-android-arm64-v8a.apk">GH-Proxy</a>
+        <a class="btn" href="https://ghfast.top/https://github.com/child9527/software/releases/download/flClash-android-latest/FlClash-0.9.1-android-arm64-v8a.apk">GH-Fast</a>
     </div>
 </div>
 <div class="card" data-type="Win64">
@@ -445,7 +458,7 @@
 </div>
 
 <div class="footer">
-    自动生成时间：2026-10-17 15:20:26
+    自动生成时间：2026-10-18 15:34:34
 </div>
 </div>
 

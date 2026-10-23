@@ -8,6 +8,14 @@
     "overview": "Windows平台下的Clash类软件，但是不推荐使用。因为Clash Verge Rev比它更好用"
   },
   {
+    "name": "极速播TV",
+    "rawname": "JSB_TV",
+    "repo": "child9527/software",
+    "asset_pattern": "^JSB.*\\.apk$",
+    "type": "Android",
+    "overview": "很稳定的直播软件，后台持续更新直播源，不卡顿。缺点是有广告台"
+  },
+  {
     "name": "FlClash Android",
     "rawname": "flClash-android",
     "repo": "chen08209/FlClash",

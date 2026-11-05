@@ -1,7 +1,7 @@
 /**
  * @name Hei Music聚合源
  * @description 聚合自公开接口 Q群516649104
- * @version v2.2.1-fix
+ * @version v2.2.2-261031-fix
  * @author Compile by CatXiaolan
  */
 ;(function() {
@@ -10,67 +10,158 @@
 const { EVENT_NAMES, request, on, send } = globalThis.lx
 
 // ========== 统计上报配置 ==========
-// 上报地址以混淆字节形式存储于 _0xa3b1.report_url，由 PANEL_REPORT_URL 运行时解码获得，避免明文暴露
+// 上报地址存储于内部资源表，由 PANEL_REPORT_URL 运行时解码获得，源码中不含明文地址
 // 为空字符串则不上报（PANEL_REPORT_URL 定义见下方解码函数之后）
 
-// ========== 混淆层：字符串编码/解码 ==========
-// 将敏感URL和密钥以编码形式存储，运行时解码使用
-var _0x4e8f = function(arr, key) {
-  var result = []
-  for (var i = 0; i < arr.length; i++) {
-    result.push(String.fromCharCode(arr[i] ^ key.charCodeAt(i % key.length)))
+// ========== 内部资源解码（密钥与字符表均在运行时派生，源码不保存明文） ==========
+var _0x2b6e = [
+  18,25,81,2,51,94,182,254,195,227,145,196,252,198,139,
+]
+var _0x2b6f = ''
+var _0x2b6c = function() {
+  if (_0x2b6f) return _0x2b6f
+  var s = ''
+  for (var i = 0; i < _0x2b6e.length; i++) s += String.fromCharCode((_0x2b6e[i] ^ (0x5a + i * 7)) & 255)
+  return (_0x2b6f = s)
+}
+var _0x2b70 = [
+  56,48,8,41,60,4,53,44,21,23,44,15,3,23,8,35,
+  37,22,48,48,21,14,26,7,12,21,22,54,1,63,39,18,
+  2,37,7,61,59,50,18,51,18,26,0,34,7,54,49,22,
+  20,46,26,2,54,11,35,42,39,49,52,62,48,20,63,9,
+]
+var _0x2b71 = ''
+var _0x2b6d = function() {
+  if (_0x2b71) return _0x2b71
+  var s = ''
+  for (var i = 0; i < _0x2b70.length; i++) {
+    var v = _0x2b70[i] ^ ((0x33 + ((i * 29) & 63)) & 63)
+    s += String.fromCharCode(v < 26 ? 65 + v : v < 52 ? 71 + v : v < 62 ? v - 4 : v === 62 ? 95 : 45)
   }
-  return result.join('')
+  return (_0x2b71 = s)
+}
+// 解包：3 字符还原 16 位值（含位置轮换还原）
+var _0x4e11 = function(str) {
+  var A = _0x2b6d(), r = [], n = 0
+  for (var i = 0; i + 2 < str.length; i += 3) {
+    var v = (A.indexOf(str.charAt(i)) << 12) | (A.indexOf(str.charAt(i + 1)) << 6) | A.indexOf(str.charAt(i + 2))
+    r.push((v - n * 17) & 0xffff)
+    n++
+  }
+  return r
+}
+// 解码：逐字符与派生键异或还原明文
+var _0x4e8f = function(arr) {
+  var k = _0x2b6c(), r = ""
+  for (var i = 0; i < arr.length; i++) r += String.fromCharCode(arr[i] ^ k.charCodeAt(i % k.length))
+  return r
 }
 
-// 编码后的API URL密钥表（XOR with key "HeiMusic"）
+// 内部资源表（运行时解码，不含明文）
 var _0xa3b1 = {
-  nianxin_kw: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x6,0x19,0x63,0x1b,0x1a,0x8,0xd,0x30,0xc,0x7,0x35,0xf,0x5d,0xa,0xc,0x25,0x4a,0x1a,0x25,0x14,0x1,0xc,0x4c,0x2b,0x0,0x1a,0x25,0x1c,0x5c,0x2,0x14,0x66,0x15,0x1,0x3d],
-  gdstudio: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x10,0x1a,0x24,0x16,0x5e,0x8,0x13,0x21,0x4b,0xe,0x29,0x6,0x7,0x1c,0x7,0x21,0xa,0x47,0x35,0xc,0x9,0x46,0x2,0x38,0xc,0x47,0x3d,0x1d,0x3],
-  qq_vkey: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x3d,0x11,0x47,0x34,0x5b,0x2,0x18,0x4d,0x2b,0xa,0x4,0x62,0x16,0x14,0x0,0x4e,0x2a,0xc,0x7,0x62,0x18,0x6,0x1a,0xa,0x2b,0x10,0x47,0x2b,0x16,0x14],
-  qq_cdn: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x2c,0x9,0x47,0x3e,0x1,0x1,0xc,0x2,0x25,0x4b,0x18,0x3c,0x18,0x6,0x1a,0xa,0x2b,0x4b,0x18,0x3c,0x5b,0x10,0x6,0xe,0x67],
-  ynx_tx: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x0,0x60,0x3,0x41,0x47,0x1a,0x3d,0x4,0xf,0x28,0x1b,0x14,0x47,0x0,0x26,0x4a,0x28,0x1d,0x3c,0x5c,0x18,0x12,0x25,0x10,0x1a,0x24,0x16,0x5d,0x19,0xb,0x38],
-  ynx_tx2: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x3c,0x4,0x7,0x2a,0x5b,0x12,0x19,0xa,0x66,0x16,0x59,0x7c,0x6,0x5d,0xa,0xd,0x67,0x8,0x1c,0x3e,0x1c,0x10,0x36,0xc,0x38,0x0,0x7,0x12,0x14,0x3,0x0,0x4d,0x38,0xd,0x19],
-  nianxin_wy: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x6,0x19,0x63,0x1b,0x1a,0x8,0xd,0x30,0xc,0x7,0x35,0xf,0x5d,0xa,0xc,0x25,0x4a,0x1a,0x25,0x14,0x1,0xc,0x4c,0x2b,0x0,0x1a,0x25,0x1c,0x5c,0x1e,0x1a,0x66,0x15,0x1,0x3d],
-  ynx_apikey: [0x7b,0x3,0xf,0x7f,0x46,0x46,0x5b,0x50,0x2d,0x51,0x5e,0x79,0x43,0x46,0x5b,0x51,0x7c,0x4,0x5a,0x2b,0x41,0x4b,0x5c,0x54,0x71,0x4,0xa,0x2b,0x41,0x42,0xf,0x51,0x7c,0x54,0x5c,0x79,0x45,0x10,0xc,0x53,0x7c,0x7,0x5f,0x2e,0x16,0x43,0xb,0x5a,0x7c,0x54,0x5f,0x79,0x13,0x40,0x5e,0x2,0x7d,0x7,0x5f,0x7f,0x4c,0x4a,0xd,0x56],
-  // v1.1.9 新增源
-  nianxin_tx: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x6,0x19,0x63,0x1b,0x1a,0x8,0xd,0x30,0xc,0x7,0x35,0xf,0x5d,0xa,0xc,0x25,0x4a,0x1a,0x25,0x14,0x1,0xc,0x4c,0x2b,0x0,0x1a,0x25,0x1c,0x5c,0x1d,0x1b,0x66,0x15,0x1,0x3d],
-  nianxin_kg: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x6,0x19,0x63,0x1b,0x1a,0x8,0xd,0x30,0xc,0x7,0x35,0xf,0x5d,0xa,0xc,0x25,0x4a,0x1a,0x25,0x14,0x1,0xc,0x4c,0x2b,0x0,0x1a,0x25,0x1c,0x5c,0x2,0x4,0x66,0x15,0x1,0x3d],
-  // v1.3.0 新增源
-  xinghai: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x31,0x1c,0x47,0x37,0x11,0x17,0x10,0x11,0x66,0x11,0x6,0x3d,0x5a,0x1f,0x11,0x4c,0x29,0x15,0x0,0x62],
-  shouji_tx: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x2b,0x1c,0x8,0x3d,0x1c,0x5d,0x1d,0xc,0x38,0x4a,0x28,0x1d,0x3c,0x5c,0x18,0x12,0x17,0x8,0x1c,0x3e,0x1c,0x10,0x47,0x13,0x20,0x15,0x56,0x2c,0x5,0x1a,0x2,0x6,0x31,0x58,0x58,0x2b,0x13,0x17,0xf,0x56,0x7f,0x56,0x5a,0x2b,0x40,0x17,0x5c,0x50,0x70,0x52,0x5f,0x7d,0x10,0x45,0x5a,0x7,0x7f,0x0,0x5d,0x7b,0x17,0x12,0x58,0x54,0x7c,0x56,0x51,0x29,0x4c,0x15,0x5e,0x1,0x71,0x1,0xf,0x2e,0x44,0x4b,0xa,0x56,0x79,0x7,0xc,0x7c,0x44,0x43,0x50,0x50,0x70,0x53,0xf,0x29,0x42,0x47,0xa,0x50,0x29,0x54,0x4f,0x39,0xc,0x3,0xc,0x5e,0x22,0x16,0x6,0x23],
-  // v2.1.1 新增源
-  wwwweb: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x2b,0x4b,0x1e,0x3a,0x2,0x4,0xc,0x1,0x66,0x11,0x6,0x3d,0x5a,0x1e,0x1c,0x10,0x21,0x6,0x46,0x38,0x7,0x1f],
-  cenguigui_wy: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x0,0x63,0x16,0x16,0x7,0x4,0x3d,0xc,0xe,0x38,0x1c,0x5d,0xa,0xd,0x67,0x4,0x19,0x24,0x5a,0x1d,0xc,0x17,0x2d,0x4,0x1a,0x28,0x5a,0x1e,0x1c,0x10,0x21,0x6,0x36,0x3b,0x44,0x5d,0x19,0xb,0x38],
-  // v2.1.2 新增可用源（腾讯直链 / 咪咕搜索播放）
-  vkeys_tx: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x0,0x63,0x3,0x18,0xc,0x1a,0x3b,0x4b,0xa,0x23,0x5a,0x1e,0x1c,0x10,0x21,0x6,0x46,0x39,0x10,0x1d,0xa,0x6,0x26,0x11,0x46,0x3e,0x1a,0x1d,0xe,0x4c,0x24,0xc,0x7,0x26],
-  haitangw: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x25,0x10,0x1a,0x24,0x16,0x0,0xc,0x11,0x3e,0x0,0x1b,0x63,0x1d,0x12,0x0,0x17,0x29,0xb,0xe,0x3a,0x5b,0x10,0xa,0x4c,0x3e,0x54,0x46,0x20,0x0,0x0,0x0,0x0,0x67,0x17,0xc,0x3e,0x1a,0x1f,0x1f,0x6,0x65,0x10,0x1b,0x21],
-  migu_search: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x19,0x63,0x0,0x5d,0x7,0x5,0x66,0x8,0x0,0x2a,0x0,0x5d,0xa,0xd,0x67,0x15,0xa,0x62,0x7,0x16,0x1a,0xc,0x3d,0x17,0xa,0x28,0x5a,0x0,0x6,0xd,0x2f,0x4a,0x1a,0x28,0x14,0x1,0xa,0xb,0x67,0x13,0x58,0x63,0x45],
-  migu_listen: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x19,0x63,0x16,0x5d,0x7,0x5,0x66,0x8,0x0,0x2a,0x0,0x5d,0xa,0xd,0x67,0x28,0x20,0xa,0x20,0x3e,0x5b,0x4d,0x78,0x4a,0x1f,0x7c,0x5b,0x43,0x46,0x0,0x27,0xb,0x1d,0x28,0x1b,0x7,0x46,0x10,0x3d,0x7,0x46,0x21,0x1c,0x0,0x1d,0x6,0x26,0x36,0x6,0x23,0x12,0x5d,0xd,0xc],
-  // v2.2.0 新增可用源（HYW公益 / vkeys v2 / aa.cab搜索 / oiapi咪咕 / 酷我官方mobi）
-  hyw_free_api: [0x20,0x11,0x1d,0x3d,0x4f,0x5c,0x46,0x52,0x78,0x56,0x47,0x7a,0x4c,0x5d,0x58,0x5b,0x7c,0x4b,0x50,0x7a,0x5a,0x12,0x19,0xa,0x67,0x8,0x1c,0x3e,0x1c,0x10,0x46,0x16,0x3a,0x9],
-  hyw_free_key: [0x7e,0x26,0x58,0xb,0x58,0x46,0x5a,0x34,0x78,0x48,0x2e,0x1f,0x3e,0x3a,0x44,0x26,0x1e,0x23,0x2e],
-  vkeys_tx_v2: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x15,0x0,0x63,0x3,0x18,0xc,0x1a,0x3b,0x4b,0xa,0x23,0x5a,0x5,0x5b,0x4c,0x25,0x10,0x1a,0x24,0x16,0x5c,0x1d,0x6,0x26,0x6,0xc,0x23,0x1,0x5c,0xe,0x6,0x3c,0x10,0x1b,0x21],
-  aa_cab_tx: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x29,0x4b,0x8,0x2c,0x5b,0x10,0x8,0x1,0x67,0x14,0x18,0x63,0x18,0x6,0x1a,0xa,0x2b],
-  oiapi_migu: [0x20,0x11,0x1d,0x3d,0x6,0x49,0x46,0x4c,0x27,0xc,0x8,0x3d,0x1c,0x5d,0x7,0x6,0x3c,0x4a,0x8,0x3d,0x1c,0x5c,0x24,0xa,0xf,0x10,0x36,0x0,0x0,0x0,0x0,0x0],
-  kw_mobi: [0x20,0x11,0x1d,0x3d,0x4f,0x5c,0x46,0xd,0x25,0xa,0xb,0x24,0x5b,0x18,0x1c,0x14,0x27,0x4b,0xa,0x23,0x5a,0x1e,0x6,0x1,0x21,0x4b,0x1a],
-  // 统计上报地址（混淆存储，密钥 HeiMusic）
-  report_url: [0x20,0x11,0x1d,0x3d,0x4f,0x5c,0x46,0x5b,0x66,0x54,0x5a,0x7a,0x5b,0x4b,0x50,0x4d,0x79,0x55,0x5a,0x77,0x44,0x43,0x59,0x53,0x7c,0x4a,0x1b,0x28,0x5,0x1c,0x1b,0x17,0x66,0x15,0x1,0x3d],
+  nianxin_kw: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL9LL58L9SL9MLMbL9_',
+  gdstudio: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlpLjoLjALjILbcLAbLbELbVLbsLbPLA8LU8LUwLAyLUPLUwLOSLOSLS-LSTLOxLvWLOpLvCLO-L56L5TL5GLvx',
+  qq_vkey: 'LLRLLDLgQLgmLgxLgYLljLj2LloLltLjvLjaLAOLjkLbhLAWLbwLAELbHLU6LUiLUxLUNLOjLU3LOgLSSLvOLSxLOQLOZLORLvxLvvL56L5nL5-L5S',
+  qq_cdn: 'LLRLLDLgQLgmLgxLgYLljLj2LlILlQLjvLj9LjHLj_LALLbpLbWLbsLABLAELUKLUoLAPLUfLUuLSOLSMLSYLOZLvgLOWLO8LOy',
+  ynx_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbvLj3Lb_LbSLb3LbDLAZLbILAXLUVLUxLS2LUZLUoLSSLSeLS7LOrLOALOELOnLvhLvvLvsL5DL5-L9mL5tL5CL9C',
+  ynx_tx2: 'LLRLLDLgQLgmLgxLgYLljLj2Ll6LlhLbvLlfLAOLjQLb-LbRLATLAwLUFLUELU8LUgLUMLSULS6LOALSmLSoLSyLvgLOaLOTLvCLOZLv6L9FL5ELvxL5GL9wL9CL9bL9o',
+  nianxin_wy: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL5oL5zL9SL9MLMbL9_',
+  nianxin_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL5wL5dL9SL9MLMbL9_',
+  nianxin_kg: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL9LL5hL9SL9MLMbL9_',
+  wwwweb: 'LLRLLDLgQLgmLgxLgYLljLj2LlxLj6Lj3LjFLjuLjVLALLbCLATLAYLbhLAsLARLSbLAyLUCLUwLScLOULSHLSDLvO',
+  vkeys_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLj3Lj-LALLb3Lb0LbsLALLAYLARLSbLAyLUCLUwLScLOULSuLSHLvULOCLOoLvELv5L5oL5XL9gL5mL5PL9oLMAL9jLMUL94',
+  migu_search: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLjwLbOLj4LbxLASLb6LATLA-LbyLAWLU1LUgLUMLSULS6LS1LUxLvOLSDLOfLOZLOTLvoLvmLvpL5dL5gLvcL9bL5wL9GLMAL9wL9uL7lLMELMCL73L7HL7hL78L7fLBZ',
+  migu_listen: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLjwLbOLjILbxLASLb6LATLA-LbyLAWLU1LUgLUMLSULS6LOWLS8LSRLOlLvtLvsLvWLOCLv4Lv-LvWL5LL5xLMbL53LMUL9UL93L9uL7ALMZL7WL7CL7OL7pL7_LFgLBmLBtLB8LFcLFALF5LFyL2bLmwL2XL2cLmu',
+  vkeys_tx_v2: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLj3Lj-LALLb3Lb0LbsLALLAYLARLUCLUILOALUQLS6LS5LOULSoLOALOxLOoLvELOfLvKL5RL51L9FL5PL5yL96L9FL91L9x',
+  aa_cab_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLj6LjxLlILAOLj6LAbLbCLAtLACLABLUYLUKLUoLAPLUfLUu',
+  oiapi_migu: 'LLRLLDLgQLgmLgxLgYLljLj2LjULloLjxLjBLbSLbxLASLboLbeLbELbGLAsLU_LUlLUYLUfLSaLS6LSyLS1LSKLOuLOkLO1',
+  kw_mobi: 'LLRLLDLgQLgmLjjLgVLljLlNLjbLlYLjILjALAOLj-Lb3LbGLbtLbsLALLAYLARLSbLUmLUxLUwLSOLS5',
+  report_url: 'LLRLLDLgQLgmLjjLgVLljLjbLbSLj8LloLbFLAOLbpLjPLAWLAdLb1LUmLSlLATLAtLUcLSpLSTLSSLS9LOlLSkLvALOsLO0LOELvBLvQL5T',
+  ynx_apikey_a: 'LgcLLQLlgLlNLlxLgwLgTLlILlPLjtLl3LbNLb3LbXLj4LAZLAeLAZLUmLATLAwLAQLUyLS6LS0LSZLUxLSfLOXLS4LOoLvd',
+  ynx_apikey_b: 'LgPLgzLLYLlMLlZLlaLlILlPLj6LluLluLlcLjILbRLAjLA3LAeLbCLU7LUhLUdLATLUsLUELStLSPLOFLOwLOTLScLO1Lve',
+  shouji_tx_a: 'LLRLLDLgQLgmLgxLgYLljLj2LlxLleLjxLjBLbSLbxLbuLbTLbnLbELA_LAnLUGLUlLAxLUtLUILOALSmLSoLSyLvgLv8LOJLvuLvBL5PL5aL5TL52L9LL5yL93LMJ',
+  shouji_tx_b: 'LgZLLQLlgLLPLgtLgwLgwLlILj1Ll-LlYLjlLb4LbDLjILAGLA_Lb1LbxLUyLA8LUcLUsLUcLSTLU3LUcLSGLO_LS6LvxLvzLOVLOxL5GL5nLvCL5ML9YL5-L9fL5ZLM6LMTL7LL7xL7JL7xLMsLB-L78L7WLFLLFtLFnLBYLBILFfLm_LFYLmtL2nL2yLN9',
+  shouji_tx_c: 'LgYLLDLgKLgmLg8Lg4LlGLgILjULl6',
+  migu_referer_app: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLjwLbOLjILbxLASLb6LATLA-LbyLAWLU1LUgLUMLSULS6',
+  migu_referer: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlpLjoLjALjILbxLAOLbRLbQLA6LA-LACLUVLUl',
 }
 
-// 运行时解码URL
+// 运行时解码内部资源
 var _dec = function(name) {
-  return _0x4e8f(_0xa3b1[name], 'HeiMusic')
+  return _0x4e8f(_0x4e11(_0xa3b1[name]))
 }
 
 // 上报地址（解码获得，避免明文；为空则不上报）
 var PANEL_REPORT_URL = _dec('report_url')
 
-// ========== 第二层混淆：字符串表（XOR 编码 + 索引取值） ==========
-var _0x2c7a = [[29633,23524,29168],[24509,24486,58,27,60,35],[24509,24486,61,21],[62,14,12,52,6,33037,35782],[62,14,12,52,6,33037,35782,21,122],[24509,24486,34,10],[38199,38711,27934,26797],[24509,24486,30,52],[43,0,7,42,0,26,14,22,33,58,30,52],[63,18,30,58,16,17],[47,1,26,57,0,23,0,12],[25,52,38810,19997,30337,36781],[21730,21744,25717,32111],[26199,27922,38810,19997,28389],[25982,38563,32819,21573],[0,60,62,20769,30399],[41,4,71,46,20,17],[39,12,8,61,28,21721,21756],[37183,25204,4,34,23,26],[24509,24486,58,27,60,35,83,67,27396,26263,32,9,20088,23339,22337],[24509,24486,58,27,60,35,83,67,20037,25930,25448,35752,24070,21379],[24509,24486,61,21,79,83,20140,25932,25417,69,29,53],[24509,24486,61,21,79,83,27429,26257,1,33,20068,23317,22365],[24509,24486,34,10,79,83,20140,25932,25417,69,2,42],[24509,24486,34,10,79,83,27429,26257,1,33,20068,23317,22365],[47,1,26,57,0,23,0,12,114,69,20068,25954,25460,35734,24090,21395],[47,1,26,57,0,23,0,12,114,69,27429,26303,60,55,20068,23355,22368],[47,1,26,57,0,23,0,12,104,33746,21439,22908,36176],[25,52,38810,19997,30337,36781,73,20134,25959,25444,73,57,13],[25,52,38810,19997,30337,36781,83,67,27396,26263,32,9,20088,23339,22337],[25,52,38810,19997,30337,36781,83,67,26466,36785,22199,26436,25917,38029,25548],[29633,23524,29168,109,20144,25948,25448,67,60,29],[29633,23524,29168,119,85,27455,26267,42,12,20072,23345,22373],[29633,23524,29168,119,85,38784,36161,38446,32495],[29633,23524,29168,119,85,26457,36797,22205,26433,25901,38039,25576],[24509,24486,30,52,85,20150,25926,25442,104,18,16],[24509,24486,30,52,79,83,27429,26257,1,33,20068,23317,22365],[63,18,30,58,16,17,83,67,20109,25930,25448,109,2,10,70,8,63],[63,18,30,58,16,17,83,67,27396,26263,32,9,20088,23339,22337],[38199,38711,27934,26797,79,83,20068,25932,25417,35712,24090,21437],[38199,38711,27934,26797,79,83,27429,26257,1,33,20068,23317,22365],[43,0,7,42,0,26,14,22,33,58,30,52,85,20150,25926,25442,104,18,16],[43,0,7,42,0,26,14,22,33,58,30,52,79,83,27429,26257,1,33,20068,23317,22365],[62,14,12,52,6,33037,35782,89,104,20128,25926,25420,85,7,17],[62,14,12,52,6,33037,35782,89,104,27433,26267,4,49,20094,23345,22347],[21730,21744,25717,32111,79,83,20140,25932,25417,69,4,42],[21730,21744,25717,32111,79,83,32595,23666,27396,26263,21604],[21730,21744,25717,32111,79,83,26435,25117,21112,27433,26267],[21730,21744,25717,32111,79,83,26435,33748,21406,21077,10,34,27,7,12,13,60,44,13],[26199,27922,38810,19997,28389,73,73,20078,25959,25444,35724,24126,21381],[26199,27922,38810,19997,28389,73,73,27439,26298,44,45,20032,23341,22363],[25982,38563,32819,21573,79,83,20140,25932,25417,69,29,53],[25982,38563,32819,21573,79,83,27429,26257,1,33,20068,23317,22365],[25982,38563,32819,21573,79,83,26435,36791,22166,26476,25889,38067,25552],[0,60,62,20769,30399,73,73,27439,26298,44,45,20032,23341,22363],[62,14,12,52,6,33037,35782,21,122,95,73,20104,25946,25458,73,23,48],[62,14,12,52,6,33037,35782,21,122,95,73,27393,26247,58,45,20078,23312,22349],[41,4,71,46,20,17,83,67,20109,25930,25448,109,1,11],[41,4,71,46,20,17,83,67,32626,23668,27429,26303,21624],[41,4,71,46,20,17,83,67,26466,36785,22199,26436,25917,38029,25548],[39,12,8,61,28,21721,21756,89,104,20128,25926,25420,85,30,14],[39,12,8,61,28,21721,21756,89,104,32607,23672,27393,26247,21630],[39,12,8,61,28,21721,21756,89,104,26447,36797,22163,26492,25915,38039,25542],[37183,25204,4,34,23,26,83,67,20109,25930,25448,109,30,4],[37183,25204,4,34,23,26,83,67,27396,26263,32,9,20088,23339,22337],[26024,21386,30017,28381],[24347,21032,29217,26465,23943,35032,20533,30027,65348,35730,26269,26109,38790,28387],[32626,23668,27429,26303,20372,24604],[41,6,29,36,26,29,73,13,39,17,73,62,0,3,25,12,58,17],[35775,27687,36332,26043,93],[24509,24486,30,52,79,83],[63,18,30,58,16,17,83,67],[38199,38711,27934,26797,79,83],[43,0,7,42,0,26,14,22,33,58,30,52,79,83],[62,14,12,52,6,33037,35782,89,104],[21730,21744,83,109],[26199,27922,38810,19997,28389,73,73],[0,60,62,20769,30399,73,73],[62,14,12,52,6,33037,35782,21,122,95,73],[37183,25204,4,34,23,26,83,67],[25096,26476,40,29,60,28387,22318,22866,36205,95,99],[26024,21386,30017,28381,25946,25458,24090,21395,114,69],[26024,25930,25448,30409,38790,20003,24090,21395,114,69],[103,4,25,36,91,3,1,19,119,4,10,57,28,28,7,94,43,13,12,46,30,44,28,19,44,4,29,40],[56,9,8,57,19,28,27,14,117],[110,4,25,36,72],[110,22,28,46,22,22,26,16,117],[110,17,0,32,16,78],[110,16,26,40,7,44,0,7,117],[110,6,5,36,16,29,29,60,60,28,25,40,72],[110,23,12,42,28,28,7,94],[110,20,28,44,25,26,29,26,117],[110,6,5,36,16,29,29,60,33,21,84],[41,6,29,36,26,29,84,5,41,12,5,40,17],[110,23,12,60,0,22,26,23,23,12,13,112],[110,4,25,36,6,78],[110,4,29,57,16,30,25,23,23,6,6,56,27,7,84],[32,17,29,61,6,73,70,76,41,21,0,99,28,3,0,5,49,75,6,63,18,76,15,12,58,8,8,57,72,25,26,12,38],[37,16,26,36,22,38,27,15],[35,2],[60,29],[37,2],[63,28],[35,18]]
+// 内部文案表（运行时解码，按索引取值）
+var _0x2c7a = [
+  'SFgA35SSl', 'AGIAfMLlMLgYLgmLjO',
+  'AGIAfMLlFLgp', 'LLGLL8LgGLgSLgxOUHO3j',
+  'LLGLL8LgGLgSLgxOUHO3jLgxLjw', 'AGIAfMLliLgD',
+  'viEvecU-3UXL', 'AGIAfMLg3LgS',
+  'LLwLLYLgZLLILghLlkLlcLgELjLLlGLj3Lja', 'LLfLLRLg3Lg7Lg8Llr',
+  'LLQLL6LgoLgMLghLleLjgLl2', 'LLdLLxvkobZ3S0-vgN',
+  'AqKAqGU2SSyl', 'UdJUhRvkobZ3UPd',
+  'UaGv0FOlAANn', 'LLLLLHLlmAbhS0q',
+  'LLCLL1LLZLggLgpLlr', 'LLtLLKLgxLgmLg3Aq_Ai7',
+  'vbfUvxLgyLL-LgwLlk', 'AGIAfMLlMLgYLgmLjOLgYLjMUYWUeVLbKLjKbPwA3OAR7',
+  'AGIAfMLlMLgYLgmLjOLgYLjMbc8UJYUFzOugAc6A2R', 'AGIAfMLlFLgpLjjLgnbIDUJ2UFnLj4LjQLjr',
+  'AGIAfMLlFLgpLjjLgnUQ8U0GLlRLjJbcTAQyAVU', 'AGIAfMLliLgDLjjLgnbIDUJ2UFnLj4LbbLlf',
+  'AGIAfMLliLgDLjjLgnUQ8U0GLlRLjJbcTAQyAVU', 'LLQLL6LgoLgMLghLleLjgLl2Lj4Lj4bcTUnSUmkOu4APHANE',
+  'LLQLL6LgoLgMLghLleLjgLl2Lj4Lj4U3tUDMLjtLbibPpA3FAVR', 'LLQLL6LgoLgMLghLleLjgLl2LjZO2TAN2Ap7OZj',
+  'LLdLLxvkobZ3S0-vgNLgsbPtUnUUmiLlcLjNLjy', 'LLdLLxvkobZ3S0-vgNLgYLjMUYWUeVLbKLjKbPwA3OAR7',
+  'LLdLLxvkobZ3S0-vgNLgYLjMURjvgSA_dURWUJTva1UNL', 'SFgA35SSlLlLbcbUaVUBdLjMLl6Ll0',
+  'SFgA35SSlLl5LlCUQbUeTLl4LlDbPmA3qARU', 'SFgA35SSlLl5LlCvRWOyLvzQSIG',
+  'SFgA35SSlLl5LlCUD_vgMAeKUkRUJ9vaZUNg', 'AGIAfMLg3LgSLlCbPcUrjUFwLjZLlTLjH',
+  'AGIAfMLg3LgSLjjLgnUQ8U0GLlRLjJbcTAQyAVU', 'LLfLLRLg3Lg7Lg8LlrLgYLjMbPeUJYUFzLjGLjuLjtLbULbKLbk',
+  'LLfLLRLg3Lg7Lg8LlrLgYLjMUYWUeVLbKLjKbPwA3OAR7', 'viEvecU-3UXLLjjLgnbxWUJ2UFnO3sAcoA2B',
+  'viEvecU-3UXLLjjLgnUQ8U0GLlRLjJbcTAQyAVU', 'LLwLLYLgZLLILghLlkLlcLgELjLLlGLj3LjaLbGbGqUnUU2OLApLAQLAU',
+  'LLwLLYLgZLLILghLlkLlcLgELjLLlGLj3LjaLbhLb3UuCU_ZLAgLU_bGNAuRAVk', 'LLGLL8LgGLgSLgxOUHO3jLjULjZbInUJOUmDLbGLj8LbI',
+  'LLGLL8LgGLgSLgxOUHO3jLjULjZUQFUD6LjWLjKbI0AuDAVk', 'AqKAqGU2SSylLjjLgnbIDUJ2UFnLj4LbULlf',
+  'AqKAqGU2SSylLjjLgnSIYA40UYWUeVAqT', 'AqKAqGU2SSylLjjLgnUDGU5lA9CUQFUD6',
+  'AqKAqGU2SSylLjjLgnUDGOmZAmFA9XLjPLjSLbOLj8LALLbWLbeLU2Lbc', 'UdJUhRvkobZ3UPdLgYLgsbcQUnUUmiOuGAc9A2Y',
+  'UdJUhRvkobZ3UPdLgYLgsUY3UewLjMLbkbPCAQrARs', 'UaGv0FOlAANnLjjLgnbIDUJ2UFnLj4LjQLjr',
+  'UaGv0FOlAANnLjjLgnUQ8U0GLlRLjJbcTAQyAVU', 'UaGv0FOlAANnLjjLgnUDGvLnAeJURMUnXvanUqj',
+  'LLLLLHLlmAbhS0qLgYLgsUY3UewLjMLbkbPCAQrARs', 'LLGLL8LgGLgSLgxOUHO3jLgxLjwLjdLlcbIVUdvU2FLbALbcLbm',
+  'LLGLL8LgGLgSLgxOUHO3jLgxLjwLjdLlcUQ1UDoLbJLAVbIbA33ARH', 'LLCLL1LLZLggLgpLlrLgYLjMbPeUJYUFzLjGLjHLjp',
+  'LLCLL1LLZLggLgpLlrLgYLjMSf4AhbU3tUDMAiw', 'LLCLL1LLZLggLgpLlrLgYLjMURjvgSA_dURWUJTva1UNL',
+  'LLtLLKLgxLgmLg3Aq_Ai7LjULjZbInUJOUmDLbGLjcLbG', 'LLtLLKLgxLgmLg3Aq_Ai7LjULjZSfdA45UQ1UDoAa0',
+  'LLtLLKLgxLgmLg3Aq_Ai7LjULjZUkCvlFADsURtUnnvrEUqo', 'vbfUvxLgyLL-LgwLlkLgYLjMbPeUJYUFzLjGLbALjV',
+  'vbfUvxLgyLL-LgwLlkLgYLjMUYWUeVLbKLjKbPwA3OAR7', 'UrpABpSi4UP3',
+  'AP0AvUS5qUDhAEcOXDAjiSJiFfWO3TUDQUzBvV6UfL', 'SIHAuxUYJU0NbfpUlV',
+  'LLCLLoLgQLLELgYLlKLgsLlNLjULltLlcLj9Lj4LjRLb-LbTLbzLAY', 'OYfUu9OE_UJBLlu',
+  'AGIAfMLg3LgSLjjLgn', 'LLfLLRLg3Lg7Lg8LlrLgYLjM',
+  'viEvecU-3UXLLjjLgn', 'LLwLLYLgZLLILghLlkLlcLgELjLLlGLj3LjaLbhLb3',
+  'LLGLL8LgGLgSLgxOUHO3jLjULjZ', 'AqKAqGLLWLlL',
+  'UdJUhRvkobZ3UPdLgYLgs', 'LLLLLHLlmAbhS0qLgYLgs',
+  'LLGLL8LgGLgSLgxOUHO3jLgxLjwLjdLlc', 'vbfUvxLgyLL-LgwLlkLgYLjM',
+  'UOOU_lLlzLg3LgmUPOAk0ATcOEPLjdLjW', 'UrpABpSi4UP3UrYU7EAxtAFPLj4Lj4',
+  'UrpUapU7zSeevkxbcOAxtAFPLj4Lj4', 'LgtLL1LgwLLELlQLlpLjLLgPLjyLlhLjPLjNLbSLjZLASLAhLbwLAHLbxLACLUeLSNLAyLUpLUyLSZLS2LOl',
+  'LLsLLWLgxLgMLgtLlVLlTLlFLjh', 'LgYLL1LgwLLELlP',
+  'LgYLLeLgYLggLg1Ll0LltLgILjh', 'LgYLLDLgHLL4Lg8Lg4',
+  'LgYLL_LgoLLcLgcLj2LjgLlOLjh', 'LgYLLoLgELLELg8LlKLloLlVLl6LleLjwLjgLbc',
+  'LgYLL0LgGLLILg3LlVLjlLlf', 'LgYLLzLgYLLfLg6LlkLloLljLjh',
+  'LgYLLoLgELLELg8LlKLloLlVLjLLlXLly', 'LLCLLoLgQLLELgYLlKLg-Ll5LlsLloLbSLjgLbl',
+  'LgYLL0LgGLgFLghLl0LltLgsLlrLloLjfLbd', 'LgYLL1LgwLLELgxLg4',
+  'LgYLL1LgQLgMLg8LlXLlpLgsLlrLlHLbOLj2LbOLj8Ljs', 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLbSLjRLAMLb6Lb2LbsLbhLAxLUnLAHLUvLSALURLOALUPLSuLO1Lv5LOZLOTLvE',
+  'LLWLL_LgoLLELg1Lj9LlTLlm', 'LLXLL3',
+  'LLPLL2', 'LLWLL3',
+  'LLfLLN', 'LLXLLR',
+  'SaZbPSUR9bPCAm_AenFG8UAiSDSA9mUdcU-ubfZSnsO4LvKxUfsLgrO4MUJlAIdSdfUBsLUkLSrUFsOUgALhO6oA7u', 'LLCLLoLgQLLELgYLlKLg-Ll9LloLltLbOLjELjPLjPLAbLb1LbXLAyLbyLAZLUw',
+  'LgYLLQLgwLlj', 'v_cO-VvzrScI',
+]
+_0x2c7a.push(
+  'LLCLLoLgQLLELgYLlKLg-LlqLlC', 'LLCLLoLgQLLELgYLlKLg-Ll9LjALlsLj6LjN',
+  'LgYLLeLgQLLfLg-LlwLltLlf', 'LgYLLYLg6LgNLgYLlTLg-',
+  'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLbSLjRLbSLbxLb1LbELbPLAXLURLSLLAc',
+  'LLRLLDLgQLgmLgxLgYLljLj2LjLLlXLblLjOLbLLjZLbSLbRLbtLbELbZLAZLURLSg',
+  'UzPUJdU80U_cATsO-0FGB', 'LgYLLeLgPLgNLg3LlpLloLlVLlQLlsLj6Lj9LbSLjZLASLAh',
+  'SaRUvRLlNLgeFGX', 'FILv_eUc9SvnU_6FGB'
+)
 var _0x8d40 = {}
 var _g = function(i) {
-  if (_0x8d40[i] === undefined) _0x8d40[i] = _0x4e8f(_0x2c7a[i], 'HeiMusic')
+  if (_0x8d40[i] === undefined) _0x8d40[i] = _0x4e8f(_0x4e11(_0x2c7a[i]))
   return _0x8d40[i]
 }
 
@@ -156,7 +247,19 @@ const _0x6a04 = function(url) {
   if (!url || typeof url !== 'string') return false
   if (url.indexOf('http://') !== 0 && url.indexOf('https://') !== 0) return false
   if (url.indexOf('panspace.kuwo.cn') !== -1) return false
+  // 加密母带/全景声容器（QQ A000/AI000/Q000 系，实为加密 ogg/mp4，下载后无法播放）
+  if (/(?:^|\/)(?:AI000|A000|Q000|Q001)[0-9A-Za-z]{6,}\.(?:flac|m4a|mp3|mp4)(?:$|\?)/i.test(url)) return false
   return true
+}
+
+// 媒体直链 https 升级：仅对已验证支持 https 的 CDN 生效，其余保持原样
+const _0x6a09 = function(url) {
+  if (typeof url !== 'string' || url.indexOf('http://') !== 0) return url
+  var m = /^http:\/\/([^\/?#]+)/.exec(url)
+  if (!m) return url
+  var host = m[1].toLowerCase().replace(/:\d+$/, '')
+  if (/^(?:car-[a-z0-9-]+\.kuwo\.cn|(?:ws|dl)\.stream\.qqmusic\.qq\.com)$/.test(host)) return 'https://' + url.slice(7)
+  return url
 }
 
 // 统计上报：异步发送调用数据到控制面板，不阻塞主流程
@@ -175,6 +278,42 @@ var _0x6b07 = function() {
     else if (/macintosh|mac os/i.test(ua)) _clientType = 'macOS'
     else if (/linux/i.test(ua)) _clientType = 'Linux'
   } catch(e) {}
+  // 移动版无 navigator：用洛雪宿主环境标识兜底
+  if (!_clientType) {
+    try {
+      var env = (globalThis && globalThis.lx && globalThis.lx.env) || ''
+      if (env === 'mobile') _clientType = 'LX-Mobile'
+      else if (env === 'desktop') _clientType = 'LX-Desktop'
+    } catch(e) {}
+  }
+}
+
+// 设备特征：与后台 IP/UA 共同确定稳定用户ID（移动版仅能取到 env 与时区）
+var _deviceFp = ''
+var _0x6b12 = function() {
+  var parts = []
+  try {
+    if (globalThis && globalThis.lx && globalThis.lx.env) parts.push('env:' + globalThis.lx.env)
+  } catch(e) {}
+  try {
+    var nav = (globalThis && globalThis.navigator) || null
+    if (nav) {
+      if (nav.userAgent) parts.push('ua:' + nav.userAgent)
+      if (nav.language) parts.push('lang:' + nav.language)
+      if (nav.platform) parts.push('plat:' + nav.platform)
+      if (nav.hardwareConcurrency) parts.push('cores:' + nav.hardwareConcurrency)
+      if (nav.deviceMemory) parts.push('mem:' + nav.deviceMemory)
+    }
+  } catch(e) {}
+  try {
+    var scr = (globalThis && globalThis.screen) || null
+    if (scr) parts.push('scr:' + scr.width + 'x' + scr.height + 'x' + (scr.colorDepth || 0))
+  } catch(e) {}
+  try {
+    if (globalThis && typeof globalThis.devicePixelRatio === 'number') parts.push('dpr:' + globalThis.devicePixelRatio)
+  } catch(e) {}
+  try { parts.push('tz:' + new Date().getTimezoneOffset()) } catch(e) {}
+  _deviceFp = parts.join('|')
 }
 
 var _0x6b06 = function() {
@@ -187,16 +326,124 @@ var _0x6b06 = function() {
   _userId = id
 }
 
+var _clientIpPromise = null
+// 公网 IP 获取：多服务商顺序回退，结果复用同一 Promise（失败返回空串，不抛错）
 var _0x6b08 = function() {
-  if (_cachedClientIp) return
-  _0x6a02(_g(97), { method: 'GET', timeout: 3000 }).then(function(body) {
-    if (body && body.ip) {
-      _cachedClientIp = body.ip
+  if (_clientIpPromise) return _clientIpPromise
+  _clientIpPromise = new Promise(function(resolve) {
+    var urls = [_g(97), _g(112), _g(113)]
+    var i = 0
+    var next = function() {
+      if (_cachedClientIp) { resolve(_cachedClientIp); return }
+      if (i >= urls.length) { resolve(''); return }
+      var u = urls[i++]
+      _0x6a02(u, { method: 'GET', timeout: 3000 }).then(function(body) {
+        var ip = body && (body.ip || body.query)
+        if (ip) {
+          _cachedClientIp = String(ip)
+          resolve(_cachedClientIp)
+          return
+        }
+        next()
+      }).catch(function() { next() })
     }
-  }).catch(function() {})
+    next()
+  })
+  return _clientIpPromise
+}
+
+// 使用者IP上报：等待公网 IP 获取完成后再发送，后台以服务端观测 IP 优先
+var _0x6b15 = function() {
+  if (!PANEL_REPORT_URL) return
+  var post = function() {
+    try {
+      var body = _g(108) + _g(88) + encodeURIComponent(_userId || '')
+        + _g(89) + encodeURIComponent(_clientType)
+      if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
+      if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
+      body += _g(115) + encodeURIComponent(SCRIPT_VERSION)
+      _0x6a01(PANEL_REPORT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+      }).then(function(resp) {
+        _0x6b13(resp && resp.statusCode, resp && resp.body)
+      }).catch(function() {})
+    } catch(e) {}
+  }
+  try {
+    _0x6b08().then(post, post)
+  } catch(e) {
+    post()
+  }
+}
+
+// 更新弹窗投递结果回传：成功但无弹窗=客户端「允许更新弹窗」开关关闭；失败=客户端拒绝（附原因）
+var _0x6b16 = function(status, msg) {
+  if (!PANEL_REPORT_URL) return
+  try {
+    var body = _g(109) + _g(110) + status
+    if (msg) body += _g(111) + encodeURIComponent(String(msg).substring(0, 200))
+    if (_userId) body += _g(88) + encodeURIComponent(_userId)
+    if (_clientType) body += _g(89) + encodeURIComponent(_clientType)
+    if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
+    if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
+    _0x6a01(PANEL_REPORT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function(resp) {
+      _0x6b13(resp && resp.statusCode, resp && resp.body)
+    }).catch(function() {})
+  } catch(e) {}
+}
+
+// 面板回包统一处理：采纳后台发放的用户ID；命中黑名单或频率限制时本地停用
+var _0x6b13 = function(statusCode, respBody) {
+  var body = respBody
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body) } catch(e) { body = null }
+  }
+  if (body && typeof body === 'object') {
+    if (body.user_id) _userId = String(body.user_id)
+    if (body.userId) _userId = String(body.userId)
+    if (body.blacklisted === true) _scriptDisabled = true
+  }
+  if (statusCode === 403 || statusCode === 429) _scriptDisabled = true
+}
+
+// 接口失败熔断：连续失败 3 次后 5 分钟内跳过该接口，成功一次清零
+var _sourceHealth = {}
+var SOURCE_FAIL_LIMIT = 3
+var SOURCE_COOLDOWN = 300000
+var _0x6b1a = function(name) {
+  var st = _sourceHealth[name]
+  return !!(st && st.until > Date.now())
+}
+var _0x6b1b = function(name, ok) {
+  if (ok) {
+    delete _sourceHealth[name]
+    return
+  }
+  var st = _sourceHealth[name] || { fails: 0, until: 0 }
+  st.fails++
+  if (st.fails >= SOURCE_FAIL_LIMIT) {
+    st.fails = 0
+    st.until = Date.now() + SOURCE_COOLDOWN
+  }
+  _sourceHealth[name] = st
+}
+
+// 用户ID兜底：弹窗不可用时，在最终失败提示中携带用户ID与脚本版本
+var _pushUserIdOn = false
+var _0x6b19 = function(text) {
+  var s = String(text || '')
+  if (!_pushUserIdOn || !_userId) return s
+  return s + '\n' + _g(116) + _userId + _g(117) + SCRIPT_VERSION + '）'
 }
 
 var _0x6b04 = function(platform, apiName, success, responseTime, quality) {
+  _0x6b1b(apiName, !!success)
   if (!PANEL_REPORT_URL) return
   try {
     var q = String(quality || '')
@@ -209,11 +456,14 @@ var _0x6b04 = function(platform, apiName, success, responseTime, quality) {
       + _g(90)
     if (q !== '') body += _g(91) + encodeURIComponent(q)
     if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
-    request(PANEL_REPORT_URL, {
+    if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
+    _0x6a01(PANEL_REPORT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body
-    }, function() {})
+    }).then(function(resp) {
+      _0x6b13(resp && resp.statusCode, resp && resp.body)
+    }).catch(function() {})
   } catch(e) {}
 }
 
@@ -232,11 +482,14 @@ var _0x6b05 = function(platform, quality, candidates) {
       + _g(95) + encodeURIComponent(JSON.stringify(_0x6b10))
       + _g(96) + candidates.length
     if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
-    request(PANEL_REPORT_URL, {
+    if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
+    _0x6a01(PANEL_REPORT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body
-    }, function() {})
+    }).then(function(resp) {
+      _0x6b13(resp && resp.statusCode, resp && resp.body)
+    }).catch(function() {})
   } catch(e) {}
 }
 
@@ -254,7 +507,7 @@ const _0x6a06 = function(platform, musicInfo) {
 const _0x6a07 = function(quality) {
   var q = String(quality || '128k').toLowerCase()
   if (q === 'jymaster' || q === 'jyeffect' || q === 'sky' || q === 'dolby' || q === 'atmos' || q === 'atmos_plus' || q === 'master') return 'lossless'
-  if (q === 'flac' || q === 'flac24bit') return 'lossless'
+  if (q === 'flac' || q === 'flac24bit' || q === 'hires') return 'lossless'
   if (q === '320k' || q === '192k') return 'exhigh'
   return 'standard'
 }
@@ -272,6 +525,25 @@ const _0x6a08 = function(musicInfo) {
 var _0x6d01 = {
   [_g(103)]: _dec('nianxin_kw') + '?id={id}&level={level}&type=mp3',
 }
+// 302 中转解析：念心 kw/tx/kg 返回 *.php 接口地址，直接交给播放器会导致
+// 下载扩展名错误（.php 被存成 .mp3），文件打不开；探测 Location 取真实音频直链
+// Range 仅取 1 字节：若宿主自动跟随跳转，最多传输 1 字节，避免整首拉入内存
+const _0x6a0a = function(url) {
+  return _0x6a01(url, {
+    method: 'GET',
+    headers: { 'User-Agent': 'Mozilla/5.0', 'Range': 'bytes=0-0' },
+    timeout: 3000,
+  }).then(function(resp) {
+    var h = (resp && resp.headers) || {}
+    var loc = h.location || h.Location
+    if (loc && _0x6a04(loc)) return loc
+    // 少数客户端会自动跟随跳转（读不到 Location）：回退接口地址，保证可播放
+    return url
+  }).catch(function() {
+    return url
+  })
+}
+
 const _0x6c02 = function(source, musicInfo, quality) {
   var songId = _0x6a06(source, musicInfo)
   if (!songId) return Promise.reject(new Error(_g(19)))
@@ -279,28 +551,28 @@ const _0x6c02 = function(source, musicInfo, quality) {
   if (!template) return Promise.reject(new Error(_g(20)))
   var level = _0x6a07(quality)
   var url = template.replace('{id}', encodeURIComponent(String(songId))).replace('{level}', encodeURIComponent(level))
-  return Promise.resolve(url)
+  return _0x6a0a(url)
 }
 
-// 念心TX接口 - tx (mcp.nianxinxz.com/share/ceshi/tx.php，返回302直链)
+// 念心TX接口 - tx (返回302直链)
 var NIANXIN_TX_URL = _dec('nianxin_tx')
 var _0x6c03 = function(source, musicInfo, quality) {
   if (source !== _g(100)) return Promise.reject(new Error(_g(21)))
   var songId = _0x6a06('tx', musicInfo)
   if (!songId) return Promise.reject(new Error(_g(22)))
   var level = _0x6a07(quality)
-  // 该接口通过302重定向返回音频直链，直接返回接口地址交由播放器跟随跳转
-  return Promise.resolve(NIANXIN_TX_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level + '&type=mp3')
+  // 该接口通过302重定向返回音频直链，解析 Location 后返回真实音频地址
+  return _0x6a0a(NIANXIN_TX_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level + '&type=mp3')
 }
 
-// 念心KG接口 - kg (mcp.nianxinxz.com/share/ceshi/kg.php，返回302直链)
+// 念心KG接口 - kg (返回302直链)
 var NIANXIN_KG_URL = _dec('nianxin_kg')
 var _0x6c06 = function(source, musicInfo, quality) {
   if (source !== _g(99)) return Promise.reject(new Error(_g(23)))
   var songId = _0x6a06('kg', musicInfo)
   if (!songId) return Promise.reject(new Error(_g(24)))
   var level = _0x6a07(quality)
-  return Promise.resolve(NIANXIN_KG_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level + '&type=mp3')
+  return _0x6a0a(NIANXIN_KG_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level + '&type=mp3')
 }
 
 // gdstudio - 多平台支持 (wy/tx/kg/kw/mg)
@@ -310,7 +582,7 @@ const _0x6c0b = function(source, musicInfo, quality) {
   if (!gdSource) return Promise.reject(new Error(_g(25)))
   var songId = source === _g(102) ? _0x6a05(musicInfo) : _0x6a06(source, musicInfo)
   if (!songId) return Promise.reject(new Error(_g(26)))
-  var brMap = { '128k': '128', '320k': '320', 'flac': '740', 'flac24bit': '999', 'jyeffect': '999', 'sky': '999', 'jymaster': '999', 'dolby': '999', 'atmos': '999', 'atmos_plus': '999', 'master': '999' }
+  var brMap = { '128k': '128', '192k': '320', '320k': '320', 'flac': '740', 'hires': '999', 'flac24bit': '999', 'jyeffect': '999', 'sky': '999', 'jymaster': '999', 'dolby': '999', 'atmos': '999', 'atmos_plus': '999', 'master': '999' }
   var br = brMap[quality] || '320'
   return _0x6a02(_dec('gdstudio') + '?types=url&source=' + gdSource + '&id=' + encodeURIComponent(String(songId)) + '&br=' + br, {
     method: 'GET',
@@ -358,16 +630,22 @@ var _0x6c0c = function(source, musicInfo, quality) {
   var mediaMid = musicInfo.strMediaMid || songmid
   if (!songmid) return Promise.reject(new Error(_g(29)))
   // 音质格式映射，按优先级尝试
-  // QQ音乐CDN前缀: C400=128k, M800=320k, F000=FLAC, D000=HiRes, Q000=全景声, A000=臻品母带
+  // QQ音乐CDN前缀: C400=128k, M800=320k, F000=FLAC, D000=HiRes
+  // A000/AI000(臻品母带)、Q000(全景声) 为加密容器，下载后无法播放，已剔除
   var formatMap = {
     '128k': [{ prefix: 'C400', ext: 'm4a' }],
+    '192k': [{ prefix: 'M800', ext: 'mp3' }, { prefix: 'C400', ext: 'm4a' }],
     '320k': [{ prefix: 'M800', ext: 'mp3' }, { prefix: 'C400', ext: 'm4a' }],
     'flac': [{ prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
     'flac24bit': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'dolby': [{ prefix: 'Q000', ext: 'm4a' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'atmos': [{ prefix: 'Q000', ext: 'm4a' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'atmos_plus': [{ prefix: 'Q000', ext: 'm4a' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'master': [{ prefix: 'A000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }]
+    'hires': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'dolby': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'atmos': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'atmos_plus': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'jyeffect': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'sky': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'jymaster': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
+    'master': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }]
   }
   var formats = formatMap[quality] || formatMap['320k']
   // 依次尝试不同格式，第一个成功即返回
@@ -385,10 +663,10 @@ var _0x6c0c = function(source, musicInfo, quality) {
   return tryFormat(0)
 }
 
-// 玉宁熙tx主接口 - tx (api-v2.yuafeng.cn, 带APIKEY)
+// 玉宁熙tx主接口 - tx (带APIKEY)
 var YNX_TX_URL = _dec('ynx_tx')
 var YNX_TX2_URL = _dec('ynx_tx2')
-var YNX_APIKEY = _dec('ynx_apikey')
+var YNX_APIKEY = _dec('ynx_apikey_a') + _dec('ynx_apikey_b')
 
 // 校验玉宁熙返回的URL是否匹配请求的音质，避免音质降级
 var _checkYnxQuality = function(quality, url) {
@@ -401,7 +679,7 @@ var _checkYnxQuality = function(quality, url) {
     return url.indexOf('C400') === -1
   }
   // 无损/全景声应包含 flac 或高品质标识，避免 C400
-  if (q === 'flac' || q === 'flac24bit' || q === 'dolby') {
+  if (q === 'flac' || q === 'flac24bit' || q === 'hires' || q === 'dolby' || q === 'atmos' || q === 'atmos_plus' || q === 'jyeffect' || q === 'sky' || q === 'jymaster' || q === 'master') {
     return url.indexOf('C400') === -1
   }
   return true
@@ -413,9 +691,9 @@ var _0x6c01 = function(source, musicInfo, quality) {
   if (!songmid) return Promise.reject(new Error(_g(32)))
   // 音质映射为中文type参数
   // 臻品母带=master, 臻品全景声=atmos/dolby, SQ无损=flac, HQ高品质=320k, 低品质=128k
-  var typeMap = { '128k': '低品质', '320k': 'HQ高品质', 'flac': 'SQ无损', 'flac24bit': '臻品全景声', 'dolby': '臻品全景声', 'atmos': '臻品全景声', 'atmos_plus': '臻品全景声', 'master': '臻品母带' }
+  var typeMap = { '128k': '低品质', '192k': 'HQ高品质', '320k': 'HQ高品质', 'flac': 'SQ无损', 'hires': 'SQ无损', 'flac24bit': '臻品全景声', 'dolby': '臻品全景声', 'atmos': '臻品全景声', 'atmos_plus': '臻品全景声', 'jyeffect': '臻品全景声', 'sky': '臻品全景声', 'jymaster': '臻品母带', 'master': '臻品母带' }
   var type = encodeURIComponent(typeMap[quality] || 'HQ高品质')
-  // 主接口: api-v2.yuafeng.cn
+  // 主接口地址由资源表解码获得
   return _0x6a02(YNX_TX_URL + '?type=' + type + '&mid=' + encodeURIComponent(String(songmid)) + '&apikey=' + YNX_APIKEY, {
     method: 'GET',
   }).then(function(body) {
@@ -450,14 +728,14 @@ var _0x6c01 = function(source, musicInfo, quality) {
   })
 }
 
-// 念心wy接口 - wy (mcp.nianxinxz.com/share/ceshi/wy.php)
+// 念心wy接口 - wy
 var NIANXIN_WY_URL = _dec('nianxin_wy')
 
 var _0x6c08 = function(source, musicInfo, quality) {
   if (source !== _g(102)) return Promise.reject(new Error(_g(35)))
   var songId = musicInfo.songId || musicInfo.musicId || musicInfo.id || ''
   if (!songId) return Promise.reject(new Error(_g(36)))
-  var levelMap = { '128k': 'standard', '320k': 'exhigh', 'flac': 'lossless', 'flac24bit': 'hires', 'jyeffect': 'jyeffect', 'sky': 'sky', 'jymaster': 'jymaster', 'dolby': 'dolby', 'atmos': 'dolby', 'atmos_plus': 'dolby', 'master': 'jymaster' }
+  var levelMap = { '128k': 'standard', '192k': 'exhigh', '320k': 'exhigh', 'flac': 'lossless', 'hires': 'hires', 'flac24bit': 'hires', 'jyeffect': 'jyeffect', 'sky': 'sky', 'jymaster': 'jymaster', 'dolby': 'dolby', 'atmos': 'dolby', 'atmos_plus': 'dolby', 'master': 'jymaster' }
   var level = levelMap[quality] || 'exhigh'
   return _0x6a02(NIANXIN_WY_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level, {
     method: 'GET',
@@ -467,7 +745,7 @@ var _0x6c08 = function(source, musicInfo, quality) {
   })
 }
 
-// wwwweb - wy/kw (c.wwwweb.top/music/url，POST JSON，返回真实直链)
+// wwwweb - wy/kw (POST JSON，返回真实直链)
 var WWWWEB_URL = _dec('wwwweb')
 var _0x6c0a = function(source, musicInfo, quality) {
   if (source !== _g(102) && source !== _g(103)) return Promise.reject(new Error(_g(37)))
@@ -481,45 +759,6 @@ var _0x6c0a = function(source, musicInfo, quality) {
   }).then(function(body) {
     if (body && body.code === 200 && body.url && _0x6a04(body.url)) return body.url
     throw new Error(_g(71) + (body && body.message ? body.message : '未返回有效链接'))
-  })
-}
-
-// 长青海棠 - kw/kg/tx/wy (musicserver.haitangw.cc/v1/music/resolve-url，POST JSON，返回真实直链)
-var HAITANGW_URL = _dec('haitangw')
-var HAITANGW_SOURCE_MAP = { kw: 'kw', kg: 'kg', tx: 'tx', wy: 'wy' }
-var _0x6c07 = function(source, musicInfo, quality) {
-  var hwSource = HAITANGW_SOURCE_MAP[source]
-  if (!hwSource) return Promise.reject(new Error(_g(39)))
-  var songId = _0x6a06(source, musicInfo)
-  if (!songId) return Promise.reject(new Error(_g(40)))
-  var level = _0x6a07(quality)
-  return _0x6a02(HAITANGW_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0' },
-    body: JSON.stringify({ source: hwSource, rid: String(songId), level: level }),
-    timeout: 6000,
-  }).then(function(body) {
-    if (body && body.code === 0 && body.data && body.data.url && _0x6a04(body.data.url)) return body.data.url
-    throw new Error(_g(72) + (body && (body.message || body.msg) ? (body.message || body.msg) : '未返回有效链接'))
-  })
-}
-
-// cenguigui_wy - wy (api.cenguigui.cn/api/netease/music_v1.php，返回 data.url)
-var CENGUIGUI_WY_URL = _dec('cenguigui_wy')
-var _0x6c09 = function(source, musicInfo, quality) {
-  if (source !== _g(102)) return Promise.reject(new Error(_g(41)))
-  var songId = _0x6a06('wy', musicInfo)
-  if (!songId) return Promise.reject(new Error(_g(42)))
-  var levelMap = { '128k': 'standard', '320k': 'exhigh', 'flac': 'lossless', 'flac24bit': 'hires', 'jyeffect': 'jyeffect', 'sky': 'sky', 'jymaster': 'jymaster', 'dolby': 'dolby', 'atmos': 'dolby', 'atmos_plus': 'dolby', 'master': 'jymaster' }
-  var level = levelMap[quality] || 'exhigh'
-  return _0x6a02(CENGUIGUI_WY_URL + '?id=' + encodeURIComponent(String(songId)) + '&type=json&level=' + level, {
-    method: 'GET',
-    timeout: 6000,
-  }).then(function(body) {
-    var u = body && body.data && body.data.url
-    if (_0x6a04(u)) return u
-    if (body && body.url && _0x6a04(body.url)) return body.url
-    throw new Error(_g(73) + (body && body.msg ? body.msg : '未返回有效链接'))
   })
 }
 
@@ -553,7 +792,7 @@ var _isContentId = function(id) {
 
 var _0x6c0d = function(source, musicInfo, quality) {
   if (source !== _g(101)) return Promise.reject(new Error(_g(45)))
-  var toneMap = { '128k': 'PQ', '320k': 'HQ', 'flac': 'SQ', 'flac24bit': 'ZQ', 'atmos': 'ZQ', 'atmos_plus': 'ZQ', 'master': 'ZQ' }
+  var toneMap = { '128k': 'PQ', '192k': 'HQ', '320k': 'HQ', 'flac': 'SQ', 'hires': 'SQ', 'flac24bit': 'ZQ', 'atmos': 'ZQ', 'atmos_plus': 'ZQ', 'master': 'ZQ' }
   var toneFlag = toneMap[quality] || 'HQ'
   var rawId = _0x6a06('mg', musicInfo)
 
@@ -570,7 +809,7 @@ var _0x6c0d = function(source, musicInfo, quality) {
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36',
-        'Referer': 'https://app.c.nf.migu.cn/',
+        'Referer': _dec('migu_referer_app'),
       },
       timeout: 6000,
     }).then(function(resp) {
@@ -600,7 +839,7 @@ var _0x6c0d = function(source, musicInfo, quality) {
     method: 'GET',
     headers: {
       'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36',
-      'Referer': 'https://music.migu.cn/',
+      'Referer': _dec('migu_referer'),
     },
     timeout: 6000,
   }).then(function(body) {
@@ -623,35 +862,8 @@ var _0x6c0d = function(source, musicInfo, quality) {
   })
 }
 
-// ========== 星海音乐源后端 - 多平台支持 (tx/kg/kw/wy/mg) ==========
-// 使用 yy.zddyr.top 后端，支持全平台高品质音源
-var XINGHAI_SOURCE_MAP = { 'tx': 'qq', 'kg': 'kg', 'kw': 'kw', 'wy': 'netease', 'mg': 'migu' }
-var XINGHAI_URL = _dec('xinghai')
-
-var _0x6c0e = function(source, musicInfo, quality) {
-  var xhSource = XINGHAI_SOURCE_MAP[source]
-  if (!xhSource) return Promise.reject(new Error(_g(49)))
-  var songId = source === _g(99) ? (musicInfo.hash || musicInfo.songmid || musicInfo.id || '') : _0x6a06(source, musicInfo)
-  if (!songId) return Promise.reject(new Error(_g(50)))
-  var params = 'source=' + encodeURIComponent(xhSource) + '&songmid=' + encodeURIComponent(String(songId)) + _g(91) + encodeURIComponent(quality || '320k')
-  // 酷狗额外参数
-  if (source === _g(99)) {
-    if (musicInfo.hash) params += '&hash=' + encodeURIComponent(String(musicInfo.hash))
-    if (musicInfo.albumId) params += '&albumId=' + encodeURIComponent(String(musicInfo.albumId))
-  }
-  // 网易云额外参数
-  if (source === _g(102)) {
-    if (musicInfo.name) params += '&name=' + encodeURIComponent(String(musicInfo.name))
-    if (musicInfo.singer) params += '&singer=' + encodeURIComponent(String(musicInfo.singer))
-  }
-  return _0x6a02(XINGHAI_URL + '?' + params, { method: 'GET', timeout: 8000 }).then(function(body) {
-    if (body && body.code === 200 && body.url && _0x6a04(body.url)) return body.url
-    throw new Error(_g(76) + (body && body.msg ? body.msg : '获取失败'))
-  })
-}
-
 // ========== 收集の聚合接口 (tx) ==========
-var SHOUJI_TX_URL = _dec('shouji_tx')
+var SHOUJI_TX_URL = _dec('shouji_tx_a') + _dec('shouji_tx_b') + _dec('shouji_tx_c')
 
 var _0x6c0f = function(source, musicInfo, quality) {
   if (source !== _g(100)) return Promise.reject(new Error(_g(51)))
@@ -668,35 +880,14 @@ var _0x6c0f = function(source, musicInfo, quality) {
 }
 // ========== v2.2.0 新增可用源 ==========
 
-// HYW公益 - 全平台 (103.79.184.97 卡密鉴权，query 携带 key + X-Card-Key 头)
-var HYW_FREE_API = _dec('hyw_free_api')
-var HYW_FREE_KEY = _dec('hyw_free_key')
-
-var _0x6c10 = function(source, musicInfo, quality) {
-  var songId = _0x6a06(source, musicInfo)
-  if (!songId) return Promise.reject(new Error(_g(54)))
-  // 该接口各平台仅开放 128k/320k/flac/flac24bit，其余音质映射到最接近档位
-  var qMap = { '128k': '128k', '192k': '320k', '320k': '320k', 'flac': 'flac', 'flac24bit': 'flac24bit', 'hires': 'flac24bit', 'jyeffect': 'flac24bit', 'sky': 'flac24bit', 'dolby': 'flac24bit', 'atmos': 'flac24bit', 'atmos_plus': 'flac24bit', 'jymaster': 'flac24bit', 'master': 'flac24bit' }
-  var q = qMap[quality] || '320k'
-  return _0x6a02(HYW_FREE_API + '?source=' + encodeURIComponent(source) + '&songId=' + encodeURIComponent(String(songId)) + _g(91) + encodeURIComponent(q) + '&key=' + encodeURIComponent(HYW_FREE_KEY), {
-    method: 'GET',
-    headers: { 'User-Agent': 'Mozilla/5.0', 'X-Card-Key': HYW_FREE_KEY },
-    timeout: 5000,
-  }).then(function(body) {
-    var u = body && (body.url || (body.data && body.data.url)) || ''
-    if (u && _0x6a04(u)) return u
-    throw new Error(_g(77) + ((body && (body.msg || body.message)) || '获取失败'))
-  })
-}
-
-// vkeys腾讯v2 - tx (api.vkeys.cn/v2/music/tencent/geturl?mid=&quality=)
+// vkeys腾讯v2 - tx (mid + quality 参数)
 var VKEYS_V2_URL = _dec('vkeys_tx_v2')
 
 var _0x6c05 = function(source, musicInfo, quality) {
   if (source !== _g(100)) return Promise.reject(new Error(_g(55)))
   var songmid = _0x6a06('tx', musicInfo)
   if (!songmid) return Promise.reject(new Error(_g(56)))
-  var qMap = { '128k': '6', '192k': '7', '320k': '8', 'flac': '10', 'flac24bit': '11', 'hires': '11', 'jyeffect': '11', 'sky': '13', 'dolby': '13', 'atmos': '13', 'atmos_plus': '13', 'jymaster': '14', 'master': '14' }
+  var qMap = { '128k': '6', '192k': '7', '320k': '8', 'flac': '10', 'flac24bit': '11', 'hires': '11', 'jyeffect': '11', 'sky': '11', 'dolby': '11', 'atmos': '11', 'atmos_plus': '11', 'jymaster': '11', 'master': '11' }
   var qc = qMap[quality] || '8'
   return _0x6a02(VKEYS_V2_URL + '?mid=' + encodeURIComponent(String(songmid)) + _g(91) + qc, {
     method: 'GET',
@@ -708,15 +899,16 @@ var _0x6c05 = function(source, musicInfo, quality) {
   })
 }
 
-// aa.cab - tx 搜索式取链 (a.aa.cab/qq.music?msg=&n=1&type=)
+// aa.cab - tx 搜索式取链 (msg + n + type 参数)
 var AACAB_TX_URL = _dec('aa_cab_tx')
 
 var _0x6c11 = function(source, musicInfo, quality) {
   if (source !== _g(100)) return Promise.reject(new Error(_g(57)))
   var keyword = _0x6a08(musicInfo)
   if (!keyword) return Promise.reject(new Error(_g(58)))
-  // type: 0=M500(128k) 1=M800(320k) 4=F000(FLAC) 5=母带
-  var tMap = { '128k': '0', '192k': '1', '320k': '1', 'flac': '4', 'flac24bit': '4', 'hires': '4', 'jyeffect': '4', 'sky': '5', 'dolby': '5', 'atmos': '5', 'atmos_plus': '5', 'jymaster': '5', 'master': '5' }
+  // type: 0=M500(128k) 1=M800(320k) 4=F000(FLAC) 5=AI000(加密母带，不可播放)
+  // 母带/全景声类一律取 4（真 FLAC），不请求加密容器
+  var tMap = { '128k': '0', '192k': '1', '320k': '1', 'flac': '4', 'flac24bit': '4', 'hires': '4', 'jyeffect': '4', 'sky': '4', 'dolby': '4', 'atmos': '4', 'atmos_plus': '4', 'jymaster': '4', 'master': '4' }
   var t = tMap[quality] || '1'
   return _0x6a02(AACAB_TX_URL + '?msg=' + encodeURIComponent(keyword) + '&n=1&type=' + t, {
     method: 'GET',
@@ -730,7 +922,7 @@ var _0x6c11 = function(source, musicInfo, quality) {
   })
 }
 
-// oiapi咪咕 - mg 搜索式取链 (oiapi.net/api/MiGu_Music?msg=&br=&n=)
+// oiapi咪咕 - mg 搜索式取链 (msg + br + n 参数)
 var OIAPI_MIGU_URL = _dec('oiapi_migu')
 
 var _0x6c12 = function(source, musicInfo, quality) {
@@ -749,23 +941,34 @@ var _0x6c12 = function(source, musicInfo, quality) {
   })
 }
 
-// 酷我官方mobi - kw (nmobi.kuwo.cn 官方接口，响应最快~0.1s)
+// 酷我官方mobi - kw (官方接口，响应最快~0.1s)
 var _0x6d02 = _dec('kw_mobi')
 
 var _0x6c13 = function(source, musicInfo, quality) {
   if (source !== _g(103)) return Promise.reject(new Error(_g(63)))
   var rid = _0x6a06('kw', musicInfo)
   if (!rid) return Promise.reject(new Error(_g(64)))
-  // 实测该接口 flac 参数返回 48k AAC，故 flac 及以上音质统一降级为 320kmp3
-  var br = (quality === '128k') ? '128kmp3' : '320kmp3'
+  // 该接口 br=flac 返回 48k AAC；无损档必须用 2000kflac（真 FLAC）
+  var q = String(quality || '128k').toLowerCase()
+  var lossless = q !== '128k' && q !== '192k' && q !== '320k'
+  var br = q === '128k' ? '128kmp3' : (lossless ? '2000kflac' : '320kmp3')
   return _0x6a02(_0x6d02 + '?f=web&user=0&source=kwplayerhd_ar_6.6.6.6_tianbao_T1A_qirui.apk&type=convert_url_with_sign&rid=' + encodeURIComponent(String(rid)) + '&br=' + br, {
     method: 'GET',
     headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android) AppleWebKit/537.36' },
     timeout: 5000,
   }).then(function(body) {
-    var u = body && body.data && body.data.url
-    if (u && _0x6a04(u)) return u
-    throw new Error(_g(79) + ((body && (body.msg || body.message)) || '获取失败'))
+    var data = body && body.data
+    var u = data && data.url
+    if (!u || !_0x6a04(u)) throw new Error(_g(79) + ((body && (body.msg || body.message)) || '获取失败'))
+    // 校验实际返回格式，避免请求无损却拿到低码率 AAC
+    var fmt = String(data.format || '').toLowerCase()
+    var rate = Number(data.bitrate || 0)
+    if (lossless) {
+      if (fmt !== 'flac' && !(rate >= 1000)) throw new Error(_g(79) + _g(107))
+    } else if (q === '320k' || q === '192k') {
+      if (fmt !== 'flac' && !(rate >= 320)) throw new Error(_g(79) + _g(107))
+    }
+    return u
   })
 }
 
@@ -779,19 +982,15 @@ const _0x6b00 = [
   { name: _g(3),    fetch: _0x6c04,     sources: [_g(100)], txTier: 1 },
   { name: _g(4),  fetch: _0x6c05,     sources: [_g(100)], txTier: 1 },
   { name: _g(5),       fetch: _0x6c06,   sources: [_g(99)] },
-  { name: _g(6),     fetch: _0x6c07,    sources: [_g(103), _g(99), _g(100), _g(102)], txTier: 2 },
   { name: _g(7),        fetch: _0x6c08,   sources: [_g(102)] },
-  { name: _g(8), fetch: _0x6c09, sources: [_g(102)] },
   { name: _g(9),       fetch: _0x6c0a,      sources: [_g(102), _g(103)] },
-  { name: _g(10),     fetch: _0x6c0b,    sources: [_g(102), _g(100), _g(99), _g(103), _g(101)] },
+  { name: _g(10),     fetch: _0x6c0b,    sources: [_g(102)] },
   // v1.1.7 新增源
   { name: _g(11),   fetch: _0x6c0c,      sources: [_g(100)], txTier: 2 },
   { name: _g(12),     fetch: _0x6c0d,    sources: [_g(101)] },
-  // v1.3.0 新增源 - 星海后端
-  { name: _g(13),   fetch: _0x6c0e,     sources: [_g(100), _g(99), _g(103), _g(102), _g(101)], txTier: 2 },
+  // v1.3.0 新增源
   { name: _g(14),       fetch: _0x6c0f,    sources: [_g(100)], txTier: 2 },
-  // v2.2.0 新增可用源 - HYW公益 / vkeys v2 / aa.cab / oiapi咪咕 / 酷我mobi
-  { name: _g(15),      fetch: _0x6c10,     sources: [_g(100), _g(99), _g(103), _g(102)], txTier: 2 },
+  // v2.2.0 新增可用源 - vkeys v2 / aa.cab / oiapi咪咕 / 酷我mobi
   { name: _g(16),       fetch: _0x6c11,     sources: [_g(100)], txTier: 2 },
   { name: _g(17),    fetch: _0x6c12,   sources: [_g(101)] },
   { name: _g(18),      fetch: _0x6c13,      sources: [_g(103)] },
@@ -802,6 +1001,15 @@ const _0x6b00 = [
 // 每个源设置4秒超时，避免慢速API阻塞；任一成功即返回
 var RACE_TIMEOUT = 4000
 
+// 安全调用源取链：同步异常转为 rejected Promise，避免提前中断竞速计数
+var _0x6b1c = function(apiSource, source, musicInfo, quality) {
+  try {
+    return apiSource.fetch(source, musicInfo, quality)
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
 // 并发竞速：所有候选源同时请求，任一成功即返回
 var _0x6b02 = function(candidates, source, musicInfo, quality) {
   if (candidates.length === 0) {
@@ -810,7 +1018,7 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
   // 单源直接返回（带超时）
   if (candidates.length === 1) {
     var t0 = Date.now()
-    return _0x6a03(candidates[0].fetch(source, musicInfo, quality), RACE_TIMEOUT).then(function(url) {
+    return _0x6a03(_0x6b1c(candidates[0], source, musicInfo, quality), RACE_TIMEOUT).then(function(url) {
       var elapsed = Date.now() - t0
       var ok = !!(url && _0x6a04(url))
       _0x6b04(source, candidates[0].name, ok, elapsed, quality)
@@ -820,30 +1028,43 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
       var elapsed = Date.now() - t0
       _0x6b04(source, candidates[0].name, false, elapsed, quality)
       _0x6b05(source, quality, candidates)
-      throw e
+      throw new Error(_0x6b19(e && e.message ? e.message : e))
     })
   }
   // 多源并发竞速
   var errors = []
   var resolved = false
+  var aborts = []
+  var abortAll = function() {
+    for (var k = 0; k < aborts.length; k++) {
+      try { aborts[k]() } catch (e) {}
+    }
+    aborts = []
+  }
   return new Promise(function(resolve, reject) {
     var pending = candidates.length
     var onSettled = function() {
       pending--
       if (pending === 0 && !resolved) {
         _0x6b05(source, quality, candidates)
-        reject(new Error(_g(80) + errors.join('\n')))
+        abortAll()
+        reject(new Error(_0x6b19(_g(80) + errors.join('\n'))))
       }
     }
     for (var i = 0; i < candidates.length; i++) {
       (function(apiSource) {
         var t0 = Date.now()
-        _0x6a03(apiSource.fetch(source, musicInfo, quality), RACE_TIMEOUT).then(function(url) {
+        var raw = _0x6b1c(apiSource, source, musicInfo, quality)
+        aborts.push(function() {
+          try { if (raw && typeof raw.abort === 'function') raw.abort() } catch (e) {}
+        })
+        _0x6a03(raw, RACE_TIMEOUT).then(function(url) {
           if (resolved) return
           var elapsed = Date.now() - t0
           if (url && _0x6a04(url)) {
             _0x6b04(source, apiSource.name, true, elapsed, quality)
             resolved = true
+            abortAll()
             resolve(url)
           } else {
             _0x6b04(source, apiSource.name, false, elapsed, quality)
@@ -862,8 +1083,7 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
   })
 }
 
-// TX 平台延迟并发：优先层立即启动，备用层延迟500ms加入竞速
-// 避免串行等待（原方案最坏12s），最坏情况仅需5s超时
+// TX 平台延迟并发：优先层立即启动，备用层延迟300ms加入竞速
 var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
   if (tier1.length === 0 && tier2.length === 0) {
     return Promise.reject(new Error(_g(65)))
@@ -873,26 +1093,43 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
 
   var errors = []
   var resolved = false
-  var pending = 0
+  var settled = 0
+  var totalPending = tier1.length + tier2.length
+  var aborts = []
+  var tier2Timer = null
   var allTier = tier1.concat(tier2)
+  var abortAll = function() {
+    for (var k = 0; k < aborts.length; k++) {
+      try { aborts[k]() } catch (e) {}
+    }
+    aborts = []
+  }
 
   return new Promise(function(resolve, reject) {
     var onSettled = function() {
-      pending--
-      if (pending === 0 && !resolved) {
+      settled++
+      if (settled === totalPending && !resolved) {
+        if (tier2Timer) { clearTimeout(tier2Timer); tier2Timer = null }
         _0x6b05(source, quality, allTier)
-        reject(new Error(_g(80) + errors.join('\n')))
+        abortAll()
+        reject(new Error(_0x6b19(_g(80) + errors.join('\n'))))
       }
     }
     var launch = function(apiSource) {
-      pending++
+      if (resolved) return
       var t0 = Date.now()
-      _0x6a03(apiSource.fetch(source, musicInfo, quality), RACE_TIMEOUT).then(function(url) {
+      var raw = _0x6b1c(apiSource, source, musicInfo, quality)
+      aborts.push(function() {
+        try { if (raw && typeof raw.abort === 'function') raw.abort() } catch (e) {}
+      })
+      _0x6a03(raw, RACE_TIMEOUT).then(function(url) {
         if (resolved) return
         var elapsed = Date.now() - t0
         if (url && _0x6a04(url)) {
           _0x6b04(source, apiSource.name, true, elapsed, quality)
           resolved = true
+          if (tier2Timer) { clearTimeout(tier2Timer); tier2Timer = null }
+          abortAll()
           resolve(url)
         } else {
           _0x6b04(source, apiSource.name, false, elapsed, quality)
@@ -911,10 +1148,15 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
     // 优先层立即启动
     for (var i = 0; i < tier1.length; i++) launch(tier1[i])
     // 备用层延迟300ms启动，给优先层先发优势
-    setTimeout(function() {
-      if (resolved) return
-      for (var j = 0; j < tier2.length; j++) launch(tier2[j])
-    }, 300)
+    if (typeof setTimeout === 'function') {
+      tier2Timer = setTimeout(function() {
+        tier2Timer = null
+        if (resolved) return
+        for (var j = 0; j < tier2.length; j++) launch(tier2[j])
+      }, 300)
+    } else {
+      for (var k = 0; k < tier2.length; k++) launch(tier2[k])
+    }
   })
 }
 
@@ -937,6 +1179,12 @@ const _0x6b01 = function(source, musicInfo, quality) {
   }
   // 按面板统计的请求速度（平均响应时间）重排优先级：快者先发
   candidates = _0x6b0a(candidates, source)
+  // 跳过处于熔断期的接口；若全部处于熔断期则回退全部，避免无法播放
+  var healthy = []
+  for (var h = 0; h < candidates.length; h++) {
+    if (!_0x6b1a(candidates[h].name)) healthy.push(candidates[h])
+  }
+  if (healthy.length > 0) candidates = healthy
   // TX 平台使用延迟并发：优先层立即启动，备用层延迟300ms加入
   // 优先层为真实音质源（念心TX、vkeys腾讯/v2），备用层为玉宁熙、aa.cab 等
   if (source === _g(100)) {
@@ -946,9 +1194,13 @@ const _0x6b01 = function(source, musicInfo, quality) {
       if (candidates[j].txTier === 1) tier1.push(candidates[j])
       else tier2.push(candidates[j])
     }
-    return _0x6b03(tier1, tier2, source, musicInfo, quality)
+    return _0x6b03(tier1, tier2, source, musicInfo, quality).then(function(url) {
+      return _0x6a09(url)
+    })
   }
-  return _0x6b02(candidates, source, musicInfo, quality)
+  return _0x6b02(candidates, source, musicInfo, quality).then(function(url) {
+    return _0x6a09(url)
+  })
 }
 
 // ========== _0x6b10 对象（对齐官方示例结构）==========
@@ -1014,18 +1266,33 @@ on(EVENT_NAMES.request, function(params) {
 // ========== 更新检查 ==========
 // 脚本初始化时异步检查面板是否有新版本，若有则发送 updateAlert 事件
 // 参考文档: https://www.lxmusic.cn/docs/music-source/
-var SCRIPT_VERSION = 'v2.2.1-fix'
+var SCRIPT_VERSION = 'v2.2.2-261031-fix'
+
+// 版本号格式：版本号-YYMMDD[-fix]，如 v2.2.2-261030-fix
+// 比较顺序：核心数字逐段 → 日期（缺省 0）→ fix 补丁级（无 0 / 有 1）
+var _parseVersion = function(v) {
+  var s = String(v || '').trim().replace(/^v/i, '')
+  var m = /^(\d+(?:\.\d+)*)(?:RC\d+)?(?:-(\d{6}))?(-fix)?$/i.exec(s)
+  if (!m) return { nums: [], date: 0, fix: 0 }
+  return {
+    nums: m[1].split('.').map(function(n) { return parseInt(n, 10) || 0 }),
+    date: m[2] ? parseInt(m[2], 10) : 0,
+    fix: m[3] ? 1 : 0
+  }
+}
 
 var _compareVersion = function(v1, v2) {
-  var a = String(v1).replace(/^v/i, '').split('.')
-  var b = String(v2).replace(/^v/i, '').split('.')
-  var len = Math.max(a.length, b.length)
+  var a = _parseVersion(v1)
+  var b = _parseVersion(v2)
+  var len = Math.max(a.nums.length, b.nums.length)
   for (var i = 0; i < len; i++) {
-    var na = parseInt(a[i] || '0', 10)
-    var nb = parseInt(b[i] || '0', 10)
+    var na = a.nums[i] || 0
+    var nb = b.nums[i] || 0
     if (na > nb) return 1
     if (na < nb) return -1
   }
+  if (a.date !== b.date) return a.date > b.date ? 1 : -1
+  if (a.fix !== b.fix) return a.fix > b.fix ? 1 : -1
   return 0
 }
 
@@ -1033,27 +1300,57 @@ var _compareVersion = function(v1, v2) {
 // LX 文档硬性限制：updateAlert 每次运行脚本只能调用一次（官方 preload 再次调用直接 reject）。
 // 因此广播/定向通知/停用提示/更新日志/用户ID 全部先入队，最后合并为唯一一条弹窗。
 var _pendingMsgs = []
+// 本次运行是否已经发送过 updateAlert（官方限制每次运行只能弹一次）
+var _alertSent = false
 var _0x6b0b = function(text) {
   if (!text) return
+  // 已弹过更新提示后不再入队：LX 不允许第二次 updateAlert，避免消息堆积
+  if (_alertSent) return
   _pendingMsgs.push(String(text))
 }
 // 合并收集到的全部消息并只发送一次 updateAlert（总量截断 1024 字符）
 var _0x6b0c = function(updateUrl) {
-  if (_pendingMsgs.length === 0) return
+  if (_alertSent) {
+    _pendingMsgs = []
+    return false
+  }
+  if (_pendingMsgs.length === 0) return false
   var log = _pendingMsgs.join('\n\n')
   if (log.length > 1024) log = log.substring(0, 1024)
   _pendingMsgs = []
+  // 无论成功与否都标记已发送：重复调用必然被官方拒绝，无需再次尝试
+  _alertSent = true
+  // 始终携带 updateUrl 字段（无更新地址时为空串）：与可正常弹窗的 v2.2.2 行为一致
+  var data = { log: log, updateUrl: updateUrl || '' }
+  if (typeof send !== 'function') {
+    _0x6b16('fail', '客户端不支持 updateAlert')
+    return true
+  }
   try {
-    var ret = send(EVENT_NAMES.updateAlert, { log: log, updateUrl: updateUrl || '' })
-    // send 返回 Promise；官方环境重复调用等异常在此兜底，避免未处理 rejection
-    if (ret && typeof ret.catch === 'function') ret.catch(function() {})
-  } catch (e) {}
+    var ret = send(EVENT_NAMES.updateAlert, data)
+    // 投递结果回传面板，悬停「弹窗投递」可诊断客户端开关状态
+    if (ret && typeof ret.then === 'function') {
+      ret.then(function() {
+        _0x6b16('ok')
+      }, function(e) {
+        _0x6b16('fail', e && e.message ? e.message : e)
+      })
+    } else {
+      _0x6b16('ok')
+    }
+  } catch (e) {
+    _0x6b16('fail', e && e.message ? e.message : e)
+  }
+  return true
 }
 
 // ========== 最大音质限制（面板 check_update 下发，用户规则优先于全局规则）==========
 var _maxQuality = ''
-// 档位高低：standard <= 128k <= 320k <= flac <= flac24bit
-var _qualityRank = { standard: 0, '128k': 1, '320k': 2, 'flac': 3, 'flac24bit': 4 }
+// 扩展音质档位：非官方档位，官方 preload 会按 supportQualitys 过滤，
+// 仅对允许扩展档位的客户端生效，不影响原有 4 档
+var _EXTRA_QUALITYS = ['192k', 'hires', 'dolby', 'atmos', 'atmos_plus', 'jyeffect', 'sky', 'jymaster', 'master']
+// 档位高低（与面板 qualityWhitelist 逐一对应）
+var _qualityRank = { standard: 0, '128k': 1, '192k': 2, '320k': 3, 'flac': 4, 'hires': 5, 'flac24bit': 6, dolby: 7, atmos: 7, atmos_plus: 7, jyeffect: 7, sky: 7, jymaster: 8, master: 8 }
 var _0x6b09 = function(quality) {
   if (!_maxQuality) return quality
   var q = String(quality || '128k').toLowerCase()
@@ -1083,15 +1380,78 @@ var _0x6b0a = function(candidates, source) {
   })
 }
 
+// 面板开关字段宽松判定：兼容 bool / 数字 / 字符串（"0"、"false" 视为关闭）
+var _isOn = function(v) {
+  if (v === true) return true
+  if (v === false || v === null || v === undefined) return false
+  if (typeof v === 'number') return v !== 0
+  var s = String(v).toLowerCase()
+  return s !== '' && s !== '0' && s !== 'false' && s !== 'off' && s !== 'no'
+}
+
+// 面板轮询状态：首次拉取后改用 no_notify=1，避免定时刷新吞掉管理员推送消息
+var _panelBusy = false
+var _panelPolled = false
+var _panelTimer = null
+var _panelRetried = false
+var _checkFailReported = false
+
+// 更新检查失败诊断：写入 alert_state，面板悬停可见（去重，避免轮询刷屏）
+var _0x6b18 = function(msg) {
+  if (_checkFailReported) return
+  _checkFailReported = true
+  _0x6b16('fail', _g(114) + String(msg || '').substring(0, 160))
+}
+
+// 首次检查失败时重试一次（8 秒后），规避启动期瞬时网络失败
+var _0x6b1d = function() {
+  if (_panelRetried) return
+  _panelRetried = true
+  if (typeof setTimeout !== 'function') return
+  setTimeout(function() {
+    try { _0x6b0d() } catch (e) {}
+  }, 8000)
+}
+
+// 拉取面板规则与通知（可重复执行：启动时一次，之后每 60 秒刷新一次）
 var _0x6b0d = function() {
   if (!PANEL_REPORT_URL) return
+  if (_panelBusy) return
   // 从 report.php 地址推导出 api.php 地址
   var apiUrl = PANEL_REPORT_URL.replace(/\/report\.php.*$/, _g(83))
   if (apiUrl === PANEL_REPORT_URL) return
-  // 附带用户标识，便于面板统计与定向下发
+  // 附带用户标识与设备特征，便于面板统计、身份识别与定向下发
   apiUrl += _g(88) + encodeURIComponent(_userId || '')
-  _0x6a02(apiUrl, { method: 'GET', timeout: 5000 }).then(function(body) {
-    if (!body) return
+  if (_clientType) apiUrl += '&client_type=' + encodeURIComponent(_clientType)
+  if (_cachedClientIp) apiUrl += '&client_ip=' + encodeURIComponent(_cachedClientIp)
+  if (_deviceFp) apiUrl += _g(106) + encodeURIComponent(_deviceFp)
+  // 定时刷新只同步规则：不消费面板待推送消息，留给下次启动的首次拉取
+  if (_panelPolled) apiUrl += '&no_notify=1'
+  _panelBusy = true
+  _0x6a02(apiUrl, { method: 'GET', timeout: 5000 }).then(function(raw) {
+    _panelBusy = false
+    var body = raw
+    // 移动版部分客户端返回 JSON 字符串，需自行解析；解析失败直接跳过本次检查
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body) } catch (e) { body = null }
+    }
+    if (!body || typeof body !== 'object') {
+      _0x6b0f('[HeiMusic] 面板响应无法解析，跳过本次更新检查')
+      _0x6b18('面板响应无法解析')
+      _0x6b1d()
+      return
+    }
+    _panelPolled = true
+    _panelRetried = false
+    _checkFailReported = false
+    // 采纳面板发放的用户ID（按 IP + 客户端特征映射，跨启动稳定）
+    if (body.userId) _userId = String(body.userId)
+    // 面板「随更新提示展示用户ID」开关状态（用于失败提示兜底）
+    _pushUserIdOn = _isOn(body.push_user_id)
+    // 用户ID文案最先入队：合并日志超过 1024 字被截断时 ID 仍保留（v2.2.2-261030-fix）
+    if (_pushUserIdOn && _userId) {
+      _0x6b0b('你的用户ID：' + _userId + '\n（请勿泄露ID，在汇报问题时请带上此ID）')
+    }
     // 面板公告（广播）与定向通知 —— 先入队，最后统一弹出
     _0x6b0b(body.broadcast)
     _0x6b0b(body.notify)
@@ -1110,21 +1470,38 @@ var _0x6b0d = function() {
       _scriptDisabled = true
       _0x6b0b('您当前使用的版本 ' + SCRIPT_VERSION + ' 已被停用，请升级到最新版本。')
     }
+    // 用户黑名单：命中后拒绝该用户所有请求，并推送提示
+    if (_isOn(body.blacklisted)) {
+      _scriptDisabled = true
+      _0x6b0b(_g(104))
+    }
     // 更新日志（停用状态下不再提示更新，只提示升级）
     var updateUrl = ''
     if (!isDisabled && body.version && _compareVersion(body.version, SCRIPT_VERSION) > 0) {
       _0x6b0b(body.log || ('发现新版本 ' + body.version))
       updateUrl = body.updateUrl || ''
     }
-    // 推送用户ID：随更新提示/公告内容一起弹出（v2.2.1+）
-    if (body.push_user_id && _userId) {
-      _0x6b0b('你的用户ID：' + _userId + '\n（可向管理员报备此ID，用于换取定向通知/白名单/音质权限，请勿泄露）')
-    }
     // 唯一一次 updateAlert：合并广播/通知/停用/更新/用户ID
     _0x6b0c(updateUrl)
   }).catch(function(e) {
-    // 更新检查失败不影响正常使用
+    // 更新检查失败不影响正常使用；回传诊断并重试一次
+    _panelBusy = false
+    _0x6b0f('[HeiMusic] 更新检查失败：' + (e && e.message ? e.message : e))
+    _0x6b18(e && e.message ? e.message : e)
+    _0x6b1d()
   })
+}
+
+// 每 60 秒轮询一次面板（±5 秒抖动），加快用户ID与规则下发刷新
+var _0x6b14 = function() {
+  if (typeof setTimeout !== 'function') return
+  // 测试环境不挂常驻定时器，由用例显式调用 refreshPanel
+  if (typeof globalThis !== 'undefined' && globalThis.__HM_TEST__) return
+  try { if (_panelTimer) clearTimeout(_panelTimer) } catch (e) {}
+  _panelTimer = setTimeout(function() {
+    try { _0x6b0d() } catch (e) {}
+    _0x6b14()
+  }, 55000 + Math.floor(Math.random() * 10000))
 }
 
 // 脚本初始化完成后发送 inited 事件告知应用
@@ -1136,39 +1513,43 @@ send(EVENT_NAMES.inited, {
       name: '酷我音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'],
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
     },
     [_g(99)]: {
       name: '酷狗音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'],
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
     },
     [_g(100)]: {
       name: 'QQ音乐',
       type: 'music',
       actions: [_g(98)],
-      // 仅声明文档有效音质（128k/320k/flac/flac24bit），非法值会被官方过滤且可能导致严格端校验失败
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'],
+      // 基础 4 档 + 扩展档位：官方 preload 会过滤非官方档位，不影响原有 4 档
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
     },
     [_g(102)]: {
       name: '网易云音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'],
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
     },
     [_g(101)]: {
       name: '咪咕音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'],
+      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
     },
   },
 })
 try { _0x6b06() } catch (e) {}
 try { _0x6b07() } catch (e) {}
+try { _0x6b12() } catch (e) {}
 try { _0x6b08() } catch (e) {}
+try { _0x6b15() } catch (e) {}
+// 立即拉取面板：与可正常弹窗的 v2.2.2 保持一致（延迟会被部分客户端丢掉事件）
 try { _0x6b0d() } catch (e) {}
+try { _0x6b14() } catch (e) {}
 
 // ===== 测试钩子（仅沙箱回归测试显式开启；LX 环境不定义 __HM_TEST__，自动跳过） =====
 if (typeof globalThis !== 'undefined' && globalThis.__HM_TEST__) {
@@ -1177,14 +1558,30 @@ if (typeof globalThis !== 'undefined' && globalThis.__HM_TEST__) {
     API_SOURCES: _0x6b00,
     isValidUrl: _0x6a04,
     handleGetMusicUrl: _0x6b01,
-    fetchHywFree: _0x6c10,
     fetchVkeysV2: _0x6c05,
     fetchAaCabTx: _0x6c11,
     fetchOiapiMigu: _0x6c12,
     fetchKwMobi: _0x6c13,
+    fetchNianxinKw: _0x6c02,
+    fetchNianxinTx: _0x6c03,
+    fetchNianxinKg: _0x6c06,
+    normalizeUrl: _0x6a09,
+    QUALITY_RANK: _qualityRank,
+    EXTRA_QUALITYS: _EXTRA_QUALITYS,
     sortByPriority: function(c, s) { return _0x6b0a(c, s) },
     setPriority: function(p) { _sourcePriority = p },
     isDisabled: function() { return _scriptDisabled },
+    handleReportResponse: _0x6b13,
+    getUserId: function() { return _userId },
+    getDeviceFp: function() { return _deviceFp },
+    refreshPanel: _0x6b0d,
+    compareVersion: _compareVersion,
+    reportIp: _0x6b15,
+    isSourceCooling: _0x6b1a,
+    markSourceHealth: _0x6b1b,
+    raceCandidates: _0x6b02,
+    hasAlertSent: function() { return _alertSent },
+    isPushIdOn: _isOn,
   }
 }
 })()

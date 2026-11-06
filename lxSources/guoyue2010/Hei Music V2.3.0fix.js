@@ -1,7 +1,7 @@
 /**
  * @name Hei Music聚合源
- * @description 聚合自公开接口 Q群516649104
- * @version v2.2.2-261031-fix
+ * @description 禁止批量测试！Q群516649104
+ * @version v2.3.0-261105-fix
  * @author Compile by CatXiaolan
  */
 ;(function() {
@@ -61,8 +61,6 @@ var _0x4e8f = function(arr) {
 var _0xa3b1 = {
   nianxin_kw: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL9LL58L9SL9MLMbL9_',
   gdstudio: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlpLjoLjALjILbcLAbLbELbVLbsLbPLA8LU8LUwLAyLUPLUwLOSLOSLS-LSTLOxLvWLOpLvCLO-L56L5TL5GLvx',
-  qq_vkey: 'LLRLLDLgQLgmLgxLgYLljLj2LloLltLjvLjaLAOLjkLbhLAWLbwLAELbHLU6LUiLUxLUNLOjLU3LOgLSSLvOLSxLOQLOZLORLvxLvvL56L5nL5-L5S',
-  qq_cdn: 'LLRLLDLgQLgmLgxLgYLljLj2LlILlQLjvLj9LjHLj_LALLbpLbWLbsLABLAELUKLUoLAPLUfLUuLSOLSMLSYLOZLvgLOWLO8LOy',
   ynx_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbvLj3Lb_LbSLb3LbDLAZLbILAXLUVLUxLS2LUZLUoLSSLSeLS7LOrLOALOELOnLvhLvvLvsL5DL5-L9mL5tL5CL9C',
   ynx_tx2: 'LLRLLDLgQLgmLgxLgYLljLj2Ll6LlhLbvLlfLAOLjQLb-LbRLATLAwLUFLUELU8LUgLUMLSULS6LOALSmLSoLSyLvgLOaLOTLvCLOZLv6L9FL5ELvxL5GL9wL9CL9bL9o',
   nianxin_wy: 'LLRLLDLgQLgmLgxLgYLljLj2LjbLlHLjwLbOLbOLjELAbLbWLbmLAuLb-LULLU6LUgLUMLSALUQLSSLS5LOALSYLOHLOwLvTLvxLOZLvsL5_L5fL9FL5oL5zL9SL9MLMbL9_',
@@ -72,8 +70,6 @@ var _0xa3b1 = {
   vkeys_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLj3Lj-LALLb3Lb0LbsLALLAYLARLSbLAyLUCLUwLScLOULSuLSHLvULOCLOoLvELv5L5oL5XL9gL5mL5PL9oLMAL9jLMUL94',
   migu_search: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLjwLbOLj4LbxLASLb6LATLA-LbyLAWLU1LUgLUMLSULS6LS1LUxLvOLSDLOfLOZLOTLvoLvmLvpL5dL5gLvcL9bL5wL9GLMAL9wL9uL7lLMELMCL73L7HL7hL78L7fLBZ',
   migu_listen: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLjwLbOLjILbxLASLb6LATLA-LbyLAWLU1LUgLUMLSULS6LOWLS8LSRLOlLvtLvsLvWLOCLv4Lv-LvWL5LL5xLMbL53LMUL9UL93L9uL7ALMZL7WL7CL7OL7pL7_LFgLBmLBtLB8LFcLFALF5LFyL2bLmwL2XL2cLmu',
-  vkeys_tx_v2: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLj3Lj-LALLb3Lb0LbsLALLAYLARLUCLUILOALUQLS6LS5LOULSoLOALOxLOoLvELOfLvKL5RL51L9FL5PL5yL96L9FL91L9x',
-  aa_cab_tx: 'LLRLLDLgQLgmLgxLgYLljLj2LlsLj6LjxLlILAOLj6LAbLbCLAtLACLABLUYLUKLUoLAPLUfLUu',
   oiapi_migu: 'LLRLLDLgQLgmLgxLgYLljLj2LjULloLjxLjBLbSLbxLASLboLbeLbELbGLAsLU_LUlLUYLUfLSaLS6LSyLS1LSKLOuLOkLO1',
   kw_mobi: 'LLRLLDLgQLgmLjjLgVLljLlNLjbLlYLjILjALAOLj-Lb3LbGLbtLbsLALLAYLARLSbLUmLUxLUwLSOLS5',
   report_url: 'LLRLLDLgQLgmLjjLgVLljLjbLbSLj8LloLbFLAOLbpLjPLAWLAdLb1LUmLSlLATLAtLUcLSpLSTLSSLS9LOlLSkLvALOsLO0LOELvBLvQL5T',
@@ -157,7 +153,9 @@ _0x2c7a.push(
   'LLRLLDLgQLgmLgxLgYLljLj2LlsLlXLblLbOLbSLjRLbSLbxLb1LbELbPLAXLURLSLLAc',
   'LLRLLDLgQLgmLgxLgYLljLj2LjLLlXLblLjOLbLLjZLbSLbRLbtLbELbZLAZLURLSg',
   'UzPUJdU80U_cATsO-0FGB', 'LgYLLeLgPLgNLg3LlpLloLlVLlQLlsLj6Lj9LbSLjZLASLAh',
-  'SaRUvRLlNLgeFGX', 'FILv_eUc9SvnU_6FGB'
+  'SaRUvRLlNLgeFGX', 'FILv_eUc9SvnU_6FGB',
+  'OLBUf-vkoUP3', 'LgtLL1LgwLLELlQLlpLjLLgPLjyLlhLjPLjNLbSLjZLASLAhLb8LAyLA8LA4LUWLSj',
+  'OLBUf-UBGAFgOmyA25AWCOES', 'OLBUf-UBGAFgbcqUn0O3wUHYAswvgDLlcLb2LbYLbRLbAUupbGlv_5'
 )
 var _0x8d40 = {}
 var _g = function(i) {
@@ -212,6 +210,8 @@ const _0x6a01 = (url, options) => {
           body: resp && resp.body,
           headers: (resp && resp.headers) || {},
           statusCode: resp && resp.statusCode,
+          // LX-X 等客户端的原生请求会自动跟随 302，最终 URL 只能从这里取得
+          url: resp && resp.url,
         })
       })
     } catch (e) {
@@ -252,13 +252,39 @@ const _0x6a04 = function(url) {
   return true
 }
 
-// 媒体直链 https 升级：仅对已验证支持 https 的 CDN 生效，其余保持原样
+// URL 清洗：统一处理 HTML 实体、反斜杠转义与协议相对地址
+const _0x6a0b = function(url) {
+  if (typeof url !== 'string') return ''
+  var s = url.trim()
+  s = s.replace(/&amp;/g, '&').replace(/&#38;/g, '&').replace(/&#x26;/g, '&')
+  s = s.replace(/\\\//g, '/')
+  if (s.indexOf('//') === 0) s = 'https:' + s
+  return s
+}
+
+// Location 可能是相对路径：按原请求地址补全 scheme + host
+const _0x6a0c = function(base, loc) {
+  loc = _0x6a0b(loc)
+  if (!loc) return ''
+  if (loc.indexOf('//') === 0) return 'https:' + loc
+  if (loc.charAt(0) === '/') {
+    var m = /^(https?:\/\/[^\/]+)/i.exec(String(base || ''))
+    return m ? m[1] + loc : ''
+  }
+  return loc
+}
+
+// 媒体直链 https 升级：仅对已验证支持 https 的音频 CDN 生效，其余保持原样
 const _0x6a09 = function(url) {
+  url = _0x6a0b(url)
   if (typeof url !== 'string' || url.indexOf('http://') !== 0) return url
   var m = /^http:\/\/([^\/?#]+)/.exec(url)
   if (!m) return url
   var host = m[1].toLowerCase().replace(/:\d+$/, '')
-  if (/^(?:car-[a-z0-9-]+\.kuwo\.cn|(?:ws|dl)\.stream\.qqmusic\.qq\.com)$/.test(host)) return 'https://' + url.slice(7)
+  // 网易云 m*.music.126.net、QQ aqqmusic.tc.qq.com 等已实测支持 https；
+  // Android/LX-X 下载器会拦截明文 HTTP，统一升级可避免“能播放但下载失败”
+  if (/^(?:[a-z0-9-]+\.)*(?:kuwo\.cn|qqmusic\.qq\.com|music\.126\.net|kugou\.com|migu\.cn)$/.test(host) ||
+      /^aqqmusic\.tc\.qq\.com$/.test(host)) return 'https://' + url.slice(7)
   return url
 }
 
@@ -298,7 +324,7 @@ var _0x6b12 = function() {
   try {
     var nav = (globalThis && globalThis.navigator) || null
     if (nav) {
-      if (nav.userAgent) parts.push('ua:' + nav.userAgent)
+      // 不把 UA 计入指纹：客户端/脚本升级可能改变 UA，会导致用户ID变化
       if (nav.language) parts.push('lang:' + nav.language)
       if (nav.platform) parts.push('plat:' + nav.platform)
       if (nav.hardwareConcurrency) parts.push('cores:' + nav.hardwareConcurrency)
@@ -318,44 +344,114 @@ var _0x6b12 = function() {
 
 var _0x6b06 = function() {
   // 生成随机用户ID（格式: U + 12位随机十六进制）
+  // 混入时间戳与随机数：部分客户端 Math.random 序列固定，仅用随机数会导致所有用户ID相同
   var chars = '0123456789abcdef'
+  var n = ((Date.now() & 0x7fffffff) ^ Math.floor(Math.random() * 0x7fffffff)) & 0x7fffffff
   var id = 'U'
   for (var i = 0; i < 12; i++) {
-    id += chars[Math.floor(Math.random() * 16)]
+    n = (n * 1103515245 + 12345) & 0x7fffffff
+    id += chars.charAt(n & 15)
   }
   _userId = id
 }
 
+// 公网 IP 合法性校验：过滤内网、回环、链路本地与运营商级 NAT 地址
+var _isPublicIp = function(raw) {
+  var s = String(raw || '').trim()
+  if (!s) return false
+  var m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(s)
+  if (m) {
+    var a = +m[1], b = +m[2], c = +m[3], d = +m[4]
+    if (a > 255 || b > 255 || c > 255 || d > 255) return false
+    if (a === 0 || a === 10 || a === 127 || a >= 224) return false
+    if (a === 169 && b === 254) return false
+    if (a === 172 && b >= 16 && b <= 31) return false
+    if (a === 192 && b === 168) return false
+    if (a === 100 && b >= 64 && b <= 127) return false
+    if (a === 198 && (b === 18 || b === 19)) return false
+    return true
+  }
+  if (s.indexOf(':') !== -1) {
+    var low = s.toLowerCase()
+    if (low === '::' || low === '::1') return false
+    if (/^f[cd][0-9a-f]{0,2}:/i.test(low) || /^fe[89ab][0-9a-f]{0,2}:/i.test(low)) return false
+    return true
+  }
+  return false
+}
+
 var _clientIpPromise = null
-// 公网 IP 获取：多服务商顺序回退，结果复用同一 Promise（失败返回空串，不抛错）
+var _ipReady = false
+// 公网 IP 获取：多服务商并行竞速，首个有效公网 IP 胜出并中止其余请求
+// 单路超时 1.2 秒，避免拖慢随后的 action=ip 与 check_update（更新弹窗对延迟敏感）
 var _0x6b08 = function() {
   if (_clientIpPromise) return _clientIpPromise
   _clientIpPromise = new Promise(function(resolve) {
     var urls = [_g(97), _g(112), _g(113)]
-    var i = 0
-    var next = function() {
-      if (_cachedClientIp) { resolve(_cachedClientIp); return }
-      if (i >= urls.length) { resolve(''); return }
-      var u = urls[i++]
-      _0x6a02(u, { method: 'GET', timeout: 3000 }).then(function(body) {
-        var ip = body && (body.ip || body.query)
-        if (ip) {
-          _cachedClientIp = String(ip)
-          resolve(_cachedClientIp)
-          return
-        }
-        next()
-      }).catch(function() { next() })
+    var pending = urls.length
+    var settled = false
+    var reqs = []
+    var finish = function(ip) {
+      if (settled) return
+      settled = true
+      for (var j = 0; j < reqs.length; j++) {
+        try { if (reqs[j] && typeof reqs[j].abort === 'function') reqs[j].abort() } catch(e) {}
+      }
+      if (ip) {
+        _cachedClientIp = ip
+        resolve(ip)
+      } else {
+        resolve('')
+      }
     }
-    next()
+    var pick = function(body) {
+      var ip = body && (body.ip || body.query || body.address)
+      if (!ip) return ''
+      var s = String(ip).trim()
+      if (!s) return ''
+      s = s.replace(/^for=/i, '').replace(/^["']|["']$/g, '')
+      if (s.indexOf(',') !== -1) s = s.split(',')[0].trim()
+      if (s.charAt(0) === '[') {
+        var end = s.indexOf(']')
+        if (end > 0) s = s.slice(1, end)
+      } else if (s.indexOf(':') !== -1 && s.indexOf('.') !== -1) {
+        s = s.split(':')[0]
+      }
+      return _isPublicIp(s) ? s : ''
+    }
+    if (!pending) { finish(''); return }
+    urls.forEach(function(u) {
+      try {
+        var p = _0x6a02(u, { method: 'GET', timeout: 1200 }).then(function(body) {
+          if (typeof body === 'string') {
+            try { body = JSON.parse(body) } catch(e) { body = null }
+          }
+          var ip = pick(body)
+          if (ip) { finish(ip); return }
+          pending--
+          if (pending === 0) finish('')
+        }).catch(function() {
+          pending--
+          if (pending === 0) finish('')
+        })
+        reqs.push(p)
+      } catch(e) {
+        pending--
+        if (pending === 0) finish('')
+      }
+    })
   })
   return _clientIpPromise
 }
 
-// 使用者IP上报：等待公网 IP 获取完成后再发送，后台以服务端观测 IP 优先
+// 使用者IP上报：等待公网 IP 获取完成后发送，失败自动重试一次；后台以服务端观测 IP 优先
+var _ipReported = false
 var _0x6b15 = function() {
-  if (!PANEL_REPORT_URL) return
+  if (!PANEL_REPORT_URL || _ipReported) return
+  var attempt = 0
   var post = function() {
+    if (_ipReported) return
+    attempt++
     try {
       var body = _g(108) + _g(88) + encodeURIComponent(_userId || '')
         + _g(89) + encodeURIComponent(_clientType)
@@ -367,9 +463,20 @@ var _0x6b15 = function() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body
       }).then(function(resp) {
-        _0x6b13(resp && resp.statusCode, resp && resp.body)
-      }).catch(function() {})
-    } catch(e) {}
+        var sc = resp && resp.statusCode
+        // 仅终态响应标记已上报；5xx/无状态码视为暂时失败并重试
+        if (!sc || sc >= 500) {
+          if (attempt < 2) setTimeout(post, 1500)
+          return
+        }
+        _ipReported = true
+        _0x6b13(sc, resp && resp.body)
+      }).catch(function() {
+        if (attempt < 2) setTimeout(post, 1500)
+      })
+    } catch(e) {
+      if (attempt < 2) setTimeout(post, 1500)
+    }
   }
   try {
     _0x6b08().then(post, post)
@@ -398,6 +505,15 @@ var _0x6b16 = function(status, msg) {
   } catch(e) {}
 }
 
+// 拉黑原因文案：自动拉黑展示具体触发项，手动拉黑展示管理员备注
+var _blacklistErrorText = function(body) {
+  var type = String((body && body.blacklist_type) || '')
+  var reason = body && body.blacklist_reason ? String(body.blacklist_reason) : ''
+  if (type === 'auto') return '您触发了自动拉黑' + (reason ? '：' + reason : '')
+  if (type === 'manual') return '您已被管理员拉黑' + (reason ? '：' + reason : '')
+  return ''
+}
+
 // 面板回包统一处理：采纳后台发放的用户ID；命中黑名单或频率限制时本地停用
 var _0x6b13 = function(statusCode, respBody) {
   var body = respBody
@@ -407,7 +523,19 @@ var _0x6b13 = function(statusCode, respBody) {
   if (body && typeof body === 'object') {
     if (body.user_id) _userId = String(body.user_id)
     if (body.userId) _userId = String(body.userId)
-    if (body.blacklisted === true) _scriptDisabled = true
+    // 面板回传实际采用的 IP：本机公网 IP 探测失败时用于后续上报/检查
+    if (body.ip && !_cachedClientIp) {
+      var reportedIp = String(body.ip).trim()
+      if (_isPublicIp(reportedIp)) _cachedClientIp = reportedIp
+    }
+    if (body.blacklisted === true) {
+      _scriptDisabled = true
+      var reasonText = _blacklistErrorText(body)
+      if (reasonText) {
+        _disabledReason = reasonText
+        _0x6b0b(reasonText)
+      }
+    }
   }
   if (statusCode === 403 || statusCode === 429) _scriptDisabled = true
 }
@@ -442,7 +570,19 @@ var _0x6b19 = function(text) {
   return s + '\n' + _g(116) + _userId + _g(117) + SCRIPT_VERSION + '）'
 }
 
-var _0x6b04 = function(platform, apiName, success, responseTime, quality) {
+var _0x6b04 = function(platform, apiName, success, responseTime, quality, requestId) {
+  // 等待公网 IP 探测完成后再上报，确保与 action=ip/check_update 使用同一 client_ip
+  if (PANEL_REPORT_URL && !_ipReady && _clientIpPromise) {
+    var _pendingArgs = arguments
+    _clientIpPromise.then(function() {
+      _ipReady = true
+      _0x6b04.apply(null, _pendingArgs)
+    }, function() {
+      _ipReady = true
+      _0x6b04.apply(null, _pendingArgs)
+    })
+    return
+  }
   _0x6b1b(apiName, !!success)
   if (!PANEL_REPORT_URL) return
   try {
@@ -455,32 +595,7 @@ var _0x6b04 = function(platform, apiName, success, responseTime, quality) {
       + _g(89) + encodeURIComponent(_clientType)
       + _g(90)
     if (q !== '') body += _g(91) + encodeURIComponent(q)
-    if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
-    if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
-    _0x6a01(PANEL_REPORT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body
-    }).then(function(resp) {
-      _0x6b13(resp && resp.statusCode, resp && resp.body)
-    }).catch(function() {})
-  } catch(e) {}
-}
-
-// 失效播放聚合上报：整首歌曲所有接口均失败时触发一次，按 request_id 去重合并
-var _0x6b05 = function(platform, quality, candidates) {
-  if (!PANEL_REPORT_URL) return
-  try {
-    var _0x6b10 = []
-    for (var i = 0; i < candidates.length; i++) _0x6b10.push(candidates[i].name)
-    var reqId = 'R' + Math.random().toString(16).substring(2, 10) + Date.now().toString(16)
-    var body = _g(93)
-      + _g(94) + encodeURIComponent(reqId)
-      + '&platform=' + encodeURIComponent(platform)
-      + _g(88) + encodeURIComponent(_userId)
-      + _g(91) + encodeURIComponent(String(quality || ''))
-      + _g(95) + encodeURIComponent(JSON.stringify(_0x6b10))
-      + _g(96) + candidates.length
+    if (requestId) body += '&request_id=' + encodeURIComponent(String(requestId))
     if (_cachedClientIp) body += _g(92) + encodeURIComponent(_cachedClientIp)
     if (_deviceFp) body += _g(106) + encodeURIComponent(_deviceFp)
     _0x6a01(PANEL_REPORT_URL, {
@@ -506,9 +621,9 @@ const _0x6a06 = function(platform, musicInfo) {
 
 const _0x6a07 = function(quality) {
   var q = String(quality || '128k').toLowerCase()
-  if (q === 'jymaster' || q === 'jyeffect' || q === 'sky' || q === 'dolby' || q === 'atmos' || q === 'atmos_plus' || q === 'master') return 'lossless'
+  if (q === 'atmos' || q === 'atmos_plus' || q === 'master') return 'lossless'
   if (q === 'flac' || q === 'flac24bit' || q === 'hires') return 'lossless'
-  if (q === '320k' || q === '192k') return 'exhigh'
+  if (q === '320k') return 'exhigh'
   return 'standard'
 }
 
@@ -536,10 +651,24 @@ const _0x6a0a = function(url) {
   }).then(function(resp) {
     var h = (resp && resp.headers) || {}
     var loc = h.location || h.Location
-    if (loc && _0x6a04(loc)) return loc
-    // 少数客户端会自动跟随跳转（读不到 Location）：回退接口地址，保证可播放
+    if (loc) {
+      var resolved = _0x6a0c(url, loc)
+      if (resolved && _0x6a04(resolved)) return resolved
+      // 接口明确返回了跳转地址但不可播放（加密容器/非法协议）：交给竞速中的其他源
+      var bad = new Error('302 返回不可播放链接')
+      bad.code = 'BAD_LOCATION'
+      throw bad
+    }
+    // 客户端自动跟随 302 时读不到 Location，使用响应最终 URL（LX-X / 部分新客户端）
+    var finalUrl = resp && resp.url
+    finalUrl = finalUrl ? _0x6a0b(finalUrl) : ''
+    if (finalUrl && finalUrl !== url && _0x6a04(finalUrl)) return finalUrl
+    // 读不到真实直链：回退接口地址，避免整条源直接失败；
+    // 部分宿主会直接返回音频流，此时接口地址本身仍可播放/下载
     return url
-  }).catch(function() {
+  }).catch(function(e) {
+    // 加密/非法跳转由竞速继续尝试其他源；其余探测失败（超时/403/Range 不支持等）回退原地址
+    if (e && e.code === 'BAD_LOCATION') throw e
     return url
   })
 }
@@ -582,7 +711,7 @@ const _0x6c0b = function(source, musicInfo, quality) {
   if (!gdSource) return Promise.reject(new Error(_g(25)))
   var songId = source === _g(102) ? _0x6a05(musicInfo) : _0x6a06(source, musicInfo)
   if (!songId) return Promise.reject(new Error(_g(26)))
-  var brMap = { '128k': '128', '192k': '320', '320k': '320', 'flac': '740', 'hires': '999', 'flac24bit': '999', 'jyeffect': '999', 'sky': '999', 'jymaster': '999', 'dolby': '999', 'atmos': '999', 'atmos_plus': '999', 'master': '999' }
+  var brMap = { '128k': '128', '320k': '320', 'flac': '740', 'flac24bit': '999', 'hires': '999', 'atmos': '999', 'atmos_plus': '999', 'master': '999' }
   var br = brMap[quality] || '320'
   return _0x6a02(_dec('gdstudio') + '?types=url&source=' + gdSource + '&id=' + encodeURIComponent(String(songId)) + '&br=' + br, {
     method: 'GET',
@@ -590,77 +719,6 @@ const _0x6c0b = function(source, musicInfo, quality) {
     if (body && body.url && _0x6a04(body.url)) return body.url
     throw new Error(_g(27))
   })
-}
-
-// QQ音乐直连vkey - tx (直接调用QQ音乐官方vkey接口，响应最快~0.13s)
-// 支持dolby全景声音质
-var QQ_VKEY_URL = _dec('qq_vkey')
-var QQ_CDN_URL = _dec('qq_cdn')
-var QQ_VKEY_GUID = '10000'
-
-var _qqVkeyRequest = function(filename, songmid) {
-  var payload = {
-    comm: { ct: 19, cv: 0, guid: QQ_VKEY_GUID, tmeAppID: 'qqmusic', qq: '0' },
-    hot: {
-      method: 'CgiGetHotVkey',
-      module: 'music.vkey.GetEVkey',
-      param: { filename: [filename], songmid: [String(songmid)] }
-    }
-  }
-  return _0x6a02(QQ_VKEY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  }).then(function(body) {
-    if (body && body.code === 0 && body.hot && body.hot.code === 0 &&
-        body.hot.data && body.hot.data.urls && body.hot.data.urls.length > 0) {
-      var purl = body.hot.data.urls[0].purl
-      if (purl) {
-        var fullUrl = QQ_CDN_URL + purl
-        if (_0x6a04(fullUrl)) return fullUrl
-      }
-    }
-    return null
-  })
-}
-
-var _0x6c0c = function(source, musicInfo, quality) {
-  if (source !== _g(100)) return Promise.reject(new Error(_g(28)))
-  var songmid = musicInfo.songmid || musicInfo.strMediaMid || musicInfo.id || ''
-  var mediaMid = musicInfo.strMediaMid || songmid
-  if (!songmid) return Promise.reject(new Error(_g(29)))
-  // 音质格式映射，按优先级尝试
-  // QQ音乐CDN前缀: C400=128k, M800=320k, F000=FLAC, D000=HiRes
-  // A000/AI000(臻品母带)、Q000(全景声) 为加密容器，下载后无法播放，已剔除
-  var formatMap = {
-    '128k': [{ prefix: 'C400', ext: 'm4a' }],
-    '192k': [{ prefix: 'M800', ext: 'mp3' }, { prefix: 'C400', ext: 'm4a' }],
-    '320k': [{ prefix: 'M800', ext: 'mp3' }, { prefix: 'C400', ext: 'm4a' }],
-    'flac': [{ prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'flac24bit': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'hires': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'dolby': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'atmos': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'atmos_plus': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'jyeffect': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'sky': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'jymaster': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }],
-    'master': [{ prefix: 'D000', ext: 'flac' }, { prefix: 'F000', ext: 'flac' }, { prefix: 'M800', ext: 'mp3' }]
-  }
-  var formats = formatMap[quality] || formatMap['320k']
-  // 依次尝试不同格式，第一个成功即返回
-  var tryFormat = function(index) {
-    if (index >= formats.length) {
-      return Promise.reject(new Error(_g(30)))
-    }
-    var fmt = formats[index]
-    var filename = fmt.prefix + mediaMid + '.' + fmt.ext
-    return _qqVkeyRequest(filename, songmid).then(function(url) {
-      if (url) return url
-      return tryFormat(index + 1)
-    })
-  }
-  return tryFormat(0)
 }
 
 // 玉宁熙tx主接口 - tx (带APIKEY)
@@ -675,11 +733,11 @@ var _checkYnxQuality = function(quality, url) {
   // 128k 不降级检查
   if (q === '128k') return true
   // 320k 不应返回 C400（128k m4a）
-  if (q === '320k' || q === '192k') {
+  if (q === '320k') {
     return url.indexOf('C400') === -1
   }
   // 无损/全景声应包含 flac 或高品质标识，避免 C400
-  if (q === 'flac' || q === 'flac24bit' || q === 'hires' || q === 'dolby' || q === 'atmos' || q === 'atmos_plus' || q === 'jyeffect' || q === 'sky' || q === 'jymaster' || q === 'master') {
+  if (q === 'flac' || q === 'flac24bit' || q === 'hires' || q === 'atmos' || q === 'atmos_plus' || q === 'master') {
     return url.indexOf('C400') === -1
   }
   return true
@@ -690,8 +748,8 @@ var _0x6c01 = function(source, musicInfo, quality) {
   var songmid = _0x6a06('tx', musicInfo)
   if (!songmid) return Promise.reject(new Error(_g(32)))
   // 音质映射为中文type参数
-  // 臻品母带=master, 臻品全景声=atmos/dolby, SQ无损=flac, HQ高品质=320k, 低品质=128k
-  var typeMap = { '128k': '低品质', '192k': 'HQ高品质', '320k': 'HQ高品质', 'flac': 'SQ无损', 'hires': 'SQ无损', 'flac24bit': '臻品全景声', 'dolby': '臻品全景声', 'atmos': '臻品全景声', 'atmos_plus': '臻品全景声', 'jyeffect': '臻品全景声', 'sky': '臻品全景声', 'jymaster': '臻品母带', 'master': '臻品母带' }
+  // 臻品母带=master, 臻品全景声=atmos/atmos_plus/flac24bit, SQ无损=hires/flac, HQ高品质=320k, 低品质=128k
+  var typeMap = { '128k': '低品质', '320k': 'HQ高品质', 'flac': 'SQ无损', 'hires': 'SQ无损', 'flac24bit': '臻品全景声', 'atmos': '臻品全景声', 'atmos_plus': '臻品全景声', 'master': '臻品母带' }
   var type = encodeURIComponent(typeMap[quality] || 'HQ高品质')
   // 主接口地址由资源表解码获得
   return _0x6a02(YNX_TX_URL + '?type=' + type + '&mid=' + encodeURIComponent(String(songmid)) + '&apikey=' + YNX_APIKEY, {
@@ -735,7 +793,7 @@ var _0x6c08 = function(source, musicInfo, quality) {
   if (source !== _g(102)) return Promise.reject(new Error(_g(35)))
   var songId = musicInfo.songId || musicInfo.musicId || musicInfo.id || ''
   if (!songId) return Promise.reject(new Error(_g(36)))
-  var levelMap = { '128k': 'standard', '192k': 'exhigh', '320k': 'exhigh', 'flac': 'lossless', 'hires': 'hires', 'flac24bit': 'hires', 'jyeffect': 'jyeffect', 'sky': 'sky', 'jymaster': 'jymaster', 'dolby': 'dolby', 'atmos': 'dolby', 'atmos_plus': 'dolby', 'master': 'jymaster' }
+  var levelMap = { '128k': 'standard', '320k': 'exhigh', 'flac': 'lossless', 'flac24bit': 'hires', 'hires': 'hires', 'atmos': 'dolby', 'atmos_plus': 'dolby', 'master': 'jymaster' }
   var level = levelMap[quality] || 'exhigh'
   return _0x6a02(NIANXIN_WY_URL + '?id=' + encodeURIComponent(String(songId)) + '&level=' + level, {
     method: 'GET',
@@ -792,7 +850,7 @@ var _isContentId = function(id) {
 
 var _0x6c0d = function(source, musicInfo, quality) {
   if (source !== _g(101)) return Promise.reject(new Error(_g(45)))
-  var toneMap = { '128k': 'PQ', '192k': 'HQ', '320k': 'HQ', 'flac': 'SQ', 'hires': 'SQ', 'flac24bit': 'ZQ', 'atmos': 'ZQ', 'atmos_plus': 'ZQ', 'master': 'ZQ' }
+  var toneMap = { '128k': 'PQ', '320k': 'HQ', 'flac': 'SQ', 'hires': 'SQ', 'flac24bit': 'ZQ', 'atmos': 'ZQ', 'atmos_plus': 'ZQ', 'master': 'ZQ' }
   var toneFlag = toneMap[quality] || 'HQ'
   var rawId = _0x6a06('mg', musicInfo)
 
@@ -880,48 +938,6 @@ var _0x6c0f = function(source, musicInfo, quality) {
 }
 // ========== v2.2.0 新增可用源 ==========
 
-// vkeys腾讯v2 - tx (mid + quality 参数)
-var VKEYS_V2_URL = _dec('vkeys_tx_v2')
-
-var _0x6c05 = function(source, musicInfo, quality) {
-  if (source !== _g(100)) return Promise.reject(new Error(_g(55)))
-  var songmid = _0x6a06('tx', musicInfo)
-  if (!songmid) return Promise.reject(new Error(_g(56)))
-  var qMap = { '128k': '6', '192k': '7', '320k': '8', 'flac': '10', 'flac24bit': '11', 'hires': '11', 'jyeffect': '11', 'sky': '11', 'dolby': '11', 'atmos': '11', 'atmos_plus': '11', 'jymaster': '11', 'master': '11' }
-  var qc = qMap[quality] || '8'
-  return _0x6a02(VKEYS_V2_URL + '?mid=' + encodeURIComponent(String(songmid)) + _g(91) + qc, {
-    method: 'GET',
-    timeout: 6000,
-  }).then(function(body) {
-    var u = body && body.data && (body.data.url || body.data.link)
-    if (u && _0x6a04(u)) return u
-    throw new Error(_g(78) + ((body && (body.message || body.msg)) || '未返回有效链接'))
-  })
-}
-
-// aa.cab - tx 搜索式取链 (msg + n + type 参数)
-var AACAB_TX_URL = _dec('aa_cab_tx')
-
-var _0x6c11 = function(source, musicInfo, quality) {
-  if (source !== _g(100)) return Promise.reject(new Error(_g(57)))
-  var keyword = _0x6a08(musicInfo)
-  if (!keyword) return Promise.reject(new Error(_g(58)))
-  // type: 0=M500(128k) 1=M800(320k) 4=F000(FLAC) 5=AI000(加密母带，不可播放)
-  // 母带/全景声类一律取 4（真 FLAC），不请求加密容器
-  var tMap = { '128k': '0', '192k': '1', '320k': '1', 'flac': '4', 'flac24bit': '4', 'hires': '4', 'jyeffect': '4', 'sky': '4', 'dolby': '4', 'atmos': '4', 'atmos_plus': '4', 'jymaster': '4', 'master': '4' }
-  var t = tMap[quality] || '1'
-  return _0x6a02(AACAB_TX_URL + '?msg=' + encodeURIComponent(keyword) + '&n=1&type=' + t, {
-    method: 'GET',
-    timeout: 6000,
-  }).then(function(body) {
-    if (body) {
-      var u = (body.data && (body.data.music || body.data.url)) || body.playUrl || body.url
-      if (u && _0x6a04(u)) return u
-    }
-    throw new Error(_g(59))
-  })
-}
-
 // oiapi咪咕 - mg 搜索式取链 (msg + br + n 参数)
 var OIAPI_MIGU_URL = _dec('oiapi_migu')
 
@@ -929,7 +945,7 @@ var _0x6c12 = function(source, musicInfo, quality) {
   if (source !== _g(101)) return Promise.reject(new Error(_g(60)))
   var keyword = _0x6a08(musicInfo)
   if (!keyword) return Promise.reject(new Error(_g(61)))
-  var brMap = { '128k': 'LQ', '192k': 'HQ', '320k': 'HQ', 'flac': 'SQ', 'flac24bit': 'SQ', 'hires': 'SQ', 'jyeffect': 'SQ', 'sky': 'SQ', 'dolby': 'SQ', 'atmos': 'SQ', 'atmos_plus': 'SQ', 'jymaster': 'SQ', 'master': 'SQ' }
+  var brMap = { '128k': 'LQ', '320k': 'HQ', 'flac': 'SQ', 'flac24bit': 'SQ', 'hires': 'SQ', 'atmos': 'SQ', 'atmos_plus': 'SQ', 'master': 'SQ' }
   var br = brMap[quality] || 'HQ'
   return _0x6a02(OIAPI_MIGU_URL + '?msg=' + encodeURIComponent(keyword) + '&br=' + br + '&n=1', {
     method: 'GET',
@@ -950,7 +966,7 @@ var _0x6c13 = function(source, musicInfo, quality) {
   if (!rid) return Promise.reject(new Error(_g(64)))
   // 该接口 br=flac 返回 48k AAC；无损档必须用 2000kflac（真 FLAC）
   var q = String(quality || '128k').toLowerCase()
-  var lossless = q !== '128k' && q !== '192k' && q !== '320k'
+  var lossless = q !== '128k' && q !== '320k'
   var br = q === '128k' ? '128kmp3' : (lossless ? '2000kflac' : '320kmp3')
   return _0x6a02(_0x6d02 + '?f=web&user=0&source=kwplayerhd_ar_6.6.6.6_tianbao_T1A_qirui.apk&type=convert_url_with_sign&rid=' + encodeURIComponent(String(rid)) + '&br=' + br, {
     method: 'GET',
@@ -965,35 +981,106 @@ var _0x6c13 = function(source, musicInfo, quality) {
     var rate = Number(data.bitrate || 0)
     if (lossless) {
       if (fmt !== 'flac' && !(rate >= 1000)) throw new Error(_g(79) + _g(107))
-    } else if (q === '320k' || q === '192k') {
+    } else if (q === '320k') {
       if (fmt !== 'flac' && !(rate >= 320)) throw new Error(_g(79) + _g(107))
     }
     return u
   })
 }
 
+// 聆澜公益版：经面板代理取链，脚本与后台双重每日 500 次上限
+var _llDay = ''
+var _llCount = 0
+var _0x6b1e = function() {
+  var d = new Date()
+  return String(d.getFullYear()) + '-' + String(d.getMonth() + 1) + '-' + String(d.getDate())
+}
+var _0x6c14 = function(source, musicInfo, quality) {
+  if (source !== _g(103) && source !== _g(101) && source !== _g(102)) {
+    return Promise.reject(new Error(_g(39)))
+  }
+  var apiUrl = PANEL_REPORT_URL ? PANEL_REPORT_URL.replace(/\/report\.php.*$/, _g(119)) : ''
+  if (!apiUrl || apiUrl === PANEL_REPORT_URL) return Promise.reject(new Error(_g(120)))
+  var songId = ''
+  if (source === _g(103)) songId = _0x6a06('kw', musicInfo)
+  else if (source === _g(101)) songId = musicInfo.songmid || musicInfo.songId || musicInfo.contentId || musicInfo.id || musicInfo.songid || ''
+  else songId = _0x6a05(musicInfo)
+  if (!songId) return Promise.reject(new Error(_g(40)))
+  var day = _0x6b1e()
+  if (_llDay !== day) {
+    _llDay = day
+    _llCount = 0
+  }
+  if (_llCount >= 500) return Promise.reject(new Error(_g(121)))
+  _llCount++
+  var q = String(quality || '128k').toLowerCase()
+  var llq = q === '128k' ? '128k' : (q === '320k' ? '320k' : 'flac')
+  var url = apiUrl + '&source=' + encodeURIComponent(source) + '&songId=' + encodeURIComponent(String(songId)) + '&quality=' + llq
+  if (_userId) url += _g(88) + encodeURIComponent(_userId)
+  if (_clientType) url += _g(89) + encodeURIComponent(_clientType)
+  if (_deviceFp) url += _g(106) + encodeURIComponent(_deviceFp)
+  if (_cachedClientIp) url += _g(92) + encodeURIComponent(_cachedClientIp)
+  return _0x6a02(url, { method: 'GET', timeout: 15000 }).then(function(body) {
+    if (body && body.ok === true && _0x6a04(body.url)) return body.url
+    if (body && body.error === 'quota') _llCount = 500
+    throw new Error((body && body.message) || _g(120))
+  })
+}
+
+// 聆澜赞助版（每日 700 次）：始终经面板代理取链，上游密钥不进入客户端
+var _spDay = ''
+var _spCount = 0
+var _0x6c15 = function(source, musicInfo, quality) {
+  var apiUrl = PANEL_REPORT_URL ? PANEL_REPORT_URL.replace(/\/report\.php.*$/, '/api.php?action=sponsor_url') : ''
+  if (!apiUrl || apiUrl === PANEL_REPORT_URL || apiUrl.indexOf('/api.php?action=sponsor_url') === -1) {
+    return Promise.reject(new Error(_g(120)))
+  }
+  var songId = _0x6a06(source, musicInfo) || _0x6a05(musicInfo)
+  if (!songId) return Promise.reject(new Error(_g(40)))
+  var day = _0x6b1e()
+  if (_spDay !== day) {
+    _spDay = day
+    _spCount = 0
+  }
+  if (_spCount >= 700) return Promise.reject(new Error('赞助版接口今日请求已达 700 次上限'))
+  _spCount++
+  var url = apiUrl + '&source=' + encodeURIComponent(source) + '&songId=' + encodeURIComponent(String(songId)) + '&quality=' + encodeURIComponent(String(quality || '128k'))
+  if (_userId) url += _g(88) + encodeURIComponent(_userId)
+  if (_clientType) url += _g(89) + encodeURIComponent(_clientType)
+  if (_deviceFp) url += _g(106) + encodeURIComponent(_deviceFp)
+  if (_cachedClientIp) url += _g(92) + encodeURIComponent(_cachedClientIp)
+  return _0x6a02(url, { method: 'GET', timeout: 15000 }).then(function(body) {
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body) } catch (e) { body = null }
+    }
+    if (body && body.ok === true && _0x6a04(body.url)) return body.url
+    if (body && body.error === 'quota') _spCount = 700
+    throw new Error((body && body.message) || _g(120))
+  })
+}
+
 // ========== API 源列表 ==========
-// txTier: TX平台专用分层竞速优先级，1=优先层（真实音质、响应快），2=备用层
+// tier: 1=第一梯队（立即请求），2=第二梯队（延迟 300ms 加入）
 const _0x6b00 = [
   // 公网源
-  { name: _g(0),       fetch: _0x6c01,       sources: [_g(100)], txTier: 2 },
-  { name: _g(1),     fetch: _0x6c02,     sources: [_g(103)] },
-  { name: _g(2),       fetch: _0x6c03,   sources: [_g(100)], txTier: 1 },
-  { name: _g(3),    fetch: _0x6c04,     sources: [_g(100)], txTier: 1 },
-  { name: _g(4),  fetch: _0x6c05,     sources: [_g(100)], txTier: 1 },
-  { name: _g(5),       fetch: _0x6c06,   sources: [_g(99)] },
-  { name: _g(7),        fetch: _0x6c08,   sources: [_g(102)] },
-  { name: _g(9),       fetch: _0x6c0a,      sources: [_g(102), _g(103)] },
-  { name: _g(10),     fetch: _0x6c0b,    sources: [_g(102)] },
+  { name: _g(0),       fetch: _0x6c01,       sources: [_g(100)], tier: 2 },
+  { name: _g(1),     fetch: _0x6c02,     sources: [_g(103)], tier: 2 },
+  { name: _g(2),       fetch: _0x6c03,   sources: [_g(100)], tier: 2 },
+  { name: _g(3),    fetch: _0x6c04,     sources: [_g(100)], tier: 1 },
+  { name: _g(5),       fetch: _0x6c06,   sources: [_g(99)], tier: 1 },
+  { name: _g(7),        fetch: _0x6c08,   sources: [_g(102)], tier: 2 },
+  { name: _g(9),       fetch: _0x6c0a,      sources: [_g(102), _g(103)], tier: 1 },
+  { name: _g(10),     fetch: _0x6c0b,    sources: [_g(102)], tier: 2 },
   // v1.1.7 新增源
-  { name: _g(11),   fetch: _0x6c0c,      sources: [_g(100)], txTier: 2 },
-  { name: _g(12),     fetch: _0x6c0d,    sources: [_g(101)] },
+  { name: _g(12),     fetch: _0x6c0d,    sources: [_g(101)], tier: 1 },
   // v1.3.0 新增源
-  { name: _g(14),       fetch: _0x6c0f,    sources: [_g(100)], txTier: 2 },
-  // v2.2.0 新增可用源 - vkeys v2 / aa.cab / oiapi咪咕 / 酷我mobi
-  { name: _g(16),       fetch: _0x6c11,     sources: [_g(100)], txTier: 2 },
-  { name: _g(17),    fetch: _0x6c12,   sources: [_g(101)] },
-  { name: _g(18),      fetch: _0x6c13,      sources: [_g(103)] },
+  { name: _g(14),       fetch: _0x6c0f,    sources: [_g(100)], tier: 1 },
+  // v2.2.0 新增可用源 - oiapi咪咕 / 酷我mobi
+  { name: _g(17),    fetch: _0x6c12,   sources: [_g(101)], tier: 2 },
+  { name: _g(18),      fetch: _0x6c13,      sources: [_g(103)], tier: 1 },
+  // 聆澜公益版（第一梯队）与赞助版（第二梯队）
+  { name: '聆澜公益版',      fetch: _0x6c14,      sources: [_g(103), _g(101), _g(102)], tier: 1 },
+  { name: '聆澜赞助版',      fetch: _0x6c15,      sources: [_g(103), _g(99), _g(100), _g(102), _g(101)], tier: 2 },
 ]
 
 // ========== 核心逻辑：并发竞速策略 ==========
@@ -1015,19 +1102,20 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
   if (candidates.length === 0) {
     return Promise.reject(new Error(_g(65)))
   }
+  // 一次歌曲请求共用 request_id，面板按请求聚合成功率（任取链成功即算成功）
+  var requestId = 'R' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
   // 单源直接返回（带超时）
   if (candidates.length === 1) {
     var t0 = Date.now()
     return _0x6a03(_0x6b1c(candidates[0], source, musicInfo, quality), RACE_TIMEOUT).then(function(url) {
       var elapsed = Date.now() - t0
       var ok = !!(url && _0x6a04(url))
-      _0x6b04(source, candidates[0].name, ok, elapsed, quality)
+      _0x6b04(source, candidates[0].name, ok, elapsed, quality, requestId)
       if (ok) return url
       return Promise.reject(new Error(candidates[0].name + ': 无效URL'))
     }).catch(function(e) {
       var elapsed = Date.now() - t0
-      _0x6b04(source, candidates[0].name, false, elapsed, quality)
-      _0x6b05(source, quality, candidates)
+      _0x6b04(source, candidates[0].name, false, elapsed, quality, requestId)
       throw new Error(_0x6b19(e && e.message ? e.message : e))
     })
   }
@@ -1046,7 +1134,6 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
     var onSettled = function() {
       pending--
       if (pending === 0 && !resolved) {
-        _0x6b05(source, quality, candidates)
         abortAll()
         reject(new Error(_0x6b19(_g(80) + errors.join('\n'))))
       }
@@ -1062,19 +1149,19 @@ var _0x6b02 = function(candidates, source, musicInfo, quality) {
           if (resolved) return
           var elapsed = Date.now() - t0
           if (url && _0x6a04(url)) {
-            _0x6b04(source, apiSource.name, true, elapsed, quality)
+            _0x6b04(source, apiSource.name, true, elapsed, quality, requestId)
             resolved = true
             abortAll()
             resolve(url)
           } else {
-            _0x6b04(source, apiSource.name, false, elapsed, quality)
+            _0x6b04(source, apiSource.name, false, elapsed, quality, requestId)
             errors.push(apiSource.name + ': 无效URL')
             onSettled()
           }
         }).catch(function(e) {
           if (resolved) return
           var elapsed = Date.now() - t0
-          _0x6b04(source, apiSource.name, false, elapsed, quality)
+          _0x6b04(source, apiSource.name, false, elapsed, quality, requestId)
           errors.push(apiSource.name + ': ' + (e.message || e))
           onSettled()
         })
@@ -1091,13 +1178,14 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
   if (tier2.length === 0) return _0x6b02(tier1, source, musicInfo, quality)
   if (tier1.length === 0) return _0x6b02(tier2, source, musicInfo, quality)
 
+  // 同一次歌曲请求的优先层与备用层共用 request_id
+  var requestId = 'R' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
   var errors = []
   var resolved = false
   var settled = 0
   var totalPending = tier1.length + tier2.length
   var aborts = []
   var tier2Timer = null
-  var allTier = tier1.concat(tier2)
   var abortAll = function() {
     for (var k = 0; k < aborts.length; k++) {
       try { aborts[k]() } catch (e) {}
@@ -1110,7 +1198,6 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
       settled++
       if (settled === totalPending && !resolved) {
         if (tier2Timer) { clearTimeout(tier2Timer); tier2Timer = null }
-        _0x6b05(source, quality, allTier)
         abortAll()
         reject(new Error(_0x6b19(_g(80) + errors.join('\n'))))
       }
@@ -1126,20 +1213,20 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
         if (resolved) return
         var elapsed = Date.now() - t0
         if (url && _0x6a04(url)) {
-          _0x6b04(source, apiSource.name, true, elapsed, quality)
+          _0x6b04(source, apiSource.name, true, elapsed, quality, requestId)
           resolved = true
           if (tier2Timer) { clearTimeout(tier2Timer); tier2Timer = null }
           abortAll()
           resolve(url)
         } else {
-          _0x6b04(source, apiSource.name, false, elapsed, quality)
+          _0x6b04(source, apiSource.name, false, elapsed, quality, requestId)
           errors.push(apiSource.name + ': 无效URL')
           onSettled()
         }
       }).catch(function(e) {
         if (resolved) return
         var elapsed = Date.now() - t0
-        _0x6b04(source, apiSource.name, false, elapsed, quality)
+        _0x6b04(source, apiSource.name, false, elapsed, quality, requestId)
         errors.push(apiSource.name + ': ' + (e.message || e))
         onSettled()
       })
@@ -1163,10 +1250,10 @@ var _0x6b03 = function(tier1, tier2, source, musicInfo, quality) {
 const _0x6b01 = function(source, musicInfo, quality) {
   // 版本被面板停用（精确清单/版本下限）时拒绝所有请求，与面板说明对齐
   if (_scriptDisabled) {
-    return Promise.reject(new Error(_g(66)))
+    return Promise.reject(new Error(_disabledReason || _g(66)))
   }
-  // 应用面板的最大音质限制：超出档位自动降级到允许的最高音质
-  quality = _0x6b09(quality)
+  // 请求音质不在平台支持列表时，自动降级到支持的最高档位
+  quality = _normalizeQuality(source, quality)
   // 筛选支持该平台的源
   var candidates = []
   for (var i = 0; i < _0x6b00.length; i++) {
@@ -1185,21 +1272,15 @@ const _0x6b01 = function(source, musicInfo, quality) {
     if (!_0x6b1a(candidates[h].name)) healthy.push(candidates[h])
   }
   if (healthy.length > 0) candidates = healthy
-  // TX 平台使用延迟并发：优先层立即启动，备用层延迟300ms加入
-  // 优先层为真实音质源（念心TX、vkeys腾讯/v2），备用层为玉宁熙、aa.cab 等
-  if (source === _g(100)) {
-    var tier1 = []
-    var tier2 = []
-    for (var j = 0; j < candidates.length; j++) {
-      if (candidates[j].txTier === 1) tier1.push(candidates[j])
-      else tier2.push(candidates[j])
-    }
-    return _0x6b03(tier1, tier2, source, musicInfo, quality).then(function(url) {
-      return _0x6a09(url)
-    })
+  // 所有平台统一分为两个请求梯队：第一梯队立即发起，第二梯队延迟 300ms 加入
+  var tier1 = []
+  var tier2 = []
+  for (var j = 0; j < candidates.length; j++) {
+    if (candidates[j].tier === 2) tier2.push(candidates[j])
+    else tier1.push(candidates[j])
   }
-  return _0x6b02(candidates, source, musicInfo, quality).then(function(url) {
-    return _0x6a09(url)
+  return _0x6b03(tier1, tier2, source, musicInfo, quality).then(function(url) {
+    return _0x6a09(_0x6a0b(url))
   })
 }
 
@@ -1266,21 +1347,25 @@ on(EVENT_NAMES.request, function(params) {
 // ========== 更新检查 ==========
 // 脚本初始化时异步检查面板是否有新版本，若有则发送 updateAlert 事件
 // 参考文档: https://www.lxmusic.cn/docs/music-source/
-var SCRIPT_VERSION = 'v2.2.2-261031-fix'
+var SCRIPT_VERSION = 'v2.3.0-261105-fix'
 
-// 版本号格式：版本号-YYMMDD[-fix]，如 v2.2.2-261030-fix
-// 比较顺序：核心数字逐段 → 日期（缺省 0）→ fix 补丁级（无 0 / 有 1）
+// 版本号格式：版本号-YYMMDD[-fix]，如 v2.2.2-261030-fix（也兼容 2.2.2、1.2.3RC1）
+// 比较顺序：核心数字逐段 → 日期（阈值带日期时才比较）→ fix 补丁级
 var _parseVersion = function(v) {
   var s = String(v || '').trim().replace(/^v/i, '')
   var m = /^(\d+(?:\.\d+)*)(?:RC\d+)?(?:-(\d{6}))?(-fix)?$/i.exec(s)
-  if (!m) return { nums: [], date: 0, fix: 0 }
+  if (!m) return { nums: [], date: 0, hasDate: false, fix: 0, hasFix: false }
   return {
     nums: m[1].split('.').map(function(n) { return parseInt(n, 10) || 0 }),
     date: m[2] ? parseInt(m[2], 10) : 0,
-    fix: m[3] ? 1 : 0
+    hasDate: m[2] !== undefined,
+    fix: m[3] ? 1 : 0,
+    hasFix: m[3] !== undefined
   }
 }
 
+// v2 是阈值（停用版本）：阈值只写到版本号时（如 2.2.2），忽略日期与 fix，
+// 使 2.2.2-261030、1.2.3RC1 等版本号都不大于 2.2.2；阈值带日期时再按日期/fix 精确比较。
 var _compareVersion = function(v1, v2) {
   var a = _parseVersion(v1)
   var b = _parseVersion(v2)
@@ -1291,8 +1376,10 @@ var _compareVersion = function(v1, v2) {
     if (na > nb) return 1
     if (na < nb) return -1
   }
-  if (a.date !== b.date) return a.date > b.date ? 1 : -1
-  if (a.fix !== b.fix) return a.fix > b.fix ? 1 : -1
+  if (b.hasDate) {
+    if (a.date !== b.date) return a.date > b.date ? 1 : -1
+    if (a.fix !== b.fix) return a.fix > b.fix ? 1 : -1
+  }
   return 0
 }
 
@@ -1344,27 +1431,36 @@ var _0x6b0c = function(updateUrl) {
   return true
 }
 
-// ========== 最大音质限制（面板 check_update 下发，用户规则优先于全局规则）==========
-var _maxQuality = ''
-// 扩展音质档位：非官方档位，官方 preload 会按 supportQualitys 过滤，
-// 仅对允许扩展档位的客户端生效，不影响原有 4 档
-var _EXTRA_QUALITYS = ['192k', 'hires', 'dolby', 'atmos', 'atmos_plus', 'jyeffect', 'sky', 'jymaster', 'master']
-// 档位高低（与面板 qualityWhitelist 逐一对应）
-var _qualityRank = { standard: 0, '128k': 1, '192k': 2, '320k': 3, 'flac': 4, 'hires': 5, 'flac24bit': 6, dolby: 7, atmos: 7, atmos_plus: 7, jyeffect: 7, sky: 7, jymaster: 8, master: 8 }
-var _0x6b09 = function(quality) {
-  if (!_maxQuality) return quality
-  var q = String(quality || '128k').toLowerCase()
-  var cap = String(_maxQuality).toLowerCase()
-  var rq = _qualityRank[q]
-  var rc = _qualityRank[cap]
-  // 未知档位不做降级，避免误伤应用新增的音质
-  if (rq === undefined || rc === undefined || rq <= rc) return quality
-  return cap
+// ========== 音质档位（统一 8 档）==========
+// 面板与音源共用同一组标识，顺序即音质高低：128k < 320k < flac < flac24bit < hires < atmos < atmos_plus < master
+var _QUALITYS = ['128k', '320k', 'flac', 'flac24bit', 'hires', 'atmos', 'atmos_plus', 'master']
+var _QUALITY_RANK = _QUALITYS.slice()
+// 各平台实际支持的音质（与赞助版/各接口能力对齐）
+var _PLATFORM_QUALITYS = {
+  tx: ['128k', '320k', 'flac', 'flac24bit', 'hires', 'atmos', 'atmos_plus', 'master'],
+  wy: ['128k', '320k', 'flac', 'flac24bit', 'hires', 'atmos', 'master'],
+  kg: ['128k', '320k', 'flac', 'flac24bit', 'hires', 'atmos', 'master'],
+  kw: ['128k', '320k', 'flac', 'flac24bit', 'hires'],
+  mg: ['128k', '320k', 'flac', 'flac24bit', 'hires'],
+}
+// 请求音质不在平台支持列表时，降级到该平台支持的最高可用档位
+var _normalizeQuality = function(source, quality) {
+  var list = _PLATFORM_QUALITYS[source] || _QUALITYS
+  var q = String(quality || '').toLowerCase()
+  if (q && list.indexOf(q) !== -1) return q
+  var idx = _QUALITY_RANK.indexOf(q)
+  if (idx < 0) return list[list.length - 1]
+  for (var i = idx - 1; i >= 0; i--) {
+    if (list.indexOf(_QUALITY_RANK[i]) !== -1) return _QUALITY_RANK[i]
+  }
+  return list[0]
 }
 
 // ========== 版本停用 / 请求速度优先级（面板 check_update 下发）==========
 // 停用标志：命中精确停用清单或版本低于下限时置真，后续所有请求直接拒绝
 var _scriptDisabled = false
+// 不可用原因：停用/拉黑时写入，播放失败提示与更新弹窗均展示
+var _disabledReason = ''
 // 请求速度优先级：平台 => 按平均响应时间升序的接口名数组
 var _sourcePriority = {}
 // 按面板下发的速度优先级排序候选源（未记录的接口排尾；无数据保持原顺序）
@@ -1425,6 +1521,8 @@ var _0x6b0d = function() {
   if (_clientType) apiUrl += '&client_type=' + encodeURIComponent(_clientType)
   if (_cachedClientIp) apiUrl += '&client_ip=' + encodeURIComponent(_cachedClientIp)
   if (_deviceFp) apiUrl += _g(106) + encodeURIComponent(_deviceFp)
+  // 上报本机音源版本，面板按该版本号判断是否停用（版本号不变，仅新增查询参数）
+  apiUrl += '&script_version=' + encodeURIComponent(SCRIPT_VERSION)
   // 定时刷新只同步规则：不消费面板待推送消息，留给下次启动的首次拉取
   if (_panelPolled) apiUrl += '&no_notify=1'
   _panelBusy = true
@@ -1452,32 +1550,43 @@ var _0x6b0d = function() {
     if (_pushUserIdOn && _userId) {
       _0x6b0b('你的用户ID：' + _userId + '\n（请勿泄露ID，在汇报问题时请带上此ID）')
     }
+    // 版本停用判断：面板按上报的 SCRIPT_VERSION 判定为准；停用清单/下限为旧面板兜底。
+    // 停用清单每项均为「版本上限」：本机版本号小于等于该项即停用
+    // （如停用 2.2.2，则 1.1.1、2.2.1、1.2.3RC1、2.2.2-261030 全部停用）。
+    // 停用提示优先入队，避免被广播/通知挤占 1024 字截断后丢失
+    var disabled = body.disabled_versions
+    var isDisabled = body.disabled === true
+    if (!isDisabled && Object.prototype.toString.call(disabled) === '[object Array]') {
+      for (var dv = 0; dv < disabled.length; dv++) {
+        if (disabled[dv] && _compareVersion(SCRIPT_VERSION, disabled[dv]) <= 0) { isDisabled = true; break }
+      }
+    }
+    var below = body.disabled_below ? String(body.disabled_below) : ''
+    if (!isDisabled && below && _compareVersion(SCRIPT_VERSION, below) <= 0) isDisabled = true
+    if (isDisabled) {
+      _scriptDisabled = true
+      _disabledReason = '此版本已失效，请更新音源'
+      _0x6b0b(_disabledReason)
+    }
     // 面板公告（广播）与定向通知 —— 先入队，最后统一弹出
     _0x6b0b(body.broadcast)
     _0x6b0b(body.notify)
-    // 面板下发的最大音质限制，后续播放请求按此降级
-    if (body.max_quality !== undefined) _maxQuality = String(body.max_quality || '')
     // 按请求速度排序的接口优先级（v2.2.1+）
     if (body.source_priority && typeof body.source_priority === 'object') {
       _sourcePriority = body.source_priority
     }
-    // 版本停用判断：精确停用清单 + 版本下限（一键停用旧版本下发）
-    var disabled = body.disabled_versions
-    var isDisabled = Object.prototype.toString.call(disabled) === '[object Array]' && disabled.indexOf(SCRIPT_VERSION) !== -1
-    var below = body.disabled_below ? String(body.disabled_below) : ''
-    if (!isDisabled && below && _compareVersion(SCRIPT_VERSION, below) < 0) isDisabled = true
-    if (isDisabled) {
-      _scriptDisabled = true
-      _0x6b0b('您当前使用的版本 ' + SCRIPT_VERSION + ' 已被停用，请升级到最新版本。')
-    }
     // 用户黑名单：命中后拒绝该用户所有请求，并推送提示
     if (_isOn(body.blacklisted)) {
       _scriptDisabled = true
-      _0x6b0b(_g(104))
+      var blacklistText = _blacklistErrorText(body)
+      _disabledReason = blacklistText || _g(104)
+      _0x6b0b(_disabledReason)
     }
-    // 更新日志（停用状态下不再提示更新，只提示升级）
+    // 更新日志（停用状态只提示更新音源，同时附带面板配置的更新地址）
     var updateUrl = ''
-    if (!isDisabled && body.version && _compareVersion(body.version, SCRIPT_VERSION) > 0) {
+    if (isDisabled) {
+      updateUrl = body.updateUrl || ''
+    } else if (body.version && _compareVersion(body.version, SCRIPT_VERSION) > 0) {
       _0x6b0b(body.log || ('发现新版本 ' + body.version))
       updateUrl = body.updateUrl || ''
     }
@@ -1506,50 +1615,57 @@ var _0x6b14 = function() {
 
 // 脚本初始化完成后发送 inited 事件告知应用
 // 官方约定：send(inited) 之前任何异常都会导致脚本初始化失败，
-// 因此将 inited 放在最前，用户标识/IP 检测与面板检查等非关键初始化放在其后并各自兜底
+// 因此先计算不依赖网络的本地标识（均 try/catch 兜底），再发送 inited；
+// IP 探测与面板检查等网络初始化全部放在 inited 之后
+try { _0x6b07() } catch (e) {}
+try { _0x6b12() } catch (e) {}
+try { _0x6b06() } catch (e) {}
 send(EVENT_NAMES.inited, {
   sources: {
     [_g(103)]: {
       name: '酷我音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
+      qualitys: _PLATFORM_QUALITYS.kw,
     },
     [_g(99)]: {
       name: '酷狗音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
+      qualitys: _PLATFORM_QUALITYS.kg,
     },
     [_g(100)]: {
       name: 'QQ音乐',
       type: 'music',
       actions: [_g(98)],
-      // 基础 4 档 + 扩展档位：官方 preload 会过滤非官方档位，不影响原有 4 档
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
+      qualitys: _PLATFORM_QUALITYS.tx,
     },
     [_g(102)]: {
       name: '网易云音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
+      qualitys: _PLATFORM_QUALITYS.wy,
     },
     [_g(101)]: {
       name: '咪咕音乐',
       type: 'music',
       actions: [_g(98)],
-      qualitys: ['128k', '320k', 'flac', 'flac24bit'].concat(_EXTRA_QUALITYS),
+      qualitys: _PLATFORM_QUALITYS.mg,
     },
   },
 })
-try { _0x6b06() } catch (e) {}
-try { _0x6b07() } catch (e) {}
-try { _0x6b12() } catch (e) {}
-try { _0x6b08() } catch (e) {}
-try { _0x6b15() } catch (e) {}
-// 立即拉取面板：与可正常弹窗的 v2.2.2 保持一致（延迟会被部分客户端丢掉事件）
-try { _0x6b0d() } catch (e) {}
-try { _0x6b14() } catch (e) {}
+// 先完成公网 IP 探测，再同时发起 IP 上报与面板检查：
+// check_update 与 action=ip 使用同一个 client_ip，避免反代场景下所有用户落到代理 IP 而共享用户ID
+var _bootAfterIp = function() {
+  _ipReady = true
+  try { _0x6b15() } catch (e) {}
+  try { _0x6b0d() } catch (e) {}
+  try { _0x6b14() } catch (e) {}
+}
+var _bootIp = null
+try { _bootIp = _0x6b08() } catch (e) {}
+if (_bootIp && typeof _bootIp.then === 'function') _bootIp.then(_bootAfterIp, _bootAfterIp)
+else _bootAfterIp()
 
 // ===== 测试钩子（仅沙箱回归测试显式开启；LX 环境不定义 __HM_TEST__，自动跳过） =====
 if (typeof globalThis !== 'undefined' && globalThis.__HM_TEST__) {
@@ -1558,16 +1674,15 @@ if (typeof globalThis !== 'undefined' && globalThis.__HM_TEST__) {
     API_SOURCES: _0x6b00,
     isValidUrl: _0x6a04,
     handleGetMusicUrl: _0x6b01,
-    fetchVkeysV2: _0x6c05,
-    fetchAaCabTx: _0x6c11,
     fetchOiapiMigu: _0x6c12,
     fetchKwMobi: _0x6c13,
     fetchNianxinKw: _0x6c02,
     fetchNianxinTx: _0x6c03,
     fetchNianxinKg: _0x6c06,
     normalizeUrl: _0x6a09,
-    QUALITY_RANK: _qualityRank,
-    EXTRA_QUALITYS: _EXTRA_QUALITYS,
+    normalizeQuality: _normalizeQuality,
+    QUALITYS: _QUALITYS,
+    PLATFORM_QUALITYS: _PLATFORM_QUALITYS,
     sortByPriority: function(c, s) { return _0x6b0a(c, s) },
     setPriority: function(p) { _sourcePriority = p },
     isDisabled: function() { return _scriptDisabled },

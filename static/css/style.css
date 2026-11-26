@@ -129,6 +129,38 @@ body {
     margin: 8px 0 12px;
 }
 
+/* ---------- 多文件下载列表 ---------- */
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.file-link {
+    color: #4aa3ff;
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+.file-link:hover {
+    text-decoration: underline;
+}
+
+.file-size {
+    font-size: 0.8rem;
+    color: #aaa;
+    white-space: nowrap;
+}
+
 .btn {
     display: inline-block;
     background: #3a7bd5;

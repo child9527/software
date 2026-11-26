@@ -96,6 +96,11 @@ body {
     transition: opacity 0.3s ease;
 }
 
+.card-body {
+    flex: 1;
+    min-width: 0;
+}
+
 .card.hidden,
 .source-card.hidden {
     display: none !important;

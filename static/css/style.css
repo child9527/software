@@ -130,23 +130,67 @@ body {
 }
 
 /* ---------- 多文件下载列表 ---------- */
+.assets-toggle {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 0.82rem;
+    font-weight: bold;
+    color: #ccc;
+    cursor: pointer;
+    user-select: none;
+}
+
+.assets-toggle:hover {
+    color: #fff;
+}
+
+.assets-toggle .tri {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid currentColor;
+    margin-right: 8px;
+    transition: transform 0.15s;
+}
+
+.assets-toggle:not(.open) .tri {
+    transform: rotate(-90deg);
+}
+
 .file-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.file-list.collapsed {
+    display: none;
 }
 
 .file-row {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    background: #232323;
+    padding: 7px 12px;
     gap: 8px;
 }
 
+.file-row:hover {
+    background: #2a2a2a;
+}
+
 .file-link {
+    flex: 1;
+    min-width: 0;
     color: #4aa3ff;
     text-decoration: none;
-    font-size: 0.92rem;
+    font-size: 0.8rem;
     font-weight: bold;
     word-break: break-all;
 }
@@ -156,8 +200,28 @@ body {
 }
 
 .file-size {
-    font-size: 0.8rem;
+    width: 80px;
+    flex-shrink: 0;
+    text-align: center;
+    font-size: 0.72rem;
     color: #aaa;
+    white-space: nowrap;
+}
+
+.file-mirrors {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.file-row .btn {
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    margin: 0;
     white-space: nowrap;
 }
 
